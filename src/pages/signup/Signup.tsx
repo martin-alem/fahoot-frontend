@@ -1,6 +1,9 @@
+import { Link } from "react-router-dom";
+import useTitle from "../../hooks/useTitle";
 import Logo from "./../../assets/Fahoot Logo.svg";
 
-export default function SignUp() {
+const SignUp: React.FC = () => {
+  useTitle("Create Account");
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -116,12 +119,14 @@ export default function SignUp() {
 
           <p className="mt-10 text-center text-sm text-gray-500">
             Already a member?{" "}
-            <a href="#" className="font-semibold leading-6 text-primary-600 hover:text-primary-500">
+            <Link to="/" className="font-semibold leading-6 text-primary-600 hover:text-primary-500">
               Sign in here
-            </a>
+            </Link>
           </p>
         </div>
       </div>
     </>
   );
-}
+};
+
+export default SignUp;
