@@ -5,12 +5,16 @@ import Login from "../../pages/login/login";
 import NotFound from "../../pages/not_found/NotFound";
 import Library from "../../pages/library/Library";
 import Report from "../../pages/report/Report";
+import ResetPasswordRequest from "../../pages/reset_password_request/ResetPasswordRequest";
+import ResetPassword from "../../pages/reset_password/ResetPassword";
 
 const App: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="signup" element={<SignUp />} />
+      <Route path="/password_reset_request" element={<ResetPasswordRequest />} />
+      <Route path="/password_reset" element={<ResetPassword />} />
       <Route path="dashboard" element={<Dashboard />}>
         <Route index element={<Library />} />
         <Route path="report" element={<Report />} />

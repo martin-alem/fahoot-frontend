@@ -56,9 +56,9 @@ const Login: React.FC = () => {
                 </div>
 
                 <div className="text-sm leading-6">
-                  <a href="#" className="font-semibold text-secondary-600 hover:text-secondary-500">
+                  <Link to="password_reset_request" className="font-semibold text-secondary-600 hover:text-secondary-500">
                     Forgot password?
-                  </a>
+                  </Link>
                 </div>
               </div>
 
