@@ -9,20 +9,27 @@ import ResetPasswordRequest from "../../pages/reset_password_request/ResetPasswo
 import ResetPassword from "../../pages/reset_password/ResetPassword";
 import JoinGame from "../../pages/join_game/JoinGame";
 import Lobby from "../../pages/lobby/Lobby";
+import GameRoom from "../../pages/game_room/GameRoom";
 
 const App: React.FC = () => {
   return (
     <Routes>
+      {/* Public routes */}
       <Route path="/" element={<Login />} />
       <Route path="signup" element={<SignUp />} />
       <Route path="/password_reset_request" element={<ResetPasswordRequest />} />
       <Route path="/password_reset" element={<ResetPassword />} />
       <Route path="/join" element={<JoinGame />} />
+
+      {/* Protected routes */}
+      <Route path="/game_room" element={<GameRoom />} />
       <Route path="/lobby" element={<Lobby />} />
       <Route path="dashboard" element={<Dashboard />}>
         <Route index element={<Library />} />
         <Route path="report" element={<Report />} />
       </Route>
+
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
