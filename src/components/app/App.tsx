@@ -10,6 +10,7 @@ import ResetPassword from "../../pages/reset_password/ResetPassword";
 import JoinGame from "../../pages/join_game/JoinGame";
 import Lobby from "../../pages/lobby/Lobby";
 import GameRoom from "../../pages/game_room/GameRoom";
+import Podium from "../../pages/podium/Podium";
 
 const App: React.FC = () => {
   return (
@@ -22,13 +23,13 @@ const App: React.FC = () => {
       <Route path="/join" element={<JoinGame />} />
 
       {/* Protected routes */}
+      <Route path="/podium" element={<Podium />} />
       <Route path="/game_room" element={<GameRoom />} />
       <Route path="/lobby" element={<Lobby />} />
       <Route path="dashboard" element={<Dashboard />}>
         <Route index element={<Library />} />
         <Route path="report" element={<Report />} />
       </Route>
-
 
       <Route path="*" element={<NotFound />} />
     </Routes>
