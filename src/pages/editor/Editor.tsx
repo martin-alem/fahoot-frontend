@@ -1,4 +1,4 @@
-import { Cog6ToothIcon, PlusIcon, RocketLaunchIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, ExclamationTriangleIcon, PhotoIcon, PlusIcon, RocketLaunchIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Logo from "./../../assets/Fahoot Logo.svg";
 import Button from "../../components/button/Button";
 import useTitle from "../../hooks/useTitle";
@@ -8,6 +8,7 @@ import QuestionDraft from "../../components/question_draft/QuestionDraft";
 import { useState } from "react";
 import Modal from "../../components/modal/Modal";
 import QuizSetting from "../../components/quiz_setting/QuizSetting";
+import QuestionOption from "../../components/question_option/QuestionOption";
 
 const Editor: React.FC = () => {
   useTitle("Editor");
@@ -15,7 +16,19 @@ const Editor: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      <div className="bg-white shadow-md flex flex-col md:flex md:flex-row items-center justify-between p-2">
+      <div className="block md:hidden border-l-4 border-yellow-400 bg-yellow-50 p-4">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
+          </div>
+          <div className="ml-3">
+            <p className="text-sm text-yellow-700">
+              For a better user experience, use a desktop or a screen with a wider width to work with the editor.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="w-full bg-white shadow-md flex flex-col md:flex md:flex-row items-center justify-between p-2">
         <div className="w-full md:w-1/3 flex items-center gap-2">
           <div>
             <img className="mx-auto h-12 w-auto" src={Logo} alt="Fahoot" />
@@ -45,23 +58,47 @@ const Editor: React.FC = () => {
         <div className="w-full md:w-1/4 md:h-screen p-4">
           <div className="flex flex-row md:flex-col gap-4 items-center md:h-full overflow-auto">
             <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
-            <QuestionDraft />
             <Button label="Question" type="primary" suffixIcon={<PlusIcon className="w-6" />} />
           </div>
         </div>
-        <div className="w-full h-screen bg-sky-500"></div>
+        <div className="w-full h-screen bg-gray-200 p-8 flex flex-col gap-4 overflow-y-auto">
+          {/* Question Input */}
+          <div>
+            <div className="mt-2">
+              <textarea
+                rows={4}
+                name="comment"
+                id="comment"
+                className="block w-full rounded-md border-0 py-4 text-gray-900 text-center shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-white sm:text-4xl"
+                placeholder="Type your question here"
+                style={{ resize: "none" }}
+              />
+            </div>
+          </div>
+
+          {/* Upload image */}
+          <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+            <div className="text-center">
+              <PhotoIcon className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
+              <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                <label
+                  htmlFor="file-upload"
+                  className="cursor-pointer mx-auto rounded-md bg-white font-semibold text-secondary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-secondary-600 focus-within:ring-offset-2 hover:text-secondary-500">
+                  <span>Upload a file</span>
+                  <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                </label>
+              </div>
+              <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+            </div>
+          </div>
+
+          <div className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <QuestionOption bgColor="bg-red-600" />
+            <QuestionOption bgColor="bg-blue-600" />
+            <QuestionOption bgColor="bg-green-600" />
+            <QuestionOption bgColor="bg-yellow-600" />
+          </div>
+        </div>
         <div className="w-full md:w-1/4 md:h-screen p-4 space-y-10">
           <div className="w-full">
             <h3 className="font-bold">Question Type</h3>

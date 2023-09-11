@@ -1,9 +1,10 @@
-import { PlayIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, PlayIcon } from "@heroicons/react/24/outline";
 import Button from "../button/Button";
 import { IQuizProps } from "../../utils/types";
-import DropDown from "../drop_down/DropDown";
+import { Link, useNavigate } from "react-router-dom";
 
 const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
+  const navigate = useNavigate();
   return (
     <>
       <div className="w-full flex shadow-lg rounded-md">
@@ -11,7 +12,9 @@ const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
         <div className="flex-grow space-y-16 bg-white p-4">
           <div className="flex justify-between items-center">
             <h1 className="w-80 truncate text-secondary-500 text-xl md:text-3xl font-bold capitalize">{quiz.name}</h1>
-            <DropDown />
+            <Link to="/editor">
+              <PencilIcon className="w-6 cursor-pointer" />
+            </Link>
           </div>
           <div className="flex justify-between items-center">
             <div className="flex justify-center gap-2 items-center">
@@ -25,7 +28,7 @@ const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
             <h2 className="w-48 font-bold truncate">{`Updated ${quiz.lastUpdated}`}</h2>
             <h2 className="w-48 font-bold capitalize truncate">{`${quiz.numberOfPlays} plays`}</h2>
             <div>
-              <Button label="Start" type="primary" suffixIcon={<PlayIcon className="w-8" />} />
+              <Button label="Start" type="primary" suffixIcon={<PlayIcon className="w-8" />} handleClick={() => navigate("/lobby")} />
             </div>
           </div>
         </div>

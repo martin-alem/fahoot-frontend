@@ -1,5 +1,5 @@
 import AnswerCount from "../../components/answer_count/AnswerCount";
-import Option from "../../components/option/Option";
+import QuestionOption from "../../components/question_option/QuestionOption";
 import Question from "../../components/question/Question";
 import Timer from "../../components/timer/Timer";
 
@@ -14,10 +14,10 @@ const Play: React.FC = () => {
         <div className="mx-auto max-w-4xl">
           <Question />
           <div className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Option bgColor="bg-red-600" />
-            <Option bgColor="bg-blue-600" />
-            <Option bgColor="bg-green-600" />
-            <Option bgColor="bg-yellow-600" />
+            <QuestionOption bgColor="bg-red-600" />
+            <QuestionOption bgColor="bg-blue-600" />
+            <QuestionOption bgColor="bg-green-600" />
+            <QuestionOption bgColor="bg-yellow-600" />
           </div>
         </div>
       </div>

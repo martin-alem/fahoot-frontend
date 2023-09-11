@@ -1,9 +1,10 @@
-import { PlayIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, PlayIcon } from "@heroicons/react/24/outline";
 import Button from "../button/Button";
 import { IQuizProps } from "../../utils/types";
-import DropDown from "../drop_down/DropDown";
+import { Link, useNavigate } from "react-router-dom";
 
 const QuizGridView: React.FC<IQuizProps> = ({ quiz }) => {
+  const navigate = useNavigate();
   return (
     <>
       <div className="w-full md:w-1/3 flex flex-col shadow-lg rounded-md">
@@ -11,7 +12,9 @@ const QuizGridView: React.FC<IQuizProps> = ({ quiz }) => {
         <div className="flex-grow space-y-16 bg-white p-4">
           <div className="flex justify-between items-center">
             <h1 className="w-60 text-secondary-500 text-xl md:text-2xl font-bold capitalize truncate">{quiz.name}</h1>
-            <DropDown />
+            <Link to="/editor">
+              <PencilIcon className="w-6 cursor-pointer" />
+            </Link>
           </div>
           <div className="flex justify-between items-center">
             <div className="flex justify-center gap-2 items-center">
@@ -22,7 +25,7 @@ const QuizGridView: React.FC<IQuizProps> = ({ quiz }) => {
               />
             </div>
             <div>
-              <Button label="Start" type="primary" suffixIcon={<PlayIcon className="w-8" />} />
+              <Button label="Start" type="primary" suffixIcon={<PlayIcon className="w-8" />} handleClick={() => navigate("/lobby")} />
             </div>
           </div>
         </div>

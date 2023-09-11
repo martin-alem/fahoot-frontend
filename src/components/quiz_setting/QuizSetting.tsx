@@ -2,6 +2,7 @@ import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Button from "../button/Button";
 import SelectInput from "../select_input/SelectInput";
 import { IQuizSettingProps } from "../../utils/types";
+import ColorChooser from "../color_chooser/ColorChooser";
 
 const QuizSetting: React.FC<IQuizSettingProps> = ({ cancelSetting }) => {
   return (
@@ -24,30 +25,19 @@ const QuizSetting: React.FC<IQuizSettingProps> = ({ cancelSetting }) => {
               />
             </div>
           </div>
-          <div>
-            <label htmlFor="comment" className="block text-sm font-medium leading-6 text-gray-900">
-              Description (optional)
-            </label>
-            <div className="mt-2">
-              <textarea
-                rows={4}
-                name="comment"
-                id="comment"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-500 sm:text-sm sm:leading-6"
-                defaultValue={""}
-              />
-            </div>
+          <div className="hidden md:block w-full">
+            <ColorChooser />
           </div>
           <div className="w-full">
-            <h3 className="font-bold">Lobby Music</h3>
+            <h3 className="block text-sm font-medium leading-6 text-secondary-900">Lobby Music</h3>
             <SelectInput />
           </div>
           <div className="w-full">
-            <h3 className="font-bold">Game Music</h3>
+            <h3 className="block text-sm font-medium leading-6 text-secondary-900">Game Music</h3>
             <SelectInput />
           </div>
           <div className="w-full">
-            <h3 className="font-bold">Podium Music</h3>
+            <h3 className="block text-sm font-medium leading-6 text-secondary-900">Podium Music</h3>
             <SelectInput />
           </div>
 
