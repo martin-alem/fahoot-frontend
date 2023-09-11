@@ -26,3 +26,13 @@ export interface IQuizContainerProps {
 export interface IQuizProps {
   quiz: Quiz;
 }
+
+export interface IModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}
+
+export interface IQuizSettingProps {
+  cancelSetting: () => void;
+}

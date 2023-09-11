@@ -1,16 +1,17 @@
-import { PencilIcon } from "@heroicons/react/24/outline";
+import { PlayIcon } from "@heroicons/react/24/outline";
 import Button from "../button/Button";
 import { IQuizProps } from "../../utils/types";
+import DropDown from "../drop_down/DropDown";
 
 const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
   return (
     <>
-      <div className="w-full flex shadow-lg rounded-md overflow-x-auto">
+      <div className="w-full flex shadow-lg rounded-md">
         <div className={`relative w-1/5 ${quiz.bgColor}`}></div>
         <div className="flex-grow space-y-16 bg-white p-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-secondary-500 text-xl md:text-3xl font-bold capitalize">{quiz.name}</h1>
-            <PencilIcon className="w-6 cursor-pointer" />
+            <h1 className="w-80 truncate text-secondary-500 text-xl md:text-3xl font-bold capitalize">{quiz.name}</h1>
+            <DropDown />
           </div>
           <div className="flex justify-between items-center">
             <div className="flex justify-center gap-2 items-center">
@@ -24,7 +25,7 @@ const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
             <h2 className="w-48 font-bold truncate">{`Updated ${quiz.lastUpdated}`}</h2>
             <h2 className="w-48 font-bold capitalize truncate">{`${quiz.numberOfPlays} plays`}</h2>
             <div>
-              <Button label="Start" type="primary" />
+              <Button label="Start" type="primary" suffixIcon={<PlayIcon className="w-8" />} />
             </div>
           </div>
         </div>

@@ -11,6 +11,7 @@ import JoinGame from "../../pages/join_game/JoinGame";
 import Lobby from "../../pages/lobby/Lobby";
 import GameRoom from "../../pages/game_room/GameRoom";
 import Podium from "../../pages/podium/Podium";
+import Editor from "../../pages/editor/Editor";
 
 const App: React.FC = () => {
   return (
@@ -30,7 +31,7 @@ const App: React.FC = () => {
         <Route index element={<Library />} />
         <Route path="report" element={<Report />} />
       </Route>
-
+      <Route path="/editor" element={<Editor />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

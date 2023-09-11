@@ -9,7 +9,7 @@ const Button: React.FC<IButtonProps> = ({ label, type = "primary", prefixIcon, s
       buttonClasses = "text-primary-500 border-primary-500 bg-transparent hover:bg-primary-500 hover:border-primary-500 hover:text-white";
       break;
     case "secondary":
-      buttonClasses = "text-white border-white bg-transparent hover:bg-primary-500 hover:border-primary-500 hover:text-white";
+      buttonClasses = "text-secondary-500 border-secondary-500 bg-transparent hover:bg-secondary-500 hover:border-secondary-500 hover:text-white";
       break;
     case "danger":
       buttonClasses = "text-red-500 border-red-500 bg-transparent hover:bg-red-500 hover:border-red-500 hover:text-white";
@@ -20,7 +20,7 @@ const Button: React.FC<IButtonProps> = ({ label, type = "primary", prefixIcon, s
       disabled={disabled}
       type={action}
       onClick={handleClick}
-      className={`w-full rounded-full border-b-4 px-4 py-2.5 text-md font-bold border-2 transition duration-300 ease-linear ${disabled ? disabledClass : buttonClasses}`}>
+      className={`w-full rounded-md border-b-4 px-4 py-2.5 text-md font-bold border-2 transition duration-300 ease-linear ${disabled ? disabledClass : buttonClasses}`}>
       <div className="flex justify-center items-center gap-x-1">
         {prefixIcon}
         {loading ? (
@@ -29,7 +29,7 @@ const Button: React.FC<IButtonProps> = ({ label, type = "primary", prefixIcon, s
             <span>Please wait...</span>
           </div>
         ) : (
-          label
+          <span className="hidden md:inline-block">{label}</span>
         )}
         {suffixIcon}
       </div>

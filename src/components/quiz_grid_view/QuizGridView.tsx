@@ -1,6 +1,7 @@
-import { PencilIcon } from "@heroicons/react/24/outline";
+import { PlayIcon } from "@heroicons/react/24/outline";
 import Button from "../button/Button";
 import { IQuizProps } from "../../utils/types";
+import DropDown from "../drop_down/DropDown";
 
 const QuizGridView: React.FC<IQuizProps> = ({ quiz }) => {
   return (
@@ -9,8 +10,8 @@ const QuizGridView: React.FC<IQuizProps> = ({ quiz }) => {
         <div className={`relative h-60 ${quiz.bgColor}`}></div>
         <div className="flex-grow space-y-16 bg-white p-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-secondary-500 text-xl md:text-3xl font-bold capitalize">{quiz.name}</h1>
-            <PencilIcon className="w-6 cursor-pointer" />
+            <h1 className="w-60 text-secondary-500 text-xl md:text-2xl font-bold capitalize truncate">{quiz.name}</h1>
+            <DropDown />
           </div>
           <div className="flex justify-between items-center">
             <div className="flex justify-center gap-2 items-center">
@@ -21,7 +22,7 @@ const QuizGridView: React.FC<IQuizProps> = ({ quiz }) => {
               />
             </div>
             <div>
-              <Button label="Start" type="primary" />
+              <Button label="Start" type="primary" suffixIcon={<PlayIcon className="w-8" />} />
             </div>
           </div>
         </div>

@@ -11,7 +11,6 @@ const user = {
 };
 const navigation = [
   { name: "Library", href: "", current: true },
-  { name: "Report", href: "report", current: false },
 ];
 const userNavigation = [
   { name: "Your Profile", href: "profile" },

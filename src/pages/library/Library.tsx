@@ -2,14 +2,15 @@ import { ListBulletIcon, PencilIcon, Squares2X2Icon } from "@heroicons/react/24/
 import Button from "../../components/button/Button";
 import useTitle from "../../hooks/useTitle";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import QuizGridContainer from "../../components/quiz_grid_container/QuizGridContainer";
 import QuizListContainer from "../../components/quiz_list_container/QuizListContainer";
 import { randomColorGenerator } from "../../utils/util";
-import Pagination from "../../components/pagination/Paginaton";
+import Pagination from "../../components/pagination/Pagination";
 
 const quizzes = [
   {
-    name: "Javascript Quiz",
+    name: "Javascript Quiz Javascript Quiz",
     numberOfPlays: 4,
     numberOfQuestions: 6,
     lastUpdated: "8 years ago",
@@ -40,14 +41,15 @@ const quizzes = [
 
 const Library: React.FC = () => {
   useTitle("Library");
-  const [view, setView] = useState("grid");
+  const navigate = useNavigate();
+  const [view, setView] = useState("list");
   return (
     <>
       <header className="bg-white shadow-sm">
         <div className="mx-auto flex justify-between items-center max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-semibold leading-6 text-gray-900">Library</h1>
           <div>
-            <Button type="primary" label="Create" prefixIcon={<PencilIcon className="w-6" />} />
+            <Button handleClick={() => navigate("/editor")} type="primary" label="Create" prefixIcon={<PencilIcon className="w-6" />} />
           </div>
         </div>
       </header>
@@ -69,6 +71,19 @@ const Library: React.FC = () => {
 
             <span className="isolate inline-flex rounded-md shadow-sm">
               <button
+                type="button"
+                className="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+                Publish
+              </button>
+              <button
+                type="button"
+                className="relative inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+                Draft
+              </button>
+            </span>
+
+            <span className="hidden isolate md:inline-flex rounded-md shadow-sm">
+              <button
                 onClick={() => setView("list")}
                 type="button"
                 className={`relative inline-flex items-center rounded-l-md ${
@@ -86,7 +101,15 @@ const Library: React.FC = () => {
               </button>
             </span>
           </div>
-          <div className="w-full p-2 md:p-0">{view == "grid" ? <QuizGridContainer quizzes={quizzes} /> : <QuizListContainer quizzes={quizzes} />}</div>
+          <div className="w-full p-2 md:p-0">
+            {/* Always show QuizGridContainer on mobile */}
+            <div className="block md:hidden">
+              <QuizGridContainer quizzes={quizzes} />
+            </div>
+
+            {/* On desktop, switch based on the 'view' */}
+            <div className="hidden md:block">{view === "grid" ? <QuizGridContainer quizzes={quizzes} /> : <QuizListContainer quizzes={quizzes} />}</div>
+          </div>
           <div className="w-full mt-6 flex items-center">
             <Pagination />
           </div>
