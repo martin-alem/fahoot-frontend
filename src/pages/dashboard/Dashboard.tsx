@@ -12,10 +12,10 @@ const user = {
 const navigation = [
   { name: "Library", href: "", current: true },
   { name: "Report", href: "report", current: false },
+  { name: "Profile", href: "profile" },
 ];
 const userNavigation = [
   { name: "Your Profile", href: "profile" },
-  { name: "Settings", href: "setting" },
   { name: "Sign out", href: "/" },
 ];
 
@@ -112,7 +112,7 @@ const Dashboard: React.FC = () => {
                     <Disclosure.Button
                       key={item.name}
                       as="a"
-                      href={item.href}
+                      href={`/dashboard/${item.href}`}
                       className={classNames(
                         item.current ? "bg-primary-500 text-white" : "text-white hover:bg-secondary-700 hover:text-white transition-all duration-300 ease-linear",
                         "block rounded-md px-3 py-2 text-base font-medium"

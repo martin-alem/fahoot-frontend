@@ -12,6 +12,8 @@ import Lobby from "../../pages/lobby/Lobby";
 import GameRoom from "../../pages/game_room/GameRoom";
 import Podium from "../../pages/podium/Podium";
 import Editor from "../../pages/editor/Editor";
+import ReportDetail from "../../pages/report_detail/ReportDetail";
+import Profile from "../../pages/profile/Profile";
 
 const App: React.FC = () => {
   return (
@@ -30,6 +32,8 @@ const App: React.FC = () => {
       <Route path="dashboard" element={<Dashboard />}>
         <Route index element={<Library />} />
         <Route path="report" element={<Report />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="report/:id" element={<ReportDetail />} />
       </Route>
       <Route path="/editor" element={<Editor />} />
       <Route path="*" element={<NotFound />} />
