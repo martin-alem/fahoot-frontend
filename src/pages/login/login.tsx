@@ -1,9 +1,91 @@
-import { Link } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Link, useNavigate } from "react-router-dom";
 import useTitle from "../../hooks/useTitle";
 import Logo from "./../../assets/Fahoot Logo.svg";
+import { useDispatch } from "react-redux";
+import { useAutoLoginMutation, useManualSignInMutation } from "../../api/auth.api";
+import { IManualSignInPayload } from "../../utils/types";
+import { saveAuth } from "../../slices/auth.slice";
+import { useEffect, useState } from "react";
+import { serverErrors } from "../../utils/util";
+import { toast } from "react-toastify";
+import { validateEmail, validatePassword } from "../../utils/input_validation";
+import { ERROR_MESSAGES } from "../../utils/constant";
+import Input from "../../components/input/input";
+import { EnvelopeIcon, KeyIcon, LockOpenIcon } from "@heroicons/react/24/outline";
+import Button from "../../components/button/Button";
 
 const Login: React.FC = () => {
   useTitle("Login");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [manualSignin, { isLoading, isSuccess, isError, error, data }] = useManualSignInMutation();
+  const [autoLogin, { isLoading: autoIsLoading, isSuccess: autoIsSuccess, isError: autoIsError, data: autoData }] = useAutoLoginMutation();
+
+  const [emailAddress, setEmailAddress] = useState<string>("");
+  const [validEmailAddress, setValidEmailAddress] = useState<boolean>(false);
+  const [emailAddressError, setEmailAddressError] = useState<string | undefined>(undefined);
+
+  const [password, setPassword] = useState<string>("");
+  const [validPassword, setValidPassword] = useState<boolean>(false);
+  const [passwordError, setPasswordError] = useState<string | undefined>(undefined);
+
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
+
+  useEffect(() => {
+    const result = validateEmail(emailAddress);
+    !result && emailAddress ? setEmailAddressError(ERROR_MESSAGES.INVALID_EMAIL) : setEmailAddressError(undefined);
+    setValidEmailAddress(result);
+  }, [emailAddress]);
+
+  useEffect(() => {
+    const result = validatePassword(password);
+    !result && password ? setPasswordError(ERROR_MESSAGES.INVALID_PASSWORD) : setPasswordError(undefined);
+    setValidPassword(result);
+  }, [password]);
+
+  const handleSubmit = async () => {
+    if (!validEmailAddress || !validPassword) {
+      toast.error("Some input fields are invalid. Please check again", { position: toast.POSITION.TOP_CENTER });
+      return;
+    }
+
+    const payload: IManualSignInPayload = {
+      emailAddress,
+      password,
+      authenticationMethod: "manual",
+      rememberMe: rememberMe,
+    };
+    manualSignin(payload);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(saveAuth(data.data));
+      navigate("/dashboard");
+    }
+  }, [isSuccess, isError]);
+
+  useEffect(() => {
+    if (isError) {
+      const statusCode = error && "status" in error ? error.status : 500;
+      const errorMessage = serverErrors(statusCode);
+      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    }
+  }, [isError, error]);
+
+  useEffect(() => {
+    autoLogin(null);
+  }, []);
+
+  useEffect(() => {
+    if (autoIsSuccess) {
+      if (autoData) {
+        setEmailAddress(autoData.emailAddress);
+      }
+    }
+  }, [autoIsSuccess, autoIsError]);
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -16,40 +98,45 @@ const Login: React.FC = () => {
           <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
             <form className="space-y-6" action="#" method="POST">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-secondary-900">
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="off"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
+                <Input
+                  id="email"
+                  type="email"
+                  value={emailAddress}
+                  handleOnChange={(e) => setEmailAddress(e.target.value)}
+                  handleOnBlur={() => toast.error(emailAddressError, { position: toast.POSITION.TOP_CENTER })}
+                  error={emailAddressError}
+                  name="email"
+                  placeholder="john.smith@domain.com"
+                  label="Email"
+                  prefixIcon={<EnvelopeIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
+                />
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-secondary-900">
-                  Password
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="off"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  handleOnChange={(e) => setPassword(e.target.value)}
+                  handleOnBlur={() => toast.error(passwordError, { position: toast.POSITION.TOP_CENTER })}
+                  error={passwordError}
+                  name="password"
+                  placeholder="Enter your password"
+                  label="Password"
+                  prefixIcon={<KeyIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
+                />
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-600" />
+                  <input
+                    onChange={() => setRememberMe(!rememberMe)}
+                    id="remember-me"
+                    name="remember-me"
+                    checked={rememberMe}
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                  />
                   <label htmlFor="remember-me" className="ml-3 block text-sm leading-6 text-gray-900">
                     Remember me
                   </label>
@@ -63,11 +150,14 @@ const Login: React.FC = () => {
               </div>
 
               <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-primary-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all duration-300 ease-linear">
-                  Sign in
-                </button>
+                <Button
+                  label="Sign in"
+                  type="primary"
+                  loading={isLoading || autoIsLoading}
+                  handleClick={handleSubmit}
+                  disabled={!validEmailAddress || !validPassword || isLoading || autoIsLoading}
+                  suffixIcon={<LockOpenIcon className="w-6" />}
+                />
               </div>
             </form>
 

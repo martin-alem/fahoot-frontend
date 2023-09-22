@@ -1,9 +1,97 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useTitle from "../../hooks/useTitle";
 import Logo from "./../../assets/Fahoot Logo.svg";
+import Button from "../../components/button/Button";
+import { ArrowRightIcon, EnvelopeIcon, KeyIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useManualSignUpMutation } from "../../api/auth.api";
+import { validateEmail, validateName, validatePassword } from "../../utils/input_validation";
+import { ERROR_MESSAGES } from "../../utils/constant";
+import Input from "../../components/input/input";
+import { IManualSignupPayload } from "../../utils/types";
+import { serverErrors } from "../../utils/util";
+import { saveAuth } from "../../slices/auth.slice";
 
 const SignUp: React.FC = () => {
   useTitle("Create Account");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [manualSignUp, { isLoading, isSuccess, isError, error, data }] = useManualSignUpMutation();
+
+  const [firstName, setFirstName] = useState<string>("");
+  const [validFirstName, setValidFirstName] = useState<boolean>(false);
+  const [firstNameError, setFirstNameError] = useState<string | undefined>(undefined);
+
+  const [lastName, setLastName] = useState<string>("");
+  const [validLastName, setValidLastName] = useState<boolean>(false);
+  const [lastNameError, setLastNameError] = useState<string | undefined>(undefined);
+
+  const [emailAddress, setEmailAddress] = useState<string>("");
+  const [validEmailAddress, setValidEmailAddress] = useState<boolean>(false);
+  const [emailAddressError, setEmailAddressError] = useState<string | undefined>(undefined);
+
+  const [password, setPassword] = useState<string>("");
+  const [validPassword, setValidPassword] = useState<boolean>(false);
+  const [passwordError, setPasswordError] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const result = validateName(firstName);
+    !result && firstName ? setFirstNameError(ERROR_MESSAGES.INVALID_NAME) : setFirstNameError(undefined);
+    setValidFirstName(result);
+  }, [firstName]);
+
+  useEffect(() => {
+    const result = validateName(lastName);
+    !result && lastName ? setLastNameError(ERROR_MESSAGES.INVALID_NAME) : setLastNameError(undefined);
+    setValidLastName(result);
+  }, [lastName]);
+
+  useEffect(() => {
+    const result = validateEmail(emailAddress);
+    !result && emailAddress ? setEmailAddressError(ERROR_MESSAGES.INVALID_EMAIL) : setEmailAddressError(undefined);
+    setValidEmailAddress(result);
+  }, [emailAddress]);
+
+  useEffect(() => {
+    const result = validatePassword(password);
+    !result && password ? setPasswordError(ERROR_MESSAGES.INVALID_PASSWORD) : setPasswordError(undefined);
+    setValidPassword(result);
+  }, [password]);
+
+  const handleSubmit = async () => {
+    if (!validFirstName || !validLastName || !validEmailAddress || !validPassword) {
+      toast.error("Some input fields are invalid. Please check again", { position: toast.POSITION.TOP_CENTER });
+      return;
+    }
+
+    const payload: IManualSignupPayload = {
+      firstName,
+      lastName,
+      emailAddress,
+      password,
+      authenticationMethod: "manual",
+    };
+    manualSignUp(payload);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(saveAuth(data.data));
+      navigate("/dashboard");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, isError, dispatch, navigate]);
+
+  useEffect(() => {
+    if (isError) {
+      const statusCode = error && "status" in error ? error.status : 500;
+      const errorMessage = serverErrors(statusCode);
+      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    }
+  }, [isError, error]);
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -17,76 +105,75 @@ const SignUp: React.FC = () => {
             <form className="space-y-6" action="#" method="POST">
               <div className="flex items-center justify-between gap-x-5">
                 <div>
-                  <label htmlFor="first_name" className="block text-sm font-medium leading-6 text-secondary-900">
-                    First name
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="first_name"
-                      name="first_name"
-                      type="text"
-                      autoComplete="off"
-                      required
-                      className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
+                  <Input
+                    id="first_name"
+                    type="text"
+                    value={firstName}
+                    handleOnChange={(e) => setFirstName(e.target.value)}
+                    handleOnBlur={() => toast.error(firstNameError, { position: toast.POSITION.TOP_CENTER })}
+                    error={firstNameError}
+                    name="first_name"
+                    placeholder="John"
+                    label="First name"
+                    prefixIcon={<UserCircleIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
+                  />
                 </div>
 
                 <div>
-                  <label htmlFor="last_name" className="block text-sm font-medium leading-6 text-secondary-900">
-                    Last name
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="last_name"
-                      name="last_name"
-                      type="text"
-                      autoComplete="off"
-                      required
-                      className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-secondary-900">
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="off"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
+                  <Input
+                    id="last_name"
+                    type="text"
+                    value={lastName}
+                    handleOnChange={(e) => setLastName(e.target.value)}
+                    handleOnBlur={() => toast.error(lastNameError, { position: toast.POSITION.TOP_CENTER })}
+                    error={lastNameError}
+                    name="last_name"
+                    placeholder="Smith"
+                    label="Last name"
+                    prefixIcon={<UserCircleIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-secondary-900">
-                  Password
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="off"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
+                <Input
+                  id="email"
+                  type="email"
+                  value={emailAddress}
+                  handleOnChange={(e) => setEmailAddress(e.target.value)}
+                  handleOnBlur={() => toast.error(emailAddressError, { position: toast.POSITION.TOP_CENTER })}
+                  error={emailAddressError}
+                  name="email"
+                  placeholder="john.smith@domain.com"
+                  label="Email"
+                  prefixIcon={<EnvelopeIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
+                />
               </div>
 
               <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-primary-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all duration-300 ease-linear">
-                  Sign up
-                </button>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  handleOnChange={(e) => setPassword(e.target.value)}
+                  handleOnBlur={() => toast.error(passwordError, { position: toast.POSITION.TOP_CENTER })}
+                  error={passwordError}
+                  name="password"
+                  placeholder="Enter your password"
+                  label="Password"
+                  prefixIcon={<KeyIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
+                />
+              </div>
+
+              <div>
+                <Button
+                  label="Sign up"
+                  type="primary"
+                  loading={isLoading}
+                  handleClick={handleSubmit}
+                  disabled={!validFirstName || !validLastName || !validEmailAddress || !validPassword || isLoading}
+                  suffixIcon={<ArrowRightIcon className="w-6" />}
+                />
               </div>
             </form>
 

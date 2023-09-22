@@ -14,6 +14,8 @@ import Podium from "../../pages/podium/Podium";
 import Editor from "../../pages/editor/Editor";
 import ReportDetail from "../../pages/report_detail/ReportDetail";
 import Profile from "../../pages/profile/Profile";
+import { AuthGuard } from "../../container/auth_guard/AuthGuard";
+import Logout from "../../pages/logout/Logout";
 
 const App: React.FC = () => {
   return (
@@ -26,16 +28,80 @@ const App: React.FC = () => {
       <Route path="/join" element={<JoinGame />} />
 
       {/* Protected routes */}
-      <Route path="/podium" element={<Podium />} />
-      <Route path="/game_room" element={<GameRoom />} />
-      <Route path="/lobby" element={<Lobby />} />
+      <Route
+        path="/podium"
+        element={
+          <AuthGuard>
+            <Podium />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/game_room"
+        element={
+          <AuthGuard>
+            <GameRoom />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/lobby"
+        element={
+          <AuthGuard>
+            <Lobby />
+          </AuthGuard>
+        }
+      />
       <Route path="dashboard" element={<Dashboard />}>
-        <Route index element={<Library />} />
-        <Route path="report" element={<Report />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="report/:id" element={<ReportDetail />} />
+        <Route
+          index
+          element={
+            <AuthGuard>
+              <Library />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="report"
+          element={
+            <AuthGuard>
+              <Report />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            <AuthGuard>
+              <Profile />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="report/:id"
+          element={
+            <AuthGuard>
+              <ReportDetail />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="logout"
+          element={
+            <AuthGuard>
+              <Logout />
+            </AuthGuard>
+          }
+        />
       </Route>
-      <Route path="/editor" element={<Editor />} />
+      <Route
+        path="/editor"
+        element={
+          <AuthGuard>
+            <Editor />
+          </AuthGuard>
+        }
+      />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

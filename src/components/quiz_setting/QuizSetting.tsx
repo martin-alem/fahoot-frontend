@@ -1,8 +1,9 @@
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, PauseCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Button from "../button/Button";
 import SelectInput from "../select_input/SelectInput";
 import { IQuizSettingProps } from "../../utils/types";
 import ColorChooser from "../color_chooser/ColorChooser";
+import { PlayCircleIcon } from "@heroicons/react/20/solid";
 
 const QuizSetting: React.FC<IQuizSettingProps> = ({ cancelSetting }) => {
   return (
@@ -30,15 +31,30 @@ const QuizSetting: React.FC<IQuizSettingProps> = ({ cancelSetting }) => {
           </div>
           <div className="w-full">
             <h3 className="block text-sm font-medium leading-6 text-secondary-900">Lobby Music</h3>
-            <SelectInput />
+            <div className="w-full flex items-center justify-center gap-2">
+              <div className="w-full">
+                <SelectInput />
+              </div>
+              <PlayCircleIcon className="w-12 text-primary-500 cursor-pointer" />
+            </div>
           </div>
           <div className="w-full">
             <h3 className="block text-sm font-medium leading-6 text-secondary-900">Game Music</h3>
-            <SelectInput />
+            <div className="w-full flex items-center justify-center gap-2">
+              <div className="w-full">
+                <SelectInput />
+              </div>
+              <PlayCircleIcon className="w-12 text-primary-500 cursor-pointer" />
+            </div>
           </div>
           <div className="w-full">
             <h3 className="block text-sm font-medium leading-6 text-secondary-900">Podium Music</h3>
-            <SelectInput />
+            <div className="w-full flex items-center justify-center gap-2">
+              <div className="w-full">
+                <SelectInput />
+              </div>
+              <PauseCircleIcon className="w-12 text-primary-500 cursor-pointer" />
+            </div>
           </div>
 
           <div className="w-full flex items-center justify-center gap-2">

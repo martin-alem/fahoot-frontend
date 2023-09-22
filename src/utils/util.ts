@@ -1,3 +1,5 @@
+import { ERROR_MESSAGES } from "./constant";
+
 /**
  * Maps a score to a number in a sequence representing the bar's height
  * @param score score from which to calculate the bar's height
@@ -28,4 +30,27 @@ export function randomColorGenerator(): string {
     "bg-amber-500",
   ];
   return colors[Math.floor(Math.random() * colors.length)];
+}
+
+export function serverErrors(statusCode: number | "FETCH_ERROR" | "PARSING_ERROR" | "TIMEOUT_ERROR" | "CUSTOM_ERROR"): string {
+  switch (statusCode) {
+    case 400:
+      return ERROR_MESSAGES.REGISTRATION_ERROR;
+    case 429:
+      return ERROR_MESSAGES.RATE_LIMIT_ERROR;
+    case 404:
+      return ERROR_MESSAGES.NOT_FOUND_ERROR;
+    case 403:
+      return ERROR_MESSAGES.FORBIDDEN;
+    case 401:
+      return ERROR_MESSAGES.AUTH_ERROR;
+    case 500:
+      return ERROR_MESSAGES.SERVER_ERROR;
+    case "TIMEOUT_ERROR":
+      return ERROR_MESSAGES.TIMEOUT_ERROR;
+    case "FETCH_ERROR":
+      return ERROR_MESSAGES.NETWORK_ERROR;
+    default:
+      return ERROR_MESSAGES.GENERIC;
+  }
 }

@@ -36,3 +36,46 @@ export interface IModalProps {
 export interface IQuizSettingProps {
   cancelSetting: () => void;
 }
+
+export interface AuthUser {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  authenticationMethod: string;
+  avatarUrl: string | null;
+  verified: boolean;
+  status: string;
+}
+
+export interface IAuth {
+  user: AuthUser | null;
+}
+
+export interface IManualSignupPayload {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  password: string;
+  authenticationMethod: string;
+}
+
+export interface IManualSignInPayload {
+  emailAddress: string;
+  password: string;
+  authenticationMethod: string;
+  rememberMe?: boolean;
+}
+
+export interface InputProps {
+  id: string;
+  type?: string;
+  name?: string;
+  placeholder?: string;
+  label?: string;
+  prefixIcon?: ReactNode;
+  value?: string;
+  handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleOnBlur: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
+  error?: string;
+}
