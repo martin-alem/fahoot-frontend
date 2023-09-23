@@ -14,3 +14,7 @@ export enum ERROR_MESSAGES {
   GENERIC = "Something went wrong. Please try again later",
   TIMEOUT_ERROR = "This operation is taking longer than expected. Please try again later",
 }
+
+export enum SUCCESS_MESSAGES {
+  PASSWORD_RESET_SUCCESS = "Password reset was successful. You will redirect to login page in 5 seconds",
+}

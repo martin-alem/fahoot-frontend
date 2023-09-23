@@ -1,10 +1,13 @@
 import { InboxArrowDownIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Button from "../../components/button/Button";
 import useTitle from "../../hooks/useTitle";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import Avatar from "../../components/avatar/Avatar";
 
 const Profile: React.FC = () => {
-  useTitle("Profile - Martin Alemajoh");
-
+  const user = useSelector((state: RootState) => state.authUser.user);
+  useTitle(`Profile - ${user?.firstName} ${user?.lastName}`);
   return (
     <>
       <header className="bg-white shadow-sm h-[82px]">
@@ -21,11 +24,7 @@ const Profile: React.FC = () => {
             <form className="md:col-span-2">
               <div className="gap-y-8 sm:max-w-xl">
                 <div className="mb-2 col-span-full flex items-center gap-x-8">
-                  <img
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
-                    className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
-                  />
+                  {user?.avatarUrl ? <img className="flex-none bg-gray-800 object-cover" src={user.avatarUrl} alt="" /> : <Avatar height="h-24" width="w-24" rounded="rounded-lg" />}
                   <div>
                     <button type="button" className="rounded-md bg-primary-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-400 transition-all duration-300 ease-linear">
                       Change avatar

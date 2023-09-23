@@ -1,10 +1,63 @@
-import { Link } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
 import useTitle from "../../hooks/useTitle";
 import Logo from "./../../assets/Fahoot Logo.svg";
 import Alert from "../../components/alert/Alert";
+import { useResetPasswordRequestMutation } from "../../api/security.api";
+import { validateEmail } from "../../utils/input_validation";
+import { ERROR_MESSAGES } from "../../utils/constant";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { IResetPasswordRequestPayload } from "../../utils/types";
+import { serverErrors } from "../../utils/util";
+import Input from "../../components/input/input";
+import { ArrowSmallRightIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
+import Button from "../../components/button/Button";
+import { Link } from "react-router-dom";
 
 const ResetPasswordRequest: React.FC = () => {
   useTitle("Password Reset Request");
+
+  const [resetPasswordRequest, { isLoading, isSuccess, isError, error }] = useResetPasswordRequestMutation();
+
+  const [resetSuccessfull, setResetSuccessfull] = useState(false);
+
+  const [emailAddress, setEmailAddress] = useState<string>("");
+  const [validEmailAddress, setValidEmailAddress] = useState<boolean>(false);
+  const [emailAddressError, setEmailAddressError] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const result = validateEmail(emailAddress);
+    !result && emailAddress ? setEmailAddressError(ERROR_MESSAGES.INVALID_EMAIL) : setEmailAddressError(undefined);
+    setValidEmailAddress(result);
+  }, [emailAddress]);
+
+  const handleSubmit = async () => {
+    if (!validEmailAddress) {
+      toast.error("Some input fields are invalid. Please check again", { position: toast.POSITION.TOP_CENTER });
+      return;
+    }
+
+    const payload: IResetPasswordRequestPayload = {
+      emailAddress,
+    };
+    resetPasswordRequest(payload);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setResetSuccessfull(true);
+      setEmailAddress("");
+    }
+  }, [isSuccess, isError]);
+
+  useEffect(() => {
+    if (isError) {
+      setResetSuccessfull(false);
+      const statusCode = error && "status" in error ? error.status : 500;
+      const errorMessage = serverErrors(statusCode);
+      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    }
+  }, [isError, error]);
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -12,33 +65,33 @@ const ResetPasswordRequest: React.FC = () => {
           <img className="mx-auto h-20 w-auto" src={Logo} alt="Fahoot" />
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-secondary-500">Password Reset Request</h2>
         </div>
-        <div className="sm:mx-auto sm:w-full sm:max-w-lg">
-          <Alert />
-        </div>
+        <div className="sm:mx-auto sm:w-full sm:max-w-lg">{resetSuccessfull && <Alert />}</div>
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
             <form className="space-y-6" action="#" method="POST">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-secondary-900">
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="off"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
+                <Input
+                  id="email"
+                  type="email"
+                  value={emailAddress}
+                  handleOnChange={(e) => setEmailAddress(e.target.value)}
+                  handleOnBlur={() => toast.error(emailAddressError, { position: toast.POSITION.TOP_CENTER })}
+                  error={emailAddressError}
+                  name="email"
+                  placeholder="john.smith@domain.com"
+                  label="Email"
+                  prefixIcon={<EnvelopeIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
+                />
               </div>
               <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-primary-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all duration-300 ease-linear">
-                  Request
-                </button>
+                <Button
+                  label="Request reset"
+                  type="primary"
+                  loading={isLoading}
+                  handleClick={handleSubmit}
+                  disabled={!validEmailAddress || isLoading}
+                  suffixIcon={<ArrowSmallRightIcon className="w-6" />}
+                />
               </div>
             </form>
           </div>

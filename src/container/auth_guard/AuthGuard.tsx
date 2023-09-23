@@ -4,11 +4,11 @@ import { AppDispatch } from "../../store";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import { useGetUserQuery } from "../../api/auth.api";
 import { saveAuth } from "../../slices/auth.slice";
 import { serverErrors } from "../../utils/util";
 import { ERROR_MESSAGES } from "../../utils/constant";
 import LoadingSpinner from "../../components/spinner/Spinner";
+import { useGetUserQuery } from "../../api/user.api";
 
 type AuthGuardProps = {
   children: React.ReactNode;

@@ -1,9 +1,81 @@
-import { Link } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Link, useNavigate } from "react-router-dom";
 import useTitle from "../../hooks/useTitle";
 import Logo from "./../../assets/Fahoot Logo.svg";
+import { useResetPasswordMutation } from "../../api/security.api";
+import { useEffect, useState } from "react";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../../utils/constant";
+import { validatePassword } from "../../utils/input_validation";
+import { toast } from "react-toastify";
+import { IResetPasswordPayload } from "../../utils/types";
+import { serverErrors } from "../../utils/util";
+import Input from "../../components/input/input";
+import { ArrowSmallRightIcon, KeyIcon } from "@heroicons/react/24/outline";
+import Button from "../../components/button/Button";
+import useQuery from "../../hooks/useQuery";
 
 const ResetPassword: React.FC = () => {
   useTitle("Password Reset");
+  const navigate = useNavigate();
+  const query = useQuery();
+
+  const [resetPassword, { isLoading, isSuccess, isError, error }] = useResetPasswordMutation();
+
+  const [password, setPassword] = useState<string>("");
+  const [validPassword, setValidPassword] = useState<boolean>(false);
+  const [passwordError, setPasswordError] = useState<string | undefined>(undefined);
+
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [validConfirmPassword, setValidConfirmPassword] = useState<boolean>(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const result = validatePassword(password);
+    !result && password ? setPasswordError(ERROR_MESSAGES.INVALID_PASSWORD) : setPasswordError(undefined);
+    setValidPassword(result);
+  }, [password]);
+
+  useEffect(() => {
+    const result = validatePassword(confirmPassword) && password === confirmPassword;
+    !result && password ? setConfirmPasswordError(ERROR_MESSAGES.INVALID_PASSWORD) : setConfirmPasswordError(undefined);
+    setValidConfirmPassword(result);
+  }, [password, confirmPassword]);
+
+  const handleSubmit = async () => {
+    if (!validPassword || !validConfirmPassword) {
+      toast.error("Some input fields are invalid. Please check again", { position: toast.POSITION.TOP_CENTER });
+      return;
+    }
+
+    const payload: IResetPasswordPayload = {
+      password,
+      token: query.get("token") || "",
+    };
+    resetPassword(payload);
+  };
+
+  useEffect(() => {
+    let timerId: number;
+
+    if (isSuccess) {
+      setPassword("");
+      setConfirmPassword("");
+      toast.error(SUCCESS_MESSAGES.PASSWORD_RESET_SUCCESS, { position: toast.POSITION.TOP_CENTER });
+      timerId = setTimeout(() => navigate("/"), 5000);
+    }
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [isSuccess, isError]);
+
+  useEffect(() => {
+    if (isError) {
+      const statusCode = error && "status" in error ? error.status : 500;
+      const errorMessage = serverErrors(statusCode);
+      toast.info(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    }
+  }, [isError, error]);
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -15,42 +87,43 @@ const ResetPassword: React.FC = () => {
           <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
             <form className="space-y-6" action="#" method="POST">
               <div>
-                <label htmlFor="new_password" className="block text-sm font-medium leading-6 text-secondary-900">
-                  New password
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="new_password"
-                    name="new_password"
-                    type="password"
-                    autoComplete="off"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  handleOnChange={(e) => setPassword(e.target.value)}
+                  handleOnBlur={() => toast.error(passwordError, { position: toast.POSITION.TOP_CENTER })}
+                  error={passwordError}
+                  name="password"
+                  placeholder="Enter your new password"
+                  label="New password"
+                  prefixIcon={<KeyIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
+                />
               </div>
 
               <div>
-                <label htmlFor="confirm_password" className="block text-sm font-medium leading-6 text-secondary-900">
-                  Confirm password
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="confirm_password"
-                    name="confirm_password"
-                    type="password"
-                    autoComplete="off"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
+                <Input
+                  id="confirm_password"
+                  type="password"
+                  value={confirmPassword}
+                  handleOnChange={(e) => setConfirmPassword(e.target.value)}
+                  handleOnBlur={() => toast.error(confirmPasswordError, { position: toast.POSITION.TOP_CENTER })}
+                  error={confirmPasswordError}
+                  name="confirm_password"
+                  placeholder="Confirm Password"
+                  label="Confirm password"
+                  prefixIcon={<KeyIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
+                />
               </div>
               <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-primary-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all duration-300 ease-linear">
-                  Reset
-                </button>
+                <Button
+                  label="Reset password"
+                  type="primary"
+                  loading={isLoading}
+                  handleClick={handleSubmit}
+                  disabled={!validPassword || !validConfirmPassword || isLoading}
+                  suffixIcon={<ArrowSmallRightIcon className="w-6" />}
+                />
               </div>
             </form>
           </div>

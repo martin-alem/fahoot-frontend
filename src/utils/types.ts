@@ -51,6 +51,15 @@ export interface IAuth {
   user: AuthUser | null;
 }
 
+export interface IResetPasswordRequestPayload {
+  emailAddress: string;
+}
+
+export interface IResetPasswordPayload {
+  token: string;
+  password: string;
+}
+
 export interface IManualSignupPayload {
   firstName: string;
   lastName: string;

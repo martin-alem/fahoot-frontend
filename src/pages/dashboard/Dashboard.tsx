@@ -3,12 +3,10 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Logo from "./../../assets/Fahoot Logo.svg";
 import { Link, NavLink, Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import Avatar from "../../components/avatar/Avatar";
 
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
 const navigation = [
   { name: "Library", href: "", current: true },
   { name: "Report", href: "report", current: false },
@@ -24,6 +22,7 @@ function classNames(...classes: string[]) {
 }
 
 const Dashboard: React.FC = () => {
+  const user = useSelector((state: RootState) => state.authUser.user);
   return (
     <>
       <div className="min-h-full">
@@ -65,7 +64,7 @@ const Dashboard: React.FC = () => {
                           <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-secondary-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-secondary-800">
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">Open user menu</span>
-                            <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
+                            {user?.avatarUrl ? <img className="h-8 w-8 rounded-full" src={user.avatarUrl} alt="" /> : <Avatar height="h-12" width="w-12" />}
                           </Menu.Button>
                         </div>
                         <Transition
@@ -124,12 +123,10 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div className="border-t border-secondary-700 pb-3 pt-4">
                   <div className="flex items-center px-5">
-                    <div className="flex-shrink-0">
-                      <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
-                    </div>
+                    <div className="flex-shrink-0">{user?.avatarUrl ? <img className="h-8 w-8 rounded-full" src={user.avatarUrl} alt="" /> : <Avatar height="h-10" width="w-10" />}</div>
                     <div className="ml-3">
-                      <div className="text-base font-medium text-white">{user.name}</div>
-                      <div className="text-sm font-medium text-gray-400">{user.email}</div>
+                      <div className="text-base font-medium text-white capitalize">{user?.firstName} {user?.lastName}</div>
+                      <div className="text-sm font-medium text-gray-400">{user?.emailAddress}</div>
                     </div>
                   </div>
                   <div className="mt-3 space-y-1 px-2">

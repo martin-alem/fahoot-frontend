@@ -7,7 +7,7 @@ const API_KEY = import.meta.env.VITE_APP_API_KEY;
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: BACKEND_API_URL,
+    baseUrl: `${BACKEND_API_URL}/authentication`,
     credentials: "include",
     prepareHeaders: (headers) => {
       if (API_KEY) {
@@ -20,7 +20,7 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     manualSignUp: builder.mutation({
       query: (payload: IManualSignupPayload) => ({
-        url: "/authentication/signup",
+        url: "/signup",
         method: "POST",
         body: payload,
       }),
@@ -28,7 +28,7 @@ export const authApi = createApi({
 
     manualSignIn: builder.mutation({
       query: (payload: IManualSignInPayload) => ({
-        url: "/authentication/signin",
+        url: "/signin",
         method: "POST",
         body: payload,
       }),
@@ -36,33 +36,25 @@ export const authApi = createApi({
 
     autoLogin: builder.mutation({
       query: () => ({
-        url: "/authentication/auto_login",
+        url: "/auto_login",
         method: "POST",
       }),
     }),
 
     logout: builder.mutation({
       query: () => ({
-        url: "/authentication/logout",
+        url: "/logout",
         method: "DELETE",
       }),
     }),
 
     clearRememberMe: builder.mutation({
       query: () => ({
-        url: "/authentication/remember_me",
+        url: "/remember_me",
         method: "DELETE",
       }),
-    }),
-
-    getUser: builder.query({
-      query: () => ({
-        url: "user",
-        method: "GET",
-      }),
-      keepUnusedDataFor: 0,
     }),
   }),
 });
 
-export const { useManualSignUpMutation, useManualSignInMutation, useLogoutMutation, useAutoLoginMutation, useClearRememberMeMutation, useGetUserQuery } = authApi;
+export const { useManualSignUpMutation, useManualSignInMutation, useLogoutMutation, useAutoLoginMutation, useClearRememberMeMutation } = authApi;

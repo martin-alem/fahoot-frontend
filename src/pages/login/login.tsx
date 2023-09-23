@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { validateEmail, validatePassword } from "../../utils/input_validation";
 import { ERROR_MESSAGES } from "../../utils/constant";
 import Input from "../../components/input/input";
-import { EnvelopeIcon, KeyIcon, LockOpenIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftOnRectangleIcon, EnvelopeIcon, KeyIcon } from "@heroicons/react/24/outline";
 import Button from "../../components/button/Button";
 
 const Login: React.FC = () => {
@@ -156,7 +156,7 @@ const Login: React.FC = () => {
                   loading={isLoading || autoIsLoading}
                   handleClick={handleSubmit}
                   disabled={!validEmailAddress || !validPassword || isLoading || autoIsLoading}
-                  suffixIcon={<LockOpenIcon className="w-6" />}
+                  suffixIcon={<ArrowLeftOnRectangleIcon className="w-6" />}
                 />
               </div>
             </form>
