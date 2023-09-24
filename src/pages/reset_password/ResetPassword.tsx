@@ -60,7 +60,7 @@ const ResetPassword: React.FC = () => {
     if (isSuccess) {
       setPassword("");
       setConfirmPassword("");
-      toast.error(SUCCESS_MESSAGES.PASSWORD_RESET_SUCCESS, { position: toast.POSITION.TOP_CENTER });
+      toast.info(SUCCESS_MESSAGES.PASSWORD_RESET_SUCCESS, { position: toast.POSITION.TOP_CENTER });
       timerId = setTimeout(() => navigate("/"), 5000);
     }
 
@@ -73,7 +73,7 @@ const ResetPassword: React.FC = () => {
     if (isError) {
       const statusCode = error && "status" in error ? error.status : 500;
       const errorMessage = serverErrors(statusCode);
-      toast.info(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isError, error]);
   return (

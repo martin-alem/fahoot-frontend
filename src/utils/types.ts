@@ -47,6 +47,8 @@ export interface AuthUser {
   status: string;
 }
 
+export type setFunction<T> = React.Dispatch<React.SetStateAction<T>>;
+
 export interface IAuth {
   user: AuthUser | null;
 }
@@ -58,6 +60,12 @@ export interface IResetPasswordRequestPayload {
 export interface IResetPasswordPayload {
   token: string;
   password: string;
+}
+
+export interface IUpdateBasicInfoPayload {
+  firstName?: string;
+  lastName?: string;
+  avatarUrl?: string | null;
 }
 
 export interface IManualSignupPayload {

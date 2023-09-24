@@ -17,4 +17,5 @@ export enum ERROR_MESSAGES {
 
 export enum SUCCESS_MESSAGES {
   PASSWORD_RESET_SUCCESS = "Password reset was successful. You will redirect to login page in 5 seconds",
+  BASIC_INFO_UPDATE_SUCCESS = "Your basic info update was successfully",
 }

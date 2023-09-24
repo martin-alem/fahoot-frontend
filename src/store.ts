@@ -4,6 +4,7 @@ import authUserReducer from "./slices/auth.slice";
 import { authApi } from "./api/auth.api";
 import { userApi } from "./api/user.api";
 import { securityApi } from "./api/security.api";
+import { uploadApi } from "./api/upload.api";
 
 export const store = configureStore({
   reducer: {
@@ -11,9 +12,10 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [securityApi.reducerPath]: securityApi.reducer,
+    [uploadApi.reducerPath]: uploadApi.reducer,
   },
 
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(authApi.middleware, userApi.middleware, securityApi.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(authApi.middleware, userApi.middleware, securityApi.middleware, uploadApi.middleware),
 });
 
 setupListeners(store.dispatch);

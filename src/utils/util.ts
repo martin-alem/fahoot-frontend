@@ -1,4 +1,5 @@
 import { ERROR_MESSAGES } from "./constant";
+import { setFunction } from "./types";
 
 /**
  * Maps a score to a number in a sequence representing the bar's height
@@ -52,5 +53,37 @@ export function serverErrors(statusCode: number | "FETCH_ERROR" | "PARSING_ERROR
       return ERROR_MESSAGES.NETWORK_ERROR;
     default:
       return ERROR_MESSAGES.GENERIC;
+  }
+}
+
+export function handleOnFileChange(event: React.ChangeEvent<HTMLInputElement>, setFile: setFunction<File | null>, setFileUrl: setFunction<string | null>): void {
+  const files = event.target.files;
+
+  if (files && files[0]) {
+    const file = files[0];
+    const fileType = file.type.split("/")[0]; // Getting the main MIME type like 'image', 'audio', etc.
+    const fileSize = file.size; // Size in bytes
+    const maxFileSize = 10 * 1024 * 1024; // 10MB in bytes
+
+    if (fileType !== "image") {
+      console.error("Only images are allowed.");
+      return;
+    }
+
+    if (fileSize > maxFileSize) {
+      console.error("File size exceeds 10MB.");
+      return;
+    }
+
+    setFile(file);
+    const reader: FileReader = new FileReader();
+    reader.addEventListener("error", (error: ProgressEvent<FileReader>) => console.error(error));
+    reader.addEventListener("loadstart", (event: ProgressEvent<FileReader>) => console.log(event.total));
+    reader.addEventListener("load", () => {
+      if (reader.result) {
+        setFileUrl(reader.result as string);
+      }
+    });
+    reader.readAsDataURL(file);
   }
 }
