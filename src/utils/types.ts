@@ -1,11 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 export interface IButtonProps {
   label: string;
-  type: "primary" | "secondary" | "danger";
+  type: 'primary' | 'secondary' | 'danger';
   prefixIcon?: ReactNode;
   suffixIcon?: ReactNode;
-  action?: "button" | "submit" | "reset";
+  action?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   loading?: boolean;
   handleClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -47,10 +47,21 @@ export interface AuthUser {
   status: string;
 }
 
+export interface IProfileProps {
+  user: AuthUser | null;
+}
+
 export type setFunction<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export interface IAuth {
   user: AuthUser | null;
+}
+
+export interface IPromptProps {
+  title: string;
+  description: string;
+  okFunction: () => void;
+  cancelFunction: () => void;
 }
 
 export interface IResetPasswordRequestPayload {
