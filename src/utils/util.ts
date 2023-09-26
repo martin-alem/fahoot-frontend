@@ -39,7 +39,7 @@ export function serverErrors(
 ): string {
   switch (statusCode) {
     case 400:
-      return ERROR_MESSAGES.REGISTRATION_ERROR;
+      return ERROR_MESSAGES.BAD_REQUEST_ERROR;
     case 429:
       return ERROR_MESSAGES.RATE_LIMIT_ERROR;
     case 404:

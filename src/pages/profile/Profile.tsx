@@ -1,12 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { InboxArrowDownIcon, TrashIcon } from '@heroicons/react/24/outline';
-import Button from '../../components/button/Button';
 import useTitle from '../../hooks/useTitle';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { capitalize } from 'lodash';
 import AvatarUpdate from './avatar_update/AvatarUpdate';
 import BasicInfoUpdate from './basic_info_update/BasicInfoUpdate';
+import PasswordUpdate from './password_update/PasswordUpdate';
+import EmailUpdate from './email_update/EmailUpdate';
+import ClearRememberMe from './clear_remember_me/ClearRememberMe';
+import DeleteAccount from './delete_account/DeleteAccount';
 
 const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.authUser.user);
@@ -28,12 +30,12 @@ const Profile: React.FC = () => {
               </p>
             </div>
 
-            <form className="md:col-span-2">
+            <div className="md:col-span-2">
               <div className="gap-y-8 sm:max-w-xl">
                 <AvatarUpdate user={user} />
                 <BasicInfoUpdate user={user} />
               </div>
-            </form>
+            </div>
           </div>
 
           <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
@@ -42,75 +44,11 @@ const Profile: React.FC = () => {
                 Change password
               </h2>
               <p className="mt-1 text-sm leading-6 text-secondary-500">
-                Update your password associated with your account.
+                Update your password associated with your account. You will asked to
+                re-authenticate.
               </p>
             </div>
-
-            <form className="md:col-span-2">
-              <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
-                <div className="col-span-full">
-                  <label
-                    htmlFor="current-password"
-                    className="block text-sm font-medium leading-6 text-secondary-500"
-                  >
-                    Current password
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="current-password"
-                      name="current_password"
-                      type="password"
-                      autoComplete="current-password"
-                      className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-
-                <div className="col-span-full">
-                  <label
-                    htmlFor="new-password"
-                    className="block text-sm font-medium leading-6 text-secondary-500"
-                  >
-                    New password
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="new-password"
-                      name="new_password"
-                      type="password"
-                      autoComplete="new-password"
-                      className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-
-                <div className="col-span-full">
-                  <label
-                    htmlFor="confirm-password"
-                    className="block text-sm font-medium leading-6 text-secondary-500"
-                  >
-                    Confirm password
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="confirm-password"
-                      name="confirm_password"
-                      type="password"
-                      autoComplete="new-password"
-                      className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8 sm:max-w-xl">
-                <Button
-                  label="Save"
-                  type="primary"
-                  suffixIcon={<InboxArrowDownIcon className="w-6" />}
-                />
-              </div>
-            </form>
+            <PasswordUpdate />
           </div>
 
           <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
@@ -122,36 +60,7 @@ const Profile: React.FC = () => {
                 Please remember you would have to re-login and verify the new email address.
               </p>
             </div>
-
-            <form className="md:col-span-2">
-              <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
-                <div className="col-span-full">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium leading-6 text-secondary-500"
-                  >
-                    Email address
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="off"
-                      className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8 sm:max-w-xl">
-                <Button
-                  label="Save"
-                  type="primary"
-                  suffixIcon={<InboxArrowDownIcon className="w-6" />}
-                />
-              </div>
-            </form>
+            <EmailUpdate user={user} />
           </div>
 
           <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
@@ -160,36 +69,12 @@ const Profile: React.FC = () => {
                 Clear remember me
               </h2>
               <p className="mt-1 text-sm leading-6 text-secondary-500">
-                Please enter your password to confirm you would like to clear remember me
+                Clearing remember me will remove all tokens stored on this browser.
               </p>
             </div>
-
-            <form className="md:col-span-2">
-              <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
-                <div className="col-span-full">
-                  <label
-                    htmlFor="logout-password"
-                    className="block text-sm font-medium leading-6 text-secondary-500"
-                  >
-                    Your password
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="logout-password"
-                      name="password"
-                      type="password"
-                      autoComplete="current-password"
-                      className="block w-full rounded-md border-0 py-1.5 text-secondary-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="mt-8 sm:max-w-xl">
-                <Button
-                  label="Save"
-                  type="primary"
-                  suffixIcon={<InboxArrowDownIcon className="w-6" />}
-                />
+            <form className="flex items-start md:col-span-2">
+              <div className="sm:max-w-xl">
+                <ClearRememberMe />
               </div>
             </form>
           </div>
@@ -207,11 +92,7 @@ const Profile: React.FC = () => {
 
             <form className="flex items-start md:col-span-2">
               <div className="sm:max-w-xl">
-                <Button
-                  label="Delete Account"
-                  type="danger"
-                  suffixIcon={<TrashIcon className="w-6" />}
-                />
+                <DeleteAccount />
               </div>
             </form>
           </div>

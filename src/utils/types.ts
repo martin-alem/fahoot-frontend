@@ -60,6 +60,7 @@ export interface IAuth {
 export interface IPromptProps {
   title: string;
   description: string;
+  isLoading?: boolean;
   okFunction: () => void;
   cancelFunction: () => void;
 }
@@ -68,9 +69,40 @@ export interface IResetPasswordRequestPayload {
   emailAddress: string;
 }
 
+export interface IVerifyEmailPayload {
+  token: string;
+}
+
 export interface IResetPasswordPayload {
   token: string;
   password: string;
+}
+
+export interface IRequestVerificationEmailPayload {
+  emailAddress: string;
+  subject: string;
+  emailPurpose: string;
+}
+
+export interface IAlertProps {
+  bgColor: string;
+  iconColor: string;
+  headingColor: string;
+  descriptionColor: string;
+  heading: string;
+  description: string;
+  action?: () => void;
+  actionText?: string;
+  actionLoading?: boolean;
+}
+
+export interface IUpdatePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface IUpdateEmailPayload {
+  emailAddress: string;
 }
 
 export interface IUpdateBasicInfoPayload {

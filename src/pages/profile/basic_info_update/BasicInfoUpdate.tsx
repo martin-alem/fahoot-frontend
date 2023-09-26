@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { toast } from 'react-toastify';
 import Input from '../../../components/input/input';
 import { IProfileProps, IUpdateBasicInfoPayload } from '../../../utils/types';
@@ -105,7 +106,7 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
     await handleInfoUpdate();
   };
   return (
-    <>
+    <form>
       <div className="">
         <Input
           id="first_name"
@@ -153,7 +154,7 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
           suffixIcon={<InboxArrowDownIcon className="w-6" />}
         />
       </div>
-    </>
+    </form>
   );
 };
 

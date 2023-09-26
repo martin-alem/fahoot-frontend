@@ -1,28 +1,68 @@
-import { Fragment } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import Logo from "./../../assets/Fahoot Logo.svg";
-import { Link, NavLink, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
-import Avatar from "../../components/avatar/Avatar";
+import { Fragment, useEffect } from 'react';
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import Logo from './../../assets/Fahoot Logo.svg';
+import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import Avatar from '../../components/avatar/Avatar';
+import Alert from '../../components/alert/Alert';
+import { useRequestVerificationEmailMutation } from '../../api/security.api';
+import { IRequestVerificationEmailPayload } from '../../utils/types';
+import { EmailPurpose, SUCCESS_MESSAGES } from '../../utils/constant';
+import { toast } from 'react-toastify';
+import { serverErrors } from '../../utils/util';
 
 const navigation = [
-  { name: "Library", href: "", current: true },
-  { name: "Report", href: "report", current: false },
-  { name: "Profile", href: "profile" },
+  { name: 'Library', href: '', current: true },
+  { name: 'Report', href: 'report', current: false },
+  { name: 'Profile', href: 'profile' },
 ];
 const userNavigation = [
-  { name: "Your Profile", href: "profile" },
-  { name: "Sign out", href: "logout" },
+  { name: 'Your Profile', href: 'profile' },
+  { name: 'Sign out', href: 'logout' },
 ];
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.authUser.user);
+
+  const [requestVerificationEmail, { isLoading, isSuccess, isError, error }] =
+    useRequestVerificationEmailMutation();
+
+  const handleSubmit = async () => {
+    if (user?.verified) {
+      toast.error('You account is already active. No verification is required', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
+
+    const payload: IRequestVerificationEmailPayload = {
+      emailAddress: user?.emailAddress ?? '',
+      subject: 'Verify Email',
+      emailPurpose: EmailPurpose.EMAIL_VERIFICATION,
+    };
+    requestVerificationEmail(payload);
+  };
+  useEffect(() => {
+    if (isSuccess) {
+      toast.info(SUCCESS_MESSAGES.VERIFICATION_EMAIL_SENT_SUCCESS, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  }, [isSuccess, isError]);
+
+  useEffect(() => {
+    if (isError) {
+      const statusCode = error && 'status' in error ? error.status : 500;
+      const errorMessage = serverErrors(statusCode);
+      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    }
+  }, [isError, error]);
   return (
     <>
       <div className="min-h-full">
@@ -45,11 +85,18 @@ const Dashboard: React.FC = () => {
                             to={item.href}
                             className={({ isActive }) => {
                               return isActive
-                                ? classNames("bg-primary-500 text-white", "rounded-md px-3 py-2 text-md font-medium")
-                                : classNames("text-white hover:bg-secondary-700 hover:text-white transition-all duration-300 ease-linear", "rounded-md px-3 py-2 text-md font-medium");
+                                ? classNames(
+                                    'bg-primary-500 text-white',
+                                    'rounded-md px-3 py-2 text-md font-medium',
+                                  )
+                                : classNames(
+                                    'text-white hover:bg-secondary-700 hover:text-white transition-all duration-300 ease-linear',
+                                    'rounded-md px-3 py-2 text-md font-medium',
+                                  );
                             }}
                             end
-                            aria-current={item.current ? "page" : undefined}>
+                            aria-current={item.current ? 'page' : undefined}
+                          >
                             {item.name}
                           </NavLink>
                         ))}
@@ -64,7 +111,11 @@ const Dashboard: React.FC = () => {
                           <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-secondary-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-secondary-800">
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">Open user menu</span>
-                            {user?.avatarUrl ? <img className="h-8 w-8 rounded-full" src={user.avatarUrl} alt="" /> : <Avatar height="h-12" width="w-12" />}
+                            {user?.avatarUrl ? (
+                              <img className="h-8 w-8 rounded-full" src={user.avatarUrl} alt="" />
+                            ) : (
+                              <Avatar height="h-12" width="w-12" />
+                            )}
                           </Menu.Button>
                         </div>
                         <Transition
@@ -74,7 +125,8 @@ const Dashboard: React.FC = () => {
                           enterTo="transform opacity-100 scale-100"
                           leave="transition ease-in duration-75"
                           leaveFrom="transform opacity-100 scale-100"
-                          leaveTo="transform opacity-0 scale-95">
+                          leaveTo="transform opacity-0 scale-95"
+                        >
                           <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
@@ -82,8 +134,14 @@ const Dashboard: React.FC = () => {
                                   <NavLink
                                     to={item.href}
                                     className={({ isActive }) =>
-                                      isActive ? classNames("bg-gray-100", "block px-4 py-2 text-sm text-secondary-700") : classNames("block px-4 py-2 text-sm text-secondary-700")
-                                    }>
+                                      isActive
+                                        ? classNames(
+                                            'bg-gray-100',
+                                            'block px-4 py-2 text-sm text-secondary-700',
+                                          )
+                                        : classNames('block px-4 py-2 text-sm text-secondary-700')
+                                    }
+                                  >
                                     {item.name}
                                   </NavLink>
                                 )}
@@ -99,7 +157,11 @@ const Dashboard: React.FC = () => {
                     <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-secondary-800 p-2 text-gray-400 hover:bg-secondary-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-secondary-800">
                       <span className="absolute -inset-0.5" />
                       <span className="sr-only">Open main menu</span>
-                      {open ? <XMarkIcon className="block h-6 w-6" aria-hidden="true" /> : <Bars3Icon className="block h-6 w-6" aria-hidden="true" />}
+                      {open ? (
+                        <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                      ) : (
+                        <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                      )}
                     </Disclosure.Button>
                   </div>
                 </div>
@@ -113,25 +175,41 @@ const Dashboard: React.FC = () => {
                       as="a"
                       href={`/dashboard/${item.href}`}
                       className={classNames(
-                        item.current ? "bg-primary-500 text-white" : "text-white hover:bg-secondary-700 hover:text-white transition-all duration-300 ease-linear",
-                        "block rounded-md px-3 py-2 text-base font-medium"
+                        item.current
+                          ? 'bg-primary-500 text-white'
+                          : 'text-white hover:bg-secondary-700 hover:text-white transition-all duration-300 ease-linear',
+                        'block rounded-md px-3 py-2 text-base font-medium',
                       )}
-                      aria-current={item.current ? "page" : undefined}>
+                      aria-current={item.current ? 'page' : undefined}
+                    >
                       {item.name}
                     </Disclosure.Button>
                   ))}
                 </div>
                 <div className="border-t border-secondary-700 pb-3 pt-4">
                   <div className="flex items-center px-5">
-                    <div className="flex-shrink-0">{user?.avatarUrl ? <img className="h-8 w-8 rounded-full" src={user.avatarUrl} alt="" /> : <Avatar height="h-10" width="w-10" />}</div>
+                    <div className="flex-shrink-0">
+                      {user?.avatarUrl ? (
+                        <img className="h-8 w-8 rounded-full" src={user.avatarUrl} alt="" />
+                      ) : (
+                        <Avatar height="h-10" width="w-10" />
+                      )}
+                    </div>
                     <div className="ml-3">
-                      <div className="text-base font-medium text-white capitalize">{user?.firstName} {user?.lastName}</div>
+                      <div className="text-base font-medium text-white capitalize">
+                        {user?.firstName} {user?.lastName}
+                      </div>
                       <div className="text-sm font-medium text-gray-400">{user?.emailAddress}</div>
                     </div>
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     {userNavigation.map((item) => (
-                      <Disclosure.Button key={item.name} as="a" href={item.href} className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-secondary-700 hover:text-white">
+                      <Disclosure.Button
+                        key={item.name}
+                        as="a"
+                        href={item.href}
+                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-secondary-700 hover:text-white"
+                      >
                         {item.name}
                       </Disclosure.Button>
                     ))}
@@ -141,6 +219,19 @@ const Dashboard: React.FC = () => {
             </>
           )}
         </Disclosure>
+        {!user?.verified && (
+          <Alert
+            bgColor="bg-yellow-50"
+            iconColor="text-yellow-500"
+            headingColor="text-yellow-800"
+            descriptionColor="text-yellow-500"
+            heading="Verify Email Address"
+            description="Your account is not yet active. Please verify your email address to enjoy full access to our platform."
+            action={handleSubmit}
+            actionText="Send verification email"
+            actionLoading={isLoading}
+          />
+        )}
         <Outlet />
       </div>
     </>

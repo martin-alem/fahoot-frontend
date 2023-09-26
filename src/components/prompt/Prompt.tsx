@@ -1,8 +1,15 @@
 import { Dialog } from '@headlessui/react';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { IPromptProps } from '../../utils/types';
+import Button from '../button/Button';
 
-const Prompt: React.FC<IPromptProps> = ({ title, description, okFunction, cancelFunction }) => {
+const Prompt: React.FC<IPromptProps> = ({
+  title,
+  description,
+  okFunction,
+  cancelFunction,
+  isLoading = false,
+}) => {
   return (
     <>
       <div className="sm:flex sm:items-start">
@@ -21,21 +28,20 @@ const Prompt: React.FC<IPromptProps> = ({ title, description, okFunction, cancel
           </div>
         </div>
       </div>
-      <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-        <button
-          type="button"
-          className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-          onClick={okFunction}
-        >
-          Ok
-        </button>
-        <button
-          type="button"
-          className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-          onClick={cancelFunction}
-        >
-          Cancel
-        </button>
+      <div className="mt-5 sm:mt-4 sm:flex sm:items-center sm:justify-between sm:gap-8 sm:flex-row-reverse">
+        <Button
+          label="Ok"
+          type="danger"
+          loading={isLoading}
+          handleClick={okFunction}
+          suffixIcon={<CheckIcon className="w-6" />}
+        />
+        <Button
+          label="Cancel"
+          type="secondary"
+          handleClick={cancelFunction}
+          suffixIcon={<XMarkIcon className="w-6" />}
+        />
       </div>
     </>
   );

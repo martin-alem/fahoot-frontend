@@ -143,7 +143,7 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
     }
   }, [isErrorDeleteFile, errorDeleteFile]);
   return (
-    <>
+    <form>
       <div className="mb-2 col-span-full flex items-center gap-x-8">
         {fileUrl || base64File ? (
           <img
@@ -169,7 +169,6 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
                   label="Remove"
                   prefixIcon={<TrashIcon className="w-6" />}
                   handleClick={() => setDeleteFilePromptOpen(true)}
-                  loading={isLoadingDeleteFile}
                   disabled={!fileUrl}
                 />
               </div>
@@ -213,9 +212,10 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
           description="This operation can not be undone"
           okFunction={handleDeleteFileSubmit}
           cancelFunction={() => setDeleteFilePromptOpen(false)}
+          isLoading={isLoadingDeleteFile}
         />
       </Modal>
-    </>
+    </form>
   );
 };
 
