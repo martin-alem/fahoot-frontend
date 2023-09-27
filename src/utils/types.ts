@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { QuestionType } from './constant';
 
 export interface IButtonProps {
   label: string;
@@ -11,20 +12,24 @@ export interface IButtonProps {
   handleClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export type Quiz = {
-  name: string;
-  numberOfPlays: number;
-  numberOfQuestions: number;
-  lastUpdated: string;
-  bgColor: string;
-};
-
 export interface IQuizContainerProps {
-  quizzes: Quiz[];
+  quizzes: IQuiz[];
+}
+
+export interface IShimmerProps {
+  count: number;
 }
 
 export interface IQuizProps {
-  quiz: Quiz;
+  quiz: IQuiz;
+}
+
+export interface IPaginationProps {
+  total: number;
+  totalPages: number;
+  currentNumberOfResults: number;
+  page: number;
+  setPage: (page: number) => void;
 }
 
 export interface IModalProps {
@@ -126,6 +131,20 @@ export interface IManualSignInPayload {
   rememberMe?: boolean;
 }
 
+export interface IGetQuizzesPayload {
+  page: number;
+  pageSize: number;
+  sortOrder: 'asc' | 'desc';
+  sortField: string;
+  query: string;
+}
+
+export interface ICreateQuizPayload {
+  title: string;
+  questions: IQuestion[];
+  settings: IQuizSetting;
+}
+
 export interface InputProps {
   id: string;
   type?: string;
@@ -138,4 +157,46 @@ export interface InputProps {
   handleOnBlur: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   error?: string;
+}
+
+export interface IEmptyStateProps {
+  icon?: ReactNode;
+  heading: string;
+  description: string;
+  action?: () => void;
+}
+
+export interface IOption {
+  isCorrect: boolean;
+  option: string;
+}
+
+export interface IQuizSetting {
+  lobbyMusic: string;
+  gameMusic: string;
+  podiumMusic: string;
+  colorLabel: string;
+}
+
+export interface IQuestion {
+  title: string;
+  questionType: QuestionType;
+  options: IOption[];
+  duration: number;
+  points: number;
+  mediaUrl: string | null;
+}
+
+export interface IQuiz {
+  _id: string;
+  title: string;
+  questions: IQuestion[];
+  settings: IQuizSetting;
+  updatedAt: string;
+}
+
+export interface IQuizResult {
+  results: IQuiz[];
+  total: number;
+  totalPages: number;
 }

@@ -27,8 +27,44 @@ export enum SUCCESS_MESSAGES {
 }
 
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+export const PAGE_SIZE = 5;
 
 export enum EmailPurpose {
   EMAIL_VERIFICATION = 'email verification',
   PASSWORD_RESET = 'password reset',
 }
+
+export enum QuestionType {
+  BOOLEAN = 'boolean',
+  MCQ = 'mcq',
+}
+
+export enum QuizStatus {
+  PUBLISHED = 'published',
+  DRAFT = 'draft',
+}
+
+export const lobbyMusic = {
+  'Royal Coupling':
+    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Royal%20Coupling.mp3',
+  'Strength Of The Titans':
+    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Strength%20of%20the%20Titans.mp3',
+  'Super Power Cool Dude':
+    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Super%20Power%20Cool%20Dude.mp3',
+  'Verano Sensual':
+    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Verano%20Sensual.mp3',
+  'Wepa Grain':
+    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Wepa.mp3',
+  'Who Likes To Party':
+    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Who%20Likes%20to%20Party.mp3',
+};
+
+export const gameMusic = {
+  Rainbows:
+    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/game_music/Rainbows.mp3',
+};
+
+export const podiumMusic = {
+  'Beachfront Celebration':
+    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/podium_music/Beachfront%20Celebration.mp3',
+};

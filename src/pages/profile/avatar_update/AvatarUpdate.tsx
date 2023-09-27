@@ -145,15 +145,13 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
   return (
     <form>
       <div className="mb-2 col-span-full flex items-center gap-x-8">
-        {fileUrl || base64File ? (
-          <img
-            className="flex-none h-24 w-24 bg-gray-800 object-contain rounded-lg"
-            src={base64File || fileUrl || undefined}
-            alt={user?.lastName}
-          />
-        ) : (
-          <Avatar height="h-24" width="w-24" rounded="rounded-lg" />
-        )}
+        <Avatar
+          height="h-24"
+          width="w-24"
+          rounded="rounded-lg"
+          src={base64File || fileUrl || undefined}
+          alt={user?.lastName ?? ''}
+        />
         <div>
           {!uploadedFile ? (
             <>

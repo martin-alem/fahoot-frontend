@@ -111,11 +111,12 @@ const Dashboard: React.FC = () => {
                           <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-secondary-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-secondary-800">
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">Open user menu</span>
-                            {user?.avatarUrl ? (
-                              <img className="h-8 w-8 rounded-full" src={user.avatarUrl} alt="" />
-                            ) : (
-                              <Avatar height="h-12" width="w-12" />
-                            )}
+                            <Avatar
+                              height="h-12"
+                              width="w-12"
+                              src={user?.avatarUrl ?? undefined}
+                              alt={user?.lastName ?? ''}
+                            />
                           </Menu.Button>
                         </div>
                         <Transition
@@ -189,11 +190,12 @@ const Dashboard: React.FC = () => {
                 <div className="border-t border-secondary-700 pb-3 pt-4">
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0">
-                      {user?.avatarUrl ? (
-                        <img className="h-8 w-8 rounded-full" src={user.avatarUrl} alt="" />
-                      ) : (
-                        <Avatar height="h-10" width="w-10" />
-                      )}
+                      <Avatar
+                        height="h-10"
+                        width="w-10"
+                        src={user?.avatarUrl ?? undefined}
+                        alt={user?.lastName ?? ''}
+                      />
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium text-white capitalize">

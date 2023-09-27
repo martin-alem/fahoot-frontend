@@ -1,34 +1,55 @@
-import { PencilIcon, PlayIcon } from "@heroicons/react/24/outline";
-import Button from "../button/Button";
-import { IQuizProps } from "../../utils/types";
-import { Link, useNavigate } from "react-router-dom";
+import { ClockIcon, DocumentTextIcon, PencilIcon, PlayIcon } from '@heroicons/react/24/outline';
+import Button from '../button/Button';
+import { IQuizProps } from '../../utils/types';
+import { Link, useNavigate } from 'react-router-dom';
+import { RootState } from '../../store';
+import { useSelector } from 'react-redux';
+import Avatar from '../avatar/Avatar';
+import { formatDistanceToNow } from 'date-fns';
 
 const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
   const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.authUser.user);
   return (
     <>
       <div className="w-full flex shadow-lg rounded-md">
-        <div className={`relative w-1/5 ${quiz.bgColor}`}></div>
+        <div className={`relative w-1/5 ${quiz.settings.colorLabel}`}></div>
         <div className="flex-grow space-y-16 bg-white p-4">
           <div className="flex justify-between items-center">
-            <h1 className="w-80 truncate text-secondary-500 text-xl md:text-3xl font-bold capitalize">{quiz.name}</h1>
-            <Link to="/editor">
+            <h1 className="w-80 truncate text-secondary-500 text-xl md:text-3xl font-bold capitalize">
+              {quiz.title}
+            </h1>
+            <Link to={`/editor/${quiz._id}`}>
               <PencilIcon className="w-6 cursor-pointer" />
             </Link>
           </div>
           <div className="flex justify-between items-center">
             <div className="flex justify-center gap-2 items-center">
-              <img
-                className="inline-block h-8 w-8 rounded-full"
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt=""
+              <Avatar
+                height="h-10"
+                width="w-10"
+                src={user?.avatarUrl ?? undefined}
+                alt={user?.lastName ?? ''}
               />
-              <h3 className="w-48 font-bold capitalize truncate">Martin Alemajoh</h3>
+              <h3 className="w-48 font-bold capitalize truncate">
+                {user?.firstName} {user?.lastName}
+              </h3>
             </div>
-            <h2 className="w-48 font-bold truncate">{`Updated ${quiz.lastUpdated}`}</h2>
-            <h2 className="w-48 font-bold capitalize truncate">{`${quiz.numberOfPlays} plays`}</h2>
+            <h2 className="font-bold flex gap-2">
+              <ClockIcon className="w-6" />
+              {`${formatDistanceToNow(new Date(quiz.updatedAt), { addSuffix: true })}`}
+            </h2>
+            <h2 className="font-bold flex gap-2">
+              <DocumentTextIcon className="w-6" />
+              {`${quiz.questions.length}`}
+            </h2>
             <div>
-              <Button label="Start" type="primary" suffixIcon={<PlayIcon className="w-8" />} handleClick={() => navigate("/lobby")} />
+              <Button
+                label="Start"
+                type="primary"
+                suffixIcon={<PlayIcon className="w-8" />}
+                handleClick={() => navigate('/lobby')}
+              />
             </div>
           </div>
         </div>

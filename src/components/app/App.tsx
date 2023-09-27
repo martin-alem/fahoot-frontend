@@ -97,7 +97,7 @@ const App: React.FC = () => {
         />
       </Route>
       <Route
-        path="/editor"
+        path="/editor/:id"
         element={
           <AuthGuard>
             <Editor />

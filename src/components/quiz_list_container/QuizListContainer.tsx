@@ -6,7 +6,7 @@ const QuizListContainer: React.FC<IQuizContainerProps> = ({ quizzes }) => {
     <>
       <div className="w-ful flex flex-col space-y-4">
         {quizzes.map((quiz) => {
-          return <QuizListView quiz={quiz} />;
+          return <QuizListView quiz={quiz} key={quiz._id} />;
         })}
       </div>
     </>

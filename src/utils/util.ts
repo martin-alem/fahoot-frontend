@@ -13,27 +13,6 @@ export function mapScoreToBarHeight(score: number): number {
   return score;
 }
 
-export function randomColorGenerator(): string {
-  const colors: string[] = [
-    'bg-rose-500',
-    'bg-pink-500',
-    'bg-orange-500',
-    'bg-purple-500',
-    'bg-violet-500',
-    'bg-indigo-500',
-    'bg-blue-500',
-    'bg-sky-500',
-    'bg-cyan-500',
-    'bg-teal-500',
-    'bg-emerald-500',
-    'bg-green-500',
-    'bg-lime-500',
-    'bg-yellow-500',
-    'bg-amber-500',
-  ];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
-
 export function serverErrors(
   statusCode: number | 'FETCH_ERROR' | 'PARSING_ERROR' | 'TIMEOUT_ERROR' | 'CUSTOM_ERROR',
 ): string {
@@ -106,4 +85,8 @@ export function extractKeyFromFileUrl(fileUrl: string): string {
   if (!fileUrl) return '';
   const fileUrlWithoutProtocol = fileUrl.split('//')[1];
   return fileUrlWithoutProtocol.substring(fileUrlWithoutProtocol.indexOf('/') + 1);
+}
+
+export function pluralize<T>(str: string, data: T[]): string {
+  return data.length > 1 ? str.concat('s') : str;
 }
