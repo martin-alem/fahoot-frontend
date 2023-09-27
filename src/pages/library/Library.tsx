@@ -26,9 +26,14 @@ import {
   lobbyMusic,
   podiumMusic,
 } from '../../utils/constant';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { saveQuiz } from '../../slices/quiz.slice';
 
 const Library: React.FC = () => {
   useTitle('Library');
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [view, setView] = useState('list');
   const [quizzes, setQuizzes] = useState<IQuizResult | null>(null);
   const [quizStatus, setQuizStatus] = useState<QuizStatus>(QuizStatus.PUBLISHED);
@@ -68,7 +73,7 @@ const Library: React.FC = () => {
         {
           title: 'What is Fahoot?',
           questionType: QuestionType.BOOLEAN,
-          points: 0,
+          points: 100,
           duration: 30,
           mediaUrl: null,
           options: [
@@ -79,9 +84,9 @@ const Library: React.FC = () => {
       ],
       settings: {
         colorLabel: 'bg-rose-500',
-        gameMusic: gameMusic['Rainbows'],
-        lobbyMusic: lobbyMusic['Super Power Cool Dude'],
-        podiumMusic: podiumMusic['Beachfront Celebration'],
+        gameMusic: gameMusic[0].value,
+        lobbyMusic: lobbyMusic[0].value,
+        podiumMusic: podiumMusic[0].value,
       },
     };
 
@@ -105,7 +110,10 @@ const Library: React.FC = () => {
 
   useEffect(() => {
     if (isSuccessCreateQuiz) {
-      console.log(dataCreateQuiz);
+      if (dataCreateQuiz) {
+        dispatch(saveQuiz(dataCreateQuiz));
+        navigate(`/editor/${dataCreateQuiz._id}`);
+      }
     }
   }, [isSuccessCreateQuiz]);
 

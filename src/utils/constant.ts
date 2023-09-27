@@ -13,6 +13,7 @@ export enum ERROR_MESSAGES {
   NOT_FOUND_ERROR = "The resource you're looking for could not be found",
   GENERIC = 'Something went wrong. Please try again later',
   TIMEOUT_ERROR = 'This operation is taking longer than expected. Please try again later',
+  INVALID_TITLE = 'Invalid title. Title is required and cannot contain special characters',
 }
 
 export enum SUCCESS_MESSAGES {
@@ -44,27 +45,100 @@ export enum QuizStatus {
   DRAFT = 'draft',
 }
 
-export const lobbyMusic = {
-  'Royal Coupling':
-    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Royal%20Coupling.mp3',
-  'Strength Of The Titans':
-    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Strength%20of%20the%20Titans.mp3',
-  'Super Power Cool Dude':
-    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Super%20Power%20Cool%20Dude.mp3',
-  'Verano Sensual':
-    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Verano%20Sensual.mp3',
-  'Wepa Grain':
-    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Wepa.mp3',
-  'Who Likes To Party':
-    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Who%20Likes%20to%20Party.mp3',
-};
+export const lobbyMusic = [
+  {
+    label: 'Royal Coupling',
+    value:
+      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Royal%20Coupling.mp3',
+  },
 
-export const gameMusic = {
-  Rainbows:
-    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/game_music/Rainbows.mp3',
-};
+  {
+    label: 'Strength Of The Titans',
+    value:
+      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Strength%20of%20the%20Titans.mp3',
+  },
 
-export const podiumMusic = {
-  'Beachfront Celebration':
-    'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/podium_music/Beachfront%20Celebration.mp3',
-};
+  {
+    label: 'Super Power Cool Dude',
+    value:
+      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Super%20Power%20Cool%20Dude.mp3',
+  },
+
+  {
+    label: 'Verano Sensual',
+    value:
+      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Verano%20Sensual.mp3',
+  },
+
+  {
+    label: 'Wepa Grain',
+    value:
+      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Wepa.mp3',
+  },
+
+  {
+    label: 'Who Likes To Party',
+    value:
+      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Who%20Likes%20to%20Party.mp3',
+  },
+];
+
+export const gameMusic = [
+  {
+    label: 'Rainbows',
+    value:
+      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/game_music/Rainbows.mp3',
+  },
+];
+
+export const podiumMusic = [
+  {
+    label: 'Beachfront Celebration',
+    value:
+      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/podium_music/Beachfront%20Celebration.mp3',
+  },
+];
+
+export const questionType = [
+  { value: 'boolean', label: 'True or False' },
+  { value: 'mcq', label: 'Quiz' },
+];
+
+export const timeLimit = [
+  { value: '10', label: '10 seconds' },
+  { value: '20', label: '20 seconds' },
+  { value: '30', label: '30 seconds' },
+  { value: '40', label: '40 seconds' },
+  { value: '50', label: '50 seconds' },
+  { value: '60', label: '60 seconds' },
+  { value: '120', label: '120 seconds' },
+  { value: '240', label: '240 seconds' },
+];
+
+export const points = [
+  { value: '100', label: '100 points' },
+  { value: '200', label: '200 points' },
+  { value: '300', label: '300 points' },
+  { value: '400', label: '400 points' },
+  { value: '500', label: '500 points' },
+  { value: '600', label: '600 points' },
+  { value: '700', label: '700 points' },
+  { value: '800', label: '800 points' },
+  { value: '900', label: '900 points' },
+  { value: '1000', label: '1000 points' },
+];
+export const colors = [
+  { label: 'Pink', value: 'bg-pink-500', ring: 'ring-pink-500' },
+  { label: 'Purple', value: 'bg-purple-500', ring: 'ring-purple-500' },
+  { label: 'Blue', value: 'bg-blue-500', ring: 'ring-blue-500' },
+  { label: 'Green', value: 'bg-green-500', ring: 'ring-green-500' },
+  { label: 'Yellow', value: 'bg-yellow-500', ring: 'ring-yellow-500' },
+  { label: 'Rose', value: 'bg-rose-500', ring: 'ring-rose-500' },
+  { label: 'Orange', value: 'bg-orange-500', ring: 'ring-orange-500' },
+  { label: 'Violet', value: 'bg-violet-500', ring: 'ring-violet-500' },
+  { label: 'Indigo', value: 'bg-indigo-500', ring: 'ring-indigo-500' },
+  { label: 'Cyan', value: 'bg-cyan-500', ring: 'ring-cyan-500' },
+  { label: 'Sky', value: 'bg-sky-500', ring: 'ring-sky-500' },
+  { label: 'Teal', value: 'bg-teal-500', ring: 'ring-teal-500' },
+  { label: 'Emerald', value: 'bg-emerald-500', ring: 'ring-emerald-500' },
+];

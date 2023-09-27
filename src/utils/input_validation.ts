@@ -12,3 +12,8 @@ export function validatePassword(password: string): boolean {
   const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,64}$/;
   return PWD_REGEX.test(password);
 }
+
+export function validateTitle(title: string): boolean {
+  const TITLE_REGEX = /^[a-zA-Z0-9\s]+$/;
+  return TITLE_REGEX.test(title);
+}

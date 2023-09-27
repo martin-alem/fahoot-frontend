@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 import { ERROR_MESSAGES, MAX_FILE_SIZE } from './constant';
-import { setFunction } from './types';
+import { IPair, setFunction } from './types';
 
 /**
  * Maps a score to a number in a sequence representing the bar's height
@@ -89,4 +89,11 @@ export function extractKeyFromFileUrl(fileUrl: string): string {
 
 export function pluralize<T>(str: string, data: T[]): string {
   return data.length > 1 ? str.concat('s') : str;
+}
+
+export function getValueFromObject(obj: IPair[], value: string): IPair {
+  for (const element of obj) {
+    if (element.value === value) return element;
+  }
+  return obj[0];
 }

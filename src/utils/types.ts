@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { QuestionType } from './constant';
+import { QuestionType, QuizStatus } from './constant';
 
 export interface IButtonProps {
   label: string;
@@ -54,6 +54,10 @@ export interface AuthUser {
 
 export interface IProfileProps {
   user: AuthUser | null;
+}
+
+export interface IQuizState {
+  quiz: IQuiz | null;
 }
 
 export type setFunction<T> = React.Dispatch<React.SetStateAction<T>>;
@@ -150,6 +154,7 @@ export interface InputProps {
   type?: string;
   name?: string;
   placeholder?: string;
+  disabled?: boolean;
   label?: string;
   prefixIcon?: ReactNode;
   value?: string;
@@ -171,6 +176,24 @@ export interface IOption {
   option: string;
 }
 
+export interface IPair {
+  value: string;
+  label: string;
+  ring?: string;
+}
+
+export interface IColorChooseProps {
+  colors: IPair[];
+  selected: IPair;
+  setSelected: setFunction<IPair>;
+}
+
+export interface ISelectInputProps {
+  options: IPair[];
+  selected: IPair;
+  setSelected: setFunction<IPair>;
+}
+
 export interface IQuizSetting {
   lobbyMusic: string;
   gameMusic: string;
@@ -190,6 +213,7 @@ export interface IQuestion {
 export interface IQuiz {
   _id: string;
   title: string;
+  status: QuizStatus;
   questions: IQuestion[];
   settings: IQuizSetting;
   updatedAt: string;

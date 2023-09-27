@@ -1,4 +1,4 @@
-import { ClockIcon, DocumentTextIcon, PencilIcon, PlayIcon } from '@heroicons/react/24/outline';
+import { ClockIcon, DocumentTextIcon, GlobeAltIcon, LightBulbIcon, PencilIcon, PlayIcon } from '@heroicons/react/24/outline';
 import Button from '../button/Button';
 import { IQuizProps } from '../../utils/types';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { RootState } from '../../store';
 import { useSelector } from 'react-redux';
 import Avatar from '../avatar/Avatar';
 import { formatDistanceToNow } from 'date-fns';
+import { QuizStatus } from '../../utils/constant';
 
 const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
   const navigate = useNavigate();
@@ -13,7 +14,13 @@ const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
   return (
     <>
       <div className="w-full flex shadow-lg rounded-md">
-        <div className={`relative w-1/5 ${quiz.settings.colorLabel}`}></div>
+        <div className={`relative w-1/5 ${quiz.settings.colorLabel}`}>
+          {quiz.status === QuizStatus.PUBLISHED ? (
+            <GlobeAltIcon className="absolute  w-6 text-white top-2 left-2" />
+          ) : (
+            <LightBulbIcon className="absolute  w-6 text-white top-2 left-2" />
+          )}
+        </div>
         <div className="flex-grow space-y-16 bg-white p-4">
           <div className="flex justify-between items-center">
             <h1 className="w-80 truncate text-secondary-500 text-xl md:text-3xl font-bold capitalize">
@@ -47,6 +54,7 @@ const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
               <Button
                 label="Start"
                 type="primary"
+                disabled={quiz.status === QuizStatus.DRAFT}
                 suffixIcon={<PlayIcon className="w-8" />}
                 handleClick={() => navigate('/lobby')}
               />
