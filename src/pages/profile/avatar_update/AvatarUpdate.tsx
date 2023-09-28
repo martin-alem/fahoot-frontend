@@ -109,7 +109,7 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
   useEffect(() => {
     if (isSuccessUploadFile) {
       const payload: IUpdateBasicInfoPayload = {
-        avatarUrl: dataUploadFile.filename, //Return data has structure {filename: string}
+        avatarUrl: dataUploadFile?.filename, //Return data has structure {filename: string}
       };
       updateBasicInfo(payload);
       handleCancelFileSelect();

@@ -14,7 +14,7 @@ const Modal: FC<IModalProps> = ({ isOpen, onClose, children }) => {
         </Transition.Child>
         <div className="fixed inset-0 z-10 w-screen">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <Transition.Child as={React.Fragment} /* your transition props here */>
+            <Transition.Child as={React.Fragment}>
               <Dialog.Panel className="relative transform rounded-lg overflow-auto bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                 {children}
               </Dialog.Panel>

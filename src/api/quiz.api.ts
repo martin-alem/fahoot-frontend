@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ICreateQuizPayload, IGetQuizzesPayload, IQuiz, IQuizResult } from '../utils/types';
+import { ICreateQuizPayload, IGetQuizzesPayload, IQuiz, IQuizResult, IUpdateQuizPayload } from '../utils/types';
 
 const BACKEND_API_URL = import.meta.env.VITE_APP_BACKEND_API_URL;
 const API_KEY = import.meta.env.VITE_APP_API_KEY;
@@ -34,7 +34,7 @@ export const quizApi = createApi({
         method: 'GET',
       }),
     }),
-    
+
     createQuiz: builder.mutation<IQuiz, ICreateQuizPayload>({
       query: (payload: ICreateQuizPayload) => ({
         url: '',
@@ -42,7 +42,15 @@ export const quizApi = createApi({
         body: payload,
       }),
     }),
+
+    updateQuiz: builder.mutation<IQuiz, IUpdateQuizPayload>({
+      query: (payload: IUpdateQuizPayload) => ({
+        url: `/${payload._id}`,
+        method: 'PUT',
+        body: payload,
+      }),
+    }),
   }),
 });
 
-export const { useGetQuizzesQuery, useCreateQuizMutation, useGetQuizQuery } = quizApi;
+export const { useGetQuizzesQuery, useCreateQuizMutation, useUpdateQuizMutation, useGetQuizQuery } = quizApi;

@@ -19,7 +19,10 @@ export const quizSlice = createSlice({
       state.currentQuestion = action.payload;
     },
 
-    deleteQuiz: () => initialState,
+    deleteQuiz: (state) => {
+      state.quiz = null;
+      state.currentQuestion = null;
+    },
   },
 });
 

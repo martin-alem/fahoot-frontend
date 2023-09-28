@@ -154,6 +154,14 @@ export interface ICreateQuizPayload {
   settings: IQuizSetting;
 }
 
+export interface IUpdateQuizPayload {
+  _id: string;
+  status?: QuizStatus;
+  title?: string;
+  questions?: IQuestion[];
+  settings?: IQuizSetting;
+}
+
 export interface InputProps {
   id: string;
   type?: string;
@@ -202,6 +210,7 @@ export interface ISelectInputProps {
 }
 
 export interface IQuizSetting {
+  _id: string;
   lobbyMusic: string;
   gameMusic: string;
   podiumMusic: string;

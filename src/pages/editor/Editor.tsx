@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Cog6ToothIcon, ExclamationTriangleIcon, PencilIcon, PhotoIcon, RocketLaunchIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftOnRectangleIcon, Cog6ToothIcon, ExclamationTriangleIcon, LightBulbIcon, PencilIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
 import Logo from './../../assets/Fahoot Logo.svg';
 import Button from '../../components/button/Button';
 import useTitle from '../../hooks/useTitle';
@@ -7,18 +7,21 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Modal from '../../components/modal/Modal';
 import QuizSetting from '../../components/quiz_setting/QuizSetting';
-import { useGetQuizQuery } from '../../api/quiz.api';
+import { useGetQuizQuery, useUpdateQuizMutation } from '../../api/quiz.api';
 import { serverErrors, updateQuizAndDispatch } from '../../utils/util';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/spinner/Spinner';
 import Input from '../../components/input/input';
 import { useDispatch, useSelector } from 'react-redux';
-import { saveQuiz, updateCurrentQuestion } from '../../slices/quiz.slice';
+import { deleteQuiz, saveQuiz, updateCurrentQuestion } from '../../slices/quiz.slice';
 import { RootState } from '../../store';
 import QuestionManager from './questions_manager/QuestionManager';
 import QuestionSettings from './question_settings/QuestionSettings';
 import { IQuestion } from '../../utils/types';
 import QuestionOptions from './question_options/QuestionOptions';
+import QuestionMediaUpload from './question_media_upload/QuestionMediaUpload';
+import { hasCorrectQuestionTypeBaseOnOptionCount, mustHaveExactlyOneTrueOption, validateQuestion, validateQuestionOption, validateQuiz, validateQuizSettings } from '../../utils/input_validation';
+import { QuizStatus } from '../../utils/constant';
 
 const Editor: React.FC = () => {
   useTitle('Editor');
@@ -33,6 +36,8 @@ const Editor: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const [quizTitle, setQuizTitle] = useState<string>('');
+
+  const [updateQuiz, { isLoading: isLoadingUpdateQuiz, isSuccess: isSuccessUpdateQuiz, isError: isErrorUpdateQuiz, error: errorUpdateQuiz }] = useUpdateQuizMutation();
 
   const {
     isLoading: isLoadingGetQuiz,
@@ -78,6 +83,65 @@ const Editor: React.FC = () => {
       navigate('/dashboard');
     }
   }, [isErrorGetQuiz, errorGetQuiz]);
+
+  useEffect(() => {
+    if (isSuccessUpdateQuiz) {
+      dispatch(deleteQuiz());
+      navigate('/dashboard');
+    }
+  }, [isSuccessUpdateQuiz]);
+
+  useEffect(() => {
+    if (isErrorUpdateQuiz) {
+      const statusCode = errorUpdateQuiz && 'status' in errorUpdateQuiz ? errorUpdateQuiz.status : 500;
+      const errorMessage = serverErrors(statusCode);
+      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    }
+  }, [isErrorUpdateQuiz, errorUpdateQuiz]);
+
+  const showError = (errorMessage: string) => {
+    toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+  };
+
+  const isValidQuiz = () => {
+    if (!quiz) return false;
+
+    if (!validateQuiz(quiz)) {
+      showError('Please make sure you have a title for the quiz');
+      return false;
+    }
+    if (!validateQuizSettings(quiz.settings)) {
+      showError('Please make sure you have valid settings for the quiz');
+      return false;
+    }
+
+    for (const question of quiz.questions) {
+      if (!validateQuestion(question) || !hasCorrectQuestionTypeBaseOnOptionCount(question) || !mustHaveExactlyOneTrueOption(question.options)) {
+        showError('Please make sure all questions are valid. They must have a title, valid options, question type and exactly one right option');
+        return false;
+      }
+
+      for (const option of question.options) {
+        if (!validateQuestionOption(option)) {
+          showError('Please make sure all options for each question are valid.');
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  const handleChangeQuizStatus = async (status: QuizStatus) => {
+    if (!isValidQuiz || !quiz) return;
+    await updateQuiz({ _id: quiz._id, status: status });
+  };
+
+  const handleSaveQuizAndExit = async () => {
+    if (!isValidQuiz || !quiz) return;
+    await updateQuiz(quiz);
+  };
+
   return (
     <>
       {isLoadingGetQuiz ? (
@@ -113,12 +177,37 @@ const Editor: React.FC = () => {
               <Cog6ToothIcon className="w-12 cursor-pointer" onClick={() => setIsSettingsOpen(true)} />
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="mt-4 flex sm:mt-0 items-center gap-4">
               <div>
-                <Button label="Exit" type="primary" suffixIcon={<XMarkIcon className="w-6" />} handleClick={() => navigate('/dashboard')} />
+                <Button
+                  label="Done"
+                  loading={isLoadingUpdateQuiz}
+                  disabled={isLoadingGetQuiz}
+                  type="primary"
+                  suffixIcon={<ArrowLeftOnRectangleIcon className="w-6" />}
+                  handleClick={handleSaveQuizAndExit}
+                />
               </div>
               <div>
-                <Button label="Publish" type="secondary" suffixIcon={<RocketLaunchIcon className="w-6" />} />
+                {quiz && quiz.status === QuizStatus.DRAFT ? (
+                  <Button
+                    label="Publish"
+                    type="secondary"
+                    disabled={isLoadingUpdateQuiz}
+                    loading={isLoadingUpdateQuiz}
+                    handleClick={() => handleChangeQuizStatus(QuizStatus.PUBLISHED)}
+                    suffixIcon={<RocketLaunchIcon className="w-6" />}
+                  />
+                ) : (
+                  <Button
+                    label="Draft"
+                    type="secondary"
+                    disabled={isLoadingUpdateQuiz}
+                    loading={isLoadingUpdateQuiz}
+                    handleClick={() => handleChangeQuizStatus(QuizStatus.DRAFT)}
+                    suffixIcon={<LightBulbIcon className="w-6" />}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -128,7 +217,7 @@ const Editor: React.FC = () => {
               <div>
                 <div className="mt-2">
                   <textarea
-                    rows={4}
+                    rows={2}
                     name="comment"
                     id="comment"
                     value={quizTitle}
@@ -140,19 +229,7 @@ const Editor: React.FC = () => {
                 </div>
               </div>
               <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                <div className="text-center">
-                  <PhotoIcon className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
-                  <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                    <label
-                      htmlFor="file-upload"
-                      className="cursor-pointer mx-auto rounded-md bg-white font-semibold text-secondary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-secondary-600 focus-within:ring-offset-2 hover:text-secondary-500"
-                    >
-                      <span>Upload a file</span>
-                      <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                    </label>
-                  </div>
-                  <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
-                </div>
+                <QuestionMediaUpload />
               </div>
 
               <form className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">

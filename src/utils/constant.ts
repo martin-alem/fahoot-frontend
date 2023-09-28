@@ -48,54 +48,46 @@ export enum QuizStatus {
 export const lobbyMusic = [
   {
     label: 'Royal Coupling',
-    value:
-      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Royal%20Coupling.mp3',
+    value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Royal%20Coupling.mp3',
   },
 
   {
     label: 'Strength Of The Titans',
-    value:
-      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Strength%20of%20the%20Titans.mp3',
+    value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Strength%20of%20the%20Titans.mp3',
   },
 
   {
     label: 'Super Power Cool Dude',
-    value:
-      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Super%20Power%20Cool%20Dude.mp3',
+    value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Super%20Power%20Cool%20Dude.mp3',
   },
 
   {
     label: 'Verano Sensual',
-    value:
-      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Verano%20Sensual.mp3',
+    value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Verano%20Sensual.mp3',
   },
 
   {
     label: 'Wepa Grain',
-    value:
-      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Wepa.mp3',
+    value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Wepa.mp3',
   },
 
   {
     label: 'Who Likes To Party',
-    value:
-      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Who%20Likes%20to%20Party.mp3',
+    value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Who%20Likes%20to%20Party.mp3',
   },
 ];
 
 export const gameMusic = [
   {
     label: 'Rainbows',
-    value:
-      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/game_music/Rainbows.mp3',
+    value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/game_music/Rainbows.mp3',
   },
 ];
 
 export const podiumMusic = [
   {
     label: 'Beachfront Celebration',
-    value:
-      'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/podium_music/Beachfront%20Celebration.mp3',
+    value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/podium_music/Beachfront%20Celebration.mp3',
   },
 ];
 

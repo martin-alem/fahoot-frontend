@@ -88,8 +88,8 @@ const QuestionOption: React.FC<IQuestionOptionProps> = ({ option }) => {
   return (
     <div className="flex flex-col">
       <div className={`w-full h-1 ${option?.colorLabel}`}></div>
-      <div className="w-full bg-white text-white flex flex-col md:flex-row justify-between items-center gap-8 p-8 cursor-pointer shadow-lg hover:opacity-80 transition-all duration-300 ease-linear">
-        <div className="w-16 h-16 flex-shrink-0 rounded-full bg-secondary-500 flex items-center justify-center">
+      <div className="w-full bg-white text-white flex flex-col md:flex-row justify-between items-center gap-8 p-6 cursor-pointer shadow-lg hover:opacity-80 transition-all duration-300 ease-linear">
+        <div className="flex-shrink-0 rounded-full bg-secondary-500 flex items-center justify-center">
           <input
             id={option?._id}
             name={`question_option`} // make it unique if you have multiple sets of radio buttons
@@ -97,13 +97,13 @@ const QuestionOption: React.FC<IQuestionOptionProps> = ({ option }) => {
             value="true"
             onChange={(e) => handleEditCurrentQuestionOptionCorrect(e, option?._id)}
             defaultChecked={selectedOption}
-            className="h-24 w-24 border-gray-300 text-secondary-600 focus:ring-secondary-600"
+            className="h-12 w-12 border-gray-300 text-secondary-600 focus:ring-secondary-600"
           />
         </div>
         <textarea
-          rows={2}
-          name="comment"
-          id="comment"
+          rows={1}
+          name={`option_${option?._id}`}
+          id={`option_${option?._id}`}
           onChange={(e) => handleEditCurrentQuestionOptionText(e, option?._id)}
           value={optionText}
           className="block w-full rounded-md border-0 py-4 text-gray-900 text-center shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-white sm:text-2xl"

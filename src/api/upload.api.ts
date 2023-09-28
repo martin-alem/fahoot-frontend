@@ -17,7 +17,7 @@ export const uploadApi = createApi({
   }),
 
   endpoints: (builder) => ({
-    uploadFile: builder.mutation({
+    uploadFile: builder.mutation<{ filename: string }, FormData>({
       query: (payload: FormData) => ({
         url: '',
         method: 'POST',

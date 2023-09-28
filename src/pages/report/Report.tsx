@@ -1,19 +1,19 @@
-import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
-import SelectInput from "../../components/select_input/SelectInput";
-import useTitle from "../../hooks/useTitle";
-import Pagination from "../../components/pagination/Pagination";
-import { Link } from "react-router-dom";
+import { PresentationChartBarIcon } from '@heroicons/react/24/outline';
+import SelectInput from '../../components/select_input/SelectInput';
+import useTitle from '../../hooks/useTitle';
+import Pagination from '../../components/pagination/Pagination';
+import { Link } from 'react-router-dom';
 
 const people = [
-  { name: "JavaScript Quiz", date: "Aug 12, 2023, 12:09 PM", players: 12, status: "Ready" },
-  { name: "JavaScript Quiz", date: "Aug 12, 2023, 12:09 PM", players: 12, status: "Ready" },
-  { name: "JavaScript Quiz", date: "Aug 12, 2023, 12:09 PM", players: 12, status: "Ready" },
-  { name: "JavaScript Quiz", date: "Aug 12, 2023, 12:09 PM", players: 12, status: "Ready" },
-  { name: "JavaScript Quiz", date: "Aug 12, 2023, 12:09 PM", players: 12, status: "Ready" },
+  { name: 'JavaScript Quiz', date: 'Aug 12, 2023, 12:09 PM', players: 12, status: 'Ready' },
+  { name: 'JavaScript Quiz', date: 'Aug 12, 2023, 12:09 PM', players: 12, status: 'Ready' },
+  { name: 'JavaScript Quiz', date: 'Aug 12, 2023, 12:09 PM', players: 12, status: 'Ready' },
+  { name: 'JavaScript Quiz', date: 'Aug 12, 2023, 12:09 PM', players: 12, status: 'Ready' },
+  { name: 'JavaScript Quiz', date: 'Aug 12, 2023, 12:09 PM', players: 12, status: 'Ready' },
 ];
 
 const Report: React.FC = () => {
-  useTitle("Reports");
+  useTitle('Reports');
   return (
     <>
       <header className="bg-white shadow-sm h-[82px]">
@@ -24,7 +24,7 @@ const Report: React.FC = () => {
 
       <div className="mx-auto max-w-7xl py-6 px-4 md:px-8">
         <div className="md:w-1/4 w-full">
-          <SelectInput />
+          <SelectInput options={[{ value: 'martin', label: 'Martin' }]} selected={{ label: '', value: '' }} setSelected={() => null} />
         </div>
         <div className="mt-8 flow-root">
           <div className=" overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -72,7 +72,7 @@ const Report: React.FC = () => {
             </div>
           </div>
         </div>
-        <Pagination />
+        <Pagination currentNumberOfResults={0} page={1} setPage={() => 0} total={0} totalPages={0} />
       </div>
     </>
   );
