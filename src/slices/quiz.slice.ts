@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { IQuiz, IQuizState } from '../utils/types';
+import { IQuestion, IQuiz, IQuizState } from '../utils/types';
 
 const initialState: IQuizState = {
   quiz: null,
+  currentQuestion: null,
 };
 
 export const quizSlice = createSlice({
@@ -14,9 +15,13 @@ export const quizSlice = createSlice({
       state.quiz = action.payload;
     },
 
+    updateCurrentQuestion: (state, action: PayloadAction<IQuestion>) => {
+      state.currentQuestion = action.payload;
+    },
+
     deleteQuiz: () => initialState,
   },
 });
 
-export const { saveQuiz, deleteQuiz } = quizSlice.actions;
+export const { saveQuiz, deleteQuiz, updateCurrentQuestion } = quizSlice.actions;
 export default quizSlice.reducer;

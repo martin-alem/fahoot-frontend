@@ -22,6 +22,7 @@ import {
   PAGE_SIZE,
   QuestionType,
   QuizStatus,
+  colors,
   gameMusic,
   lobbyMusic,
   podiumMusic,
@@ -29,6 +30,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { saveQuiz } from '../../slices/quiz.slice';
+import ObjectID from 'bson-objectid';
 
 const Library: React.FC = () => {
   useTitle('Library');
@@ -71,14 +73,25 @@ const Library: React.FC = () => {
       title: 'Fahoot Quiz',
       questions: [
         {
+          _id: new ObjectID().toHexString(),
           title: 'What is Fahoot?',
           questionType: QuestionType.BOOLEAN,
           points: 100,
           duration: 30,
           mediaUrl: null,
           options: [
-            { isCorrect: true, option: 'Kahoot Clone' },
-            { isCorrect: false, option: 'Next Online Game Quiz' },
+            {
+              isCorrect: false,
+              option: 'Kahoot Clone',
+              _id: new ObjectID().toHexString(),
+              colorLabel: colors[0].value,
+            },
+            {
+              isCorrect: false,
+              option: 'Next Online Game Quiz',
+              _id: new ObjectID().toHexString(),
+              colorLabel: colors[1].value,
+            },
           ],
         },
       ],

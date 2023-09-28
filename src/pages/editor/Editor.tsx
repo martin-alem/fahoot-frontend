@@ -1,55 +1,38 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Cog6ToothIcon,
-  ExclamationTriangleIcon,
-  PencilIcon,
-  PhotoIcon,
-  PlusIcon,
-  RocketLaunchIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
+import { Cog6ToothIcon, ExclamationTriangleIcon, PencilIcon, PhotoIcon, RocketLaunchIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Logo from './../../assets/Fahoot Logo.svg';
 import Button from '../../components/button/Button';
 import useTitle from '../../hooks/useTitle';
 import { useNavigate, useParams } from 'react-router-dom';
-import SelectInput from '../../components/select_input/SelectInput';
-import QuestionDraft from '../../components/question_draft/QuestionDraft';
 import { useEffect, useState } from 'react';
 import Modal from '../../components/modal/Modal';
 import QuizSetting from '../../components/quiz_setting/QuizSetting';
-import QuestionOption from '../../components/question_option/QuestionOption';
 import { useGetQuizQuery } from '../../api/quiz.api';
-import { IPair } from '../../utils/types';
-import { getValueFromObject, serverErrors } from '../../utils/util';
+import { serverErrors, updateQuizAndDispatch } from '../../utils/util';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/spinner/Spinner';
-import { ERROR_MESSAGES, points, questionType, timeLimit } from '../../utils/constant';
 import Input from '../../components/input/input';
-import { validateTitle } from '../../utils/input_validation';
 import { useDispatch, useSelector } from 'react-redux';
-import { saveQuiz } from '../../slices/quiz.slice';
+import { saveQuiz, updateCurrentQuestion } from '../../slices/quiz.slice';
 import { RootState } from '../../store';
+import QuestionManager from './questions_manager/QuestionManager';
+import QuestionSettings from './question_settings/QuestionSettings';
+import { IQuestion } from '../../utils/types';
+import QuestionOptions from './question_options/QuestionOptions';
 
 const Editor: React.FC = () => {
   useTitle('Editor');
+
   const { quizId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const quiz = useSelector((state: RootState) => state.quizState.quiz);
+  const currentQuestion = useSelector((state: RootState) => state.quizState.currentQuestion);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [qType, setQType] = useState<IPair>(questionType[0]);
-  const [tLimit, setTLimit] = useState<IPair>(timeLimit[5]);
-  const [qPoints, setQPoints] = useState<IPair>(points[5]);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  const [questionTitle, setQuestionTitle] = useState<string>('');
-  const [validQuestionTitle, setValidQuestionTitle] = useState<boolean>(false);
-
-  useEffect(() => {
-    const result = questionTitle !== '';
-    setValidQuestionTitle(result);
-  }, [questionTitle]);
+  const [quizTitle, setQuizTitle] = useState<string>('');
 
   const {
     isLoading: isLoadingGetQuiz,
@@ -58,22 +41,34 @@ const Editor: React.FC = () => {
     error: errorGetQuiz,
     data: dataGetQuiz,
   } = useGetQuizQuery(quizId ?? '', {
-    skip: quizId === undefined,
+    skip: quizId === undefined, //Halt automatic fetching until a valid quizId is available.
   });
+
+  const handleEditCurrentQuestionTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!currentQuestion || !quiz) return;
+
+    const questionIndex = quiz.questions.findIndex((question) => question._id === currentQuestion._id);
+
+    if (questionIndex === -1) return;
+
+    const updatedQuestion: IQuestion = {
+      ...quiz.questions[questionIndex],
+      title: e.target.value,
+    };
+
+    updateQuizAndDispatch(updatedQuestion, questionIndex, quiz, dispatch, updateCurrentQuestion, saveQuiz);
+  };
+
+  useEffect(() => {
+    setQuizTitle(currentQuestion?.title ?? 'Untitled');
+  }, [currentQuestion]);
 
   useEffect(() => {
     if (isSuccessGetQuiz) {
       dispatch(saveQuiz(dataGetQuiz));
+      dispatch(updateCurrentQuestion(dataGetQuiz.questions[0]));
     }
   }, [isSuccessGetQuiz]);
-
-  useEffect(() => {
-    if (!quiz) return;
-    setQType(getValueFromObject(questionType, quiz.questions[0].questionType));
-    setTLimit(getValueFromObject(timeLimit, quiz.questions[0].duration.toString()));
-    setQPoints(getValueFromObject(points, quiz.questions[0].points.toString()));
-    setQuestionTitle(quiz?.questions[0].title ?? 'Untitled');
-  }, [quiz]);
 
   useEffect(() => {
     if (isErrorGetQuiz) {
@@ -95,10 +90,7 @@ const Editor: React.FC = () => {
                 <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
               </div>
               <div className="ml-3">
-                <p className="text-sm text-yellow-700">
-                  For a better user experience, use a desktop or a screen with a wider width to work
-                  with the editor.
-                </p>
+                <p className="text-sm text-yellow-700">For a better user experience, use a desktop or a screen with a wider width to work with the editor.</p>
               </div>
             </div>
           </div>
@@ -112,62 +104,41 @@ const Editor: React.FC = () => {
                   id="quiz_title"
                   type="text"
                   value={quiz?.title ?? 'Untitled'}
-                  handleOnChange={() => null}
-                  handleOnBlur={() => null}
                   disabled={true}
                   name="quiz_title"
                   placeholder="Title"
                   prefixIcon={<PencilIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
                 />
               </div>
-              <Cog6ToothIcon className="w-12 cursor-pointer" onClick={() => setIsOpen(true)} />
+              <Cog6ToothIcon className="w-12 cursor-pointer" onClick={() => setIsSettingsOpen(true)} />
             </div>
 
             <div className="flex items-center gap-4">
               <div>
-                <Button
-                  label="Exit"
-                  type="primary"
-                  suffixIcon={<XMarkIcon className="w-6" />}
-                  handleClick={() => navigate('/dashboard')}
-                />
+                <Button label="Exit" type="primary" suffixIcon={<XMarkIcon className="w-6" />} handleClick={() => navigate('/dashboard')} />
               </div>
               <div>
-                <Button
-                  label="Publish"
-                  type="secondary"
-                  suffixIcon={<RocketLaunchIcon className="w-6" />}
-                />
+                <Button label="Publish" type="secondary" suffixIcon={<RocketLaunchIcon className="w-6" />} />
               </div>
             </div>
           </div>
           <div className="w-full flex flex-col md:flex md:flex-row">
-            <div className="w-full md:w-1/4 md:h-screen p-4">
-              <div className="flex flex-row md:flex-col gap-4 items-center md:h-full overflow-auto">
-                <QuestionDraft />
-                <Button label="Question" type="primary" suffixIcon={<PlusIcon className="w-6" />} />
-              </div>
-            </div>
+            <QuestionManager />
             <div className="w-full h-screen bg-gray-200 p-8 flex flex-col gap-4 overflow-y-auto">
-              {/* Question Input */}
               <div>
                 <div className="mt-2">
                   <textarea
                     rows={4}
                     name="comment"
                     id="comment"
-                    value={questionTitle}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                      setQuestionTitle(e.target.value)
-                    }
+                    value={quizTitle}
+                    onChange={handleEditCurrentQuestionTitle}
                     className="block w-full rounded-md border-0 py-4 text-gray-900 text-center shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-white sm:text-4xl"
                     placeholder="Type your question here"
                     style={{ resize: 'none' }}
                   />
                 </div>
               </div>
-
-              {/* Upload image */}
               <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
                 <div className="text-center">
                   <PhotoIcon className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
@@ -184,34 +155,18 @@ const Editor: React.FC = () => {
                 </div>
               </div>
 
-              <div className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <QuestionOption bgColor="bg-red-600" />
-                <QuestionOption bgColor="bg-blue-600" />
-                <QuestionOption bgColor="bg-green-600" />
-                <QuestionOption bgColor="bg-yellow-600" />
-              </div>
+              <form className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <QuestionOptions />
+              </form>
             </div>
             <div className="w-full md:w-1/4 md:h-screen p-4 space-y-10">
-              <div className="w-full">
-                <h3 className="font-bold">Question Type</h3>
-                <SelectInput options={questionType} selected={qType} setSelected={setQType} />
-              </div>
-
-              <div className="w-full">
-                <h3 className="font-bold">Time Limit</h3>
-                <SelectInput options={timeLimit} selected={tLimit} setSelected={setTLimit} />
-              </div>
-
-              <div className="w-full">
-                <h3 className="font-bold">Points</h3>
-                <SelectInput options={points} selected={qPoints} setSelected={setQPoints} />
-              </div>
+              <QuestionSettings />
             </div>
           </div>
 
           {/* Modal */}
-          <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-            <QuizSetting cancelSetting={() => setIsOpen(false)} />
+          <Modal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)}>
+            <QuizSetting cancelSetting={() => setIsSettingsOpen(false)} />
           </Modal>
         </>
       )}

@@ -1,6 +1,8 @@
 import { toast } from 'react-toastify';
-import { ERROR_MESSAGES, MAX_FILE_SIZE } from './constant';
-import { IPair, setFunction } from './types';
+import { ERROR_MESSAGES, MAX_FILE_SIZE, QuestionType, colors } from './constant';
+import { ActionCreator, IOption, IPair, IQuestion, IQuiz, setFunction } from './types';
+import { AnyAction, Dispatch } from '@reduxjs/toolkit';
+import ObjectID from 'bson-objectid';
 
 /**
  * Maps a score to a number in a sequence representing the bar's height
@@ -13,9 +15,7 @@ export function mapScoreToBarHeight(score: number): number {
   return score;
 }
 
-export function serverErrors(
-  statusCode: number | 'FETCH_ERROR' | 'PARSING_ERROR' | 'TIMEOUT_ERROR' | 'CUSTOM_ERROR',
-): string {
+export function serverErrors(statusCode: number | 'FETCH_ERROR' | 'PARSING_ERROR' | 'TIMEOUT_ERROR' | 'CUSTOM_ERROR'): string {
   switch (statusCode) {
     case 400:
       return ERROR_MESSAGES.BAD_REQUEST_ERROR;
@@ -38,11 +38,7 @@ export function serverErrors(
   }
 }
 
-export function handleOnFileSelect(
-  event: React.ChangeEvent<HTMLInputElement>,
-  setFile: setFunction<File | null>,
-  setFileUrl: setFunction<string | null>,
-): void {
+export function handleOnFileSelect(event: React.ChangeEvent<HTMLInputElement>, setFile: setFunction<File | null>, setFileUrl: setFunction<string | null>): void {
   const files = event.target.files;
 
   if (files && files[0]) {
@@ -96,4 +92,53 @@ export function getValueFromObject(obj: IPair[], value: string): IPair {
     if (element.value === value) return element;
   }
   return obj[0];
+}
+
+export function updateQuizAndDispatch(
+  updatedQuestion: IQuestion,
+  questionIndex: number,
+  quiz: IQuiz,
+  dispatch: Dispatch<AnyAction>,
+  updateCurrentQuestionActionCreator: ActionCreator<IQuestion>,
+  updateQuizActionCreator: ActionCreator<IQuiz>,
+) {
+  //This dispatch is necessary because the current editor state depends on it. like current question title, question settings etc.
+  dispatch(updateCurrentQuestionActionCreator(updatedQuestion));
+  const currentQuestions = [...quiz.questions];
+  currentQuestions[questionIndex] = updatedQuestion;
+  const updatedQuiz = { ...quiz, questions: currentQuestions };
+  dispatch(updateQuizActionCreator(updatedQuiz));
+}
+
+export function updateQuestionOptions(selectedQuestionType: QuestionType, questionType: QuestionType, options: IOption[]) {
+  let newOptions: IOption[] = [...options];
+
+  if (selectedQuestionType === QuestionType.MCQ && questionType === QuestionType.BOOLEAN) {
+    newOptions = [
+      ...options,
+      {
+        ...options[0],
+        _id: new ObjectID().toHexString(),
+        colorLabel: colors[2].value,
+        isCorrect: false,
+      },
+      {
+        ...options[1],
+        _id: new ObjectID().toHexString(),
+        colorLabel: colors[3].value,
+        isCorrect: false,
+      },
+    ];
+  } else if (selectedQuestionType === QuestionType.BOOLEAN && questionType === QuestionType.MCQ) {
+    newOptions = options.slice(0, options.length - 2);
+  }
+
+  return newOptions;
+}
+
+export function getBorderColor(question: IQuestion, currentQuestion: IQuestion | null) {
+  if (question._id === currentQuestion?._id) {
+    return question.title !== '' ? 'border-4 border-primary-500' : 'border-4 border-red-500';
+  }
+  return question.title === '' ? 'border-4 border-red-500' : 'border-none';
 }

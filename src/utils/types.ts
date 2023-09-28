@@ -58,12 +58,17 @@ export interface IProfileProps {
 
 export interface IQuizState {
   quiz: IQuiz | null;
+  currentQuestion: IQuestion | null;
 }
 
 export type setFunction<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export interface IAuth {
   user: AuthUser | null;
+}
+
+export interface IQuestionOptionProps {
+  option: IOption | null;
 }
 
 export interface IPromptProps {
@@ -158,8 +163,8 @@ export interface InputProps {
   label?: string;
   prefixIcon?: ReactNode;
   value?: string;
-  handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleOnBlur: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleOnChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleOnBlur?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   error?: string;
 }
@@ -172,8 +177,10 @@ export interface IEmptyStateProps {
 }
 
 export interface IOption {
+  _id: string;
   isCorrect: boolean;
   option: string;
+  colorLabel: string;
 }
 
 export interface IPair {
@@ -202,12 +209,18 @@ export interface IQuizSetting {
 }
 
 export interface IQuestion {
+  _id: string;
   title: string;
   questionType: QuestionType;
   options: IOption[];
   duration: number;
   points: number;
   mediaUrl: string | null;
+}
+
+export interface IQuestionDraftProps {
+  question: IQuestion;
+  index: number;
 }
 
 export interface IQuiz {
@@ -224,3 +237,5 @@ export interface IQuizResult {
   total: number;
   totalPages: number;
 }
+
+export type ActionCreator<T> = (payload: T) => { type: string; payload: T };

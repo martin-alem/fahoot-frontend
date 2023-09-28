@@ -34,7 +34,7 @@ export const quizApi = createApi({
         method: 'GET',
       }),
     }),
-
+    
     createQuiz: builder.mutation<IQuiz, ICreateQuizPayload>({
       query: (payload: ICreateQuizPayload) => ({
         url: '',
