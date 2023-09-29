@@ -1,6 +1,5 @@
 import { TrashIcon } from '@heroicons/react/24/outline';
 import Button from '../../../components/button/Button';
-import { SUCCESS_MESSAGES } from '../../../utils/constant';
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { serverErrors } from '../../../utils/util';
@@ -18,16 +17,9 @@ const DeleteAccount: React.FC = () => {
   };
 
   useEffect(() => {
-    let timerId: number;
-
     if (isSuccess) {
-      toast.info(SUCCESS_MESSAGES.ACCOUNT_DELETE_SUCCESS, { position: toast.POSITION.TOP_CENTER });
-      timerId = setTimeout(() => navigate('/'), 5000);
+      navigate('/');
     }
-
-    return () => {
-      clearTimeout(timerId);
-    };
   }, [isSuccess, isError, navigate]);
 
   useEffect(() => {
@@ -40,12 +32,7 @@ const DeleteAccount: React.FC = () => {
   return (
     <>
       <div className="mt-8 sm:max-w-xl">
-        <Button
-          label="Delete account"
-          type="danger"
-          handleClick={() => setDeleteAccountPromptOpen(true)}
-          suffixIcon={<TrashIcon className="w-6" />}
-        />
+        <Button label="Delete account" type="danger" handleClick={() => setDeleteAccountPromptOpen(true)} suffixIcon={<TrashIcon className="w-6" />} />
       </div>
 
       <Modal isOpen={deleteAccountPromptOpen} onClose={() => setDeleteAccountPromptOpen(false)}>
