@@ -187,8 +187,8 @@ export interface InputProps {
   label?: string;
   prefixIcon?: ReactNode;
   value?: string;
-  handleOnChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleOnBlur?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleOnBlur: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   error?: string;
 }

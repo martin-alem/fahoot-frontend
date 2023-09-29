@@ -169,6 +169,8 @@ const Editor: React.FC = () => {
                   type="text"
                   value={quiz?.title ?? 'Untitled'}
                   disabled={true}
+                  handleOnBlur={() => null}
+                  handleOnChange={() => null}
                   name="quiz_title"
                   placeholder="Title"
                   prefixIcon={<PencilIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}

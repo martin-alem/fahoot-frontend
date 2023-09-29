@@ -1,6 +1,6 @@
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import useTitle from "../../hooks/useTitle";
-import Pagination from "../../components/pagination/Pagination";
+// import Pagination from "../../components/pagination/Pagination";
 import Modal from "../../components/modal/Modal";
 import PlayerQuestionList from "../../components/player_question_list/PlayerQuestionList";
 import { useState } from "react";
@@ -92,7 +92,7 @@ const ReportDetail: React.FC = () => {
               </div>
             </li>
           ))}
-          <Pagination />
+          {/* <Pagination /> */}
         </ul>
 
         <div className="w-full mx-auto max-w-7xl px-6 lg:px-8 bg-white shadow-md">
@@ -137,7 +137,7 @@ const ReportDetail: React.FC = () => {
               </div>
             </div>
           </div>
-          <Pagination />
+          {/* <Pagination /> */}
         </div>
       </main>
 

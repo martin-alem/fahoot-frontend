@@ -96,6 +96,7 @@ const Library: React.FC = () => {
         },
       ],
       settings: {
+        _id: new ObjectID().toHexString(),
         colorLabel: 'bg-rose-500',
         gameMusic: gameMusic[0].value,
         lobbyMusic: lobbyMusic[0].value,
