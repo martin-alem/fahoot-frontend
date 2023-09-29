@@ -32,7 +32,7 @@ const App: React.FC = () => {
       {/* Protected routes */}
       <Route
         path="/podium"
-        element={
+        element={ 
           <AuthGuard>
             <Podium />
           </AuthGuard>

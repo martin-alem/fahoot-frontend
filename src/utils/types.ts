@@ -154,6 +154,22 @@ export interface ICreateQuizPayload {
   settings: IQuizSetting;
 }
 
+export interface IGoogleOAuthResponse {
+  clientId: string;
+  client_id: string;
+  credential: string;
+  select_by: string;
+}
+
+export interface IGoogleOAuthProps {
+  callback: (response: IGoogleOAuthResponse) => void;
+  text: IGoogleText;
+}
+
+export interface IGoogleOAuthPayload {
+  credential: string;
+}
+
 export interface IUpdateQuizPayload {
   _id: string;
   status?: QuizStatus;
@@ -245,6 +261,38 @@ export interface IQuizResult {
   results: IQuiz[];
   total: number;
   totalPages: number;
+}
+
+export interface IGoogleAccounts {
+  accounts: {
+    id: {
+      initialize: (options: IInitializeOptions) => void;
+      renderButton: (element: HTMLElement | null, options: IRenderButtonOptions) => void;
+      prompt: () => void;
+      revoke: (id: string, callback: () => void) => void;
+    };
+  };
+}
+
+export type IGoogleText = 'signin_with' | 'signup_with';
+
+export interface IInitializeOptions {
+  client_id: string;
+  callback: (response: IGoogleOAuthResponse) => void;
+}
+
+interface IRenderButtonOptions {
+  theme: 'outline' | 'filled'; // You can extend this
+  size: 'small' | 'medium' | 'large'; // You can extend this
+  text: IGoogleText;
+  width: number;
+  logo_alignment: string;
+}
+
+declare global {
+  interface Window {
+    google: IGoogleAccounts;
+  }
 }
 
 export type ActionCreator<T> = (payload: T) => { type: string; payload: T };
