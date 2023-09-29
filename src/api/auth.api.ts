@@ -42,6 +42,14 @@ export const authApi = createApi({
       }),
     }),
 
+    googleSignUp: builder.mutation({
+      query: (payload: IGoogleOAuthPayload) => ({
+        url: '/google_signup',
+        method: 'POST',
+        body: payload,
+      }),
+    }),
+
     autoLogin: builder.mutation({
       query: () => ({
         url: '/auto_login',
@@ -65,4 +73,4 @@ export const authApi = createApi({
   }),
 });
 
-export const { useManualSignUpMutation, useGoogleSignInMutation, useManualSignInMutation, useLogoutMutation, useAutoLoginMutation, useClearRememberMeMutation } = authApi;
+export const { useManualSignUpMutation, useGoogleSignInMutation, useGoogleSignUpMutation, useManualSignInMutation, useLogoutMutation, useAutoLoginMutation, useClearRememberMeMutation } = authApi;
