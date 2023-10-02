@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
-import { saveAuth } from "../../slices/auth.slice";
-import { serverErrors } from "../../utils/util";
-import { ERROR_MESSAGES } from "../../utils/constant";
-import LoadingSpinner from "../../components/spinner/Spinner";
-import { useGetUserQuery } from "../../api/user.api";
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { saveAuth } from '../../slices/auth.slice';
+import { handleServerError } from '../../utils/util';
+import LoadingSpinner from '../../components/spinner/Spinner';
+import { useGetUserQuery } from '../../api/user.api';
+import { AUTH_GUARD_GET_USER_ERROR } from '../../utils/error_messages';
 
 type AuthGuardProps = {
   children: React.ReactNode;
@@ -31,17 +31,13 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   }, [isSuccess]);
 
   useEffect(() => {
-    if (isError) {
-      const statusCode = error && "status" in error ? error.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      if (statusCode === 403) {
-        toast.error(ERROR_MESSAGES.AUTH_ERROR, { position: toast.POSITION.TOP_CENTER });
-        navigate("/");
-      } else {
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isError && error) {
+      if ('status' in error) {
+        const message = handleServerError(error.status, AUTH_GUARD_GET_USER_ERROR);
+        toast.error(message, { position: toast.POSITION.TOP_CENTER });
       }
     }
-  }, [isError]);
+  }, [isError, error]);
 
   if (isLoading) return <LoadingSpinner />;
 

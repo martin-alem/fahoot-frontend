@@ -9,7 +9,8 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../../../utils/constant';
 import { toast } from 'react-toastify';
 import { useUpdateEmailMutation } from '../../../api/security.api';
 import { useNavigate } from 'react-router-dom';
-import { serverErrors } from '../../../utils/util';
+import { handleServerError } from '../../../utils/util';
+import { EMAIL_UPDATE_ERROR } from '../../../utils/error_messages';
 
 const EmailUpdate: React.FC<IProfileProps> = ({ user }) => {
   const [emailAddress, setEmailAddress] = useState<string>('');
@@ -21,9 +22,7 @@ const EmailUpdate: React.FC<IProfileProps> = ({ user }) => {
 
   useEffect(() => {
     const result = validateEmail(emailAddress);
-    !result && emailAddress
-      ? setEmailAddressError(ERROR_MESSAGES.INVALID_EMAIL)
-      : setEmailAddressError(undefined);
+    !result && emailAddress ? setEmailAddressError(ERROR_MESSAGES.INVALID_EMAIL) : setEmailAddressError(undefined);
     setValidEmailAddress(result);
   }, [emailAddress]);
 
@@ -54,13 +53,14 @@ const EmailUpdate: React.FC<IProfileProps> = ({ user }) => {
     return () => {
       clearTimeout(timerId);
     };
-  }, [isSuccess, isError, navigate]);
+  }, [isSuccess]);
 
   useEffect(() => {
-    if (isError) {
-      const statusCode = error && 'status' in error ? error.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isError && error) {
+      if ('status' in error) {
+        const errorMessage = handleServerError(error.status, EMAIL_UPDATE_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isError, error]);
   return (
@@ -72,9 +72,7 @@ const EmailUpdate: React.FC<IProfileProps> = ({ user }) => {
             type="email"
             value={emailAddress}
             handleOnChange={(e) => setEmailAddress(e.target.value)}
-            handleOnBlur={() =>
-              toast.error(emailAddressError, { position: toast.POSITION.TOP_CENTER })
-            }
+            handleOnBlur={() => toast.error(emailAddressError, { position: toast.POSITION.TOP_CENTER })}
             error={emailAddressError}
             name="email"
             placeholder={user?.emailAddress}

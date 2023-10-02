@@ -14,7 +14,7 @@ const GoogleOAuth: React.FC<IGoogleOAuthProps> = ({ callback, text }) => {
 
       window.google.accounts.id.renderButton(
         document.getElementById('buttonDiv'),
-        { theme: 'outline', size: 'large', text: text, width: 400, logo_alignment: 'center' }, // customization attributes
+        { theme: 'filled_black', size: 'large', text: text, width: 400, logo_alignment: 'left' }, // customization attributes
       );
     }
   }, [callback, text]);

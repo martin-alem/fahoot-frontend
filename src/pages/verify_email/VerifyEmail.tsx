@@ -6,9 +6,10 @@ import { useEffect } from 'react';
 import { SUCCESS_MESSAGES } from '../../utils/constant';
 import { toast } from 'react-toastify';
 import { IVerifyEmailPayload } from '../../utils/types';
-import { serverErrors } from '../../utils/util';
+import { handleServerError } from '../../utils/util';
 import useQuery from '../../hooks/useQuery';
 import LoadingSpinner from '../../components/spinner/Spinner';
+import { VERIFY_EMAIL_ERROR } from '../../utils/error_messages';
 
 const VerifyEmail: React.FC = () => {
   useTitle('Verifying Email');
@@ -47,10 +48,11 @@ const VerifyEmail: React.FC = () => {
   }, [isSuccess, isError]);
 
   useEffect(() => {
-    if (isError) {
-      const statusCode = error && 'status' in error ? error.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isError && error) {
+      if ('status' in error) {
+        const errorMessage = handleServerError(error.status, VERIFY_EMAIL_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isError, error]);
 

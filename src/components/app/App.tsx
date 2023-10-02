@@ -17,95 +17,119 @@ import Profile from '../../pages/profile/Profile';
 import { AuthGuard } from '../../container/auth_guard/AuthGuard';
 import Logout from '../../pages/logout/Logout';
 import VerifyEmail from '../../pages/verify_email/VerifyEmail';
+import { ErrorBoundary } from 'react-error-boundary';
+import FallBackUIOnError from '../fallback_ui_on_error/FallbackUIOnError';
+import { useLogMutation } from '../../api/log.api';
+import { useEffect } from 'react';
+import { handleServerError } from '../../utils/util';
+import { toast } from 'react-toastify';
+import { APP_COMPONENT_LOG_ERROR } from '../../utils/error_messages';
 
 const App: React.FC = () => {
-  return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<Login />} />
-      <Route path="signup" element={<SignUp />} />
-      <Route path="/password_reset_request" element={<ResetPasswordRequest />} />
-      <Route path="/password_reset" element={<ResetPassword />} />
-      <Route path="/verify_email" element={<VerifyEmail />} />
-      <Route path="/join" element={<JoinGame />} />
+  const [log, { isError, error }] = useLogMutation();
 
-      {/* Protected routes */}
-      <Route
-        path="/podium"
-        element={ 
-          <AuthGuard>
-            <Podium />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/game_room"
-        element={
-          <AuthGuard>
-            <GameRoom />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/lobby"
-        element={
-          <AuthGuard>
-            <Lobby />
-          </AuthGuard>
-        }
-      />
-      <Route path="dashboard" element={<Dashboard />}>
+  const handleOnError = (error: Error) => {
+    const payload = { description: error.message, event: 'frontend_error' };
+    log(payload);
+  };
+
+  useEffect(() => {
+    if (isError && error) {
+      if ('status' in error) {
+        const message = handleServerError(error.status, APP_COMPONENT_LOG_ERROR);
+        toast.error(message, { position: toast.POSITION.TOP_CENTER });
+      }
+    }
+  }, [isError, error]);
+  return (
+    <ErrorBoundary fallbackRender={FallBackUIOnError} onReset={() => location.reload()} onError={handleOnError}>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Login />} />
+        <Route path="signup" element={<SignUp />} />
+        <Route path="/password_reset_request" element={<ResetPasswordRequest />} />
+        <Route path="/password_reset" element={<ResetPassword />} />
+        <Route path="/verify_email" element={<VerifyEmail />} />
+        <Route path="/join" element={<JoinGame />} />
+
+        {/* Protected routes */}
         <Route
-          index
+          path="/podium"
           element={
             <AuthGuard>
-              <Library />
+              <Podium />
             </AuthGuard>
           }
         />
         <Route
-          path="report"
+          path="/game_room"
           element={
             <AuthGuard>
-              <Report />
+              <GameRoom />
             </AuthGuard>
           }
         />
         <Route
-          path="profile"
+          path="/lobby"
           element={
             <AuthGuard>
-              <Profile />
+              <Lobby />
             </AuthGuard>
           }
         />
+        <Route path="dashboard" element={<Dashboard />}>
+          <Route
+            index
+            element={
+              <AuthGuard>
+                <Library />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="report"
+            element={
+              <AuthGuard>
+                <Report />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="profile"
+            element={
+              <AuthGuard>
+                <Profile />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="report/:id"
+            element={
+              <AuthGuard>
+                <ReportDetail />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="logout"
+            element={
+              <AuthGuard>
+                <Logout />
+              </AuthGuard>
+            }
+          />
+        </Route>
         <Route
-          path="report/:id"
+          path="/editor/:quizId"
           element={
             <AuthGuard>
-              <ReportDetail />
+              <Editor />
             </AuthGuard>
           }
         />
-        <Route
-          path="logout"
-          element={
-            <AuthGuard>
-              <Logout />
-            </AuthGuard>
-          }
-        />
-      </Route>
-      <Route
-        path="/editor/:quizId"
-        element={
-          <AuthGuard>
-            <Editor />
-          </AuthGuard>
-        }
-      />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </ErrorBoundary>
   );
 };
 

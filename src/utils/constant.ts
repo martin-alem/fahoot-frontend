@@ -13,6 +13,8 @@ export enum ERROR_MESSAGES {
   NOT_FOUND_ERROR = "The resource you're looking for could not be found",
   GENERIC = 'Something went wrong. Please try again later',
   TIMEOUT_ERROR = 'This operation is taking longer than expected. Please try again later',
+  FETCH_ERROR = 'We are having trouble talking to the server. Please try again later',
+  PARSING_ERROR = 'Unknown error. If this error persists, please contact support',
   INVALID_TITLE = 'Invalid title. Title is required and cannot contain special characters',
 }
 

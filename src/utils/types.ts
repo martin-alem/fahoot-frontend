@@ -282,10 +282,10 @@ export interface IInitializeOptions {
 }
 
 interface IRenderButtonOptions {
-  theme: 'outline' | 'filled'; // You can extend this
+  theme: 'outline' | 'filled' | 'filled_black' | 'filled_blue'; // You can extend this
   size: 'small' | 'medium' | 'large'; // You can extend this
   text: IGoogleText;
-  width: number;
+  width?: number;
   logo_alignment: string;
 }
 

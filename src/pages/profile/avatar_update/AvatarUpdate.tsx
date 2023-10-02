@@ -6,13 +6,14 @@ import Avatar from '../../../components/avatar/Avatar';
 import Button from '../../../components/button/Button';
 import { CameraIcon, CloudArrowUpIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
-import { extractKeyFromFileUrl, handleOnFileSelect, serverErrors } from '../../../utils/util';
+import { extractKeyFromFileUrl, handleOnFileSelect, handleServerError } from '../../../utils/util';
 import { useUpdateBasicInfoMutation } from '../../../api/user.api';
 import { SUCCESS_MESSAGES } from '../../../utils/constant';
 import { saveAuth } from '../../../slices/auth.slice';
 import { useDispatch } from 'react-redux';
 import Prompt from '../../../components/prompt/Prompt';
 import Modal from '../../../components/modal/Modal';
+import { AVATAR_UPDATE_ERROR, AVATAR_DELETE_ERROR, AVATAR_UPLOAD_ERROR } from '../../../utils/error_messages';
 
 const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -23,37 +24,11 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
 
   const [deleteFilePromptOpen, setDeleteFilePromptOpen] = useState(false);
 
-  const [
-    updateBasicInfo,
-    {
-      isLoading: isLoadingBasicInfo,
-      isSuccess: isSuccessBasicInfo,
-      isError: isErrorBasicInfo,
-      error: errorBasicInfo,
-      data: dataBasicInfo,
-    },
-  ] = useUpdateBasicInfoMutation();
+  const [updateBasicInfo, { isLoading: isLoadingBasicInfo, isSuccess: isSuccessBasicInfo, isError: isErrorBasicInfo, error: errorBasicInfo, data: dataBasicInfo }] = useUpdateBasicInfoMutation();
 
-  const [
-    uploadFile,
-    {
-      isLoading: isLoadingUploadFile,
-      isSuccess: isSuccessUploadFile,
-      isError: isErrorUploadFile,
-      error: errorUploadFile,
-      data: dataUploadFile,
-    },
-  ] = useUploadFileMutation();
+  const [uploadFile, { isLoading: isLoadingUploadFile, isSuccess: isSuccessUploadFile, isError: isErrorUploadFile, error: errorUploadFile, data: dataUploadFile }] = useUploadFileMutation();
 
-  const [
-    deleteFile,
-    {
-      isLoading: isLoadingDeleteFile,
-      isSuccess: isSuccessDeleteFile,
-      isError: isErrorDeleteFile,
-      error: errorDeleteFile,
-    },
-  ] = useDeleteFileMutation();
+  const [deleteFile, { isLoading: isLoadingDeleteFile, isSuccess: isSuccessDeleteFile, isError: isErrorDeleteFile, error: errorDeleteFile }] = useDeleteFileMutation();
 
   const handleFileUpload = async () => {
     if (!uploadedFile) return;
@@ -99,10 +74,11 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
   }, [isSuccessBasicInfo]);
 
   useEffect(() => {
-    if (isErrorBasicInfo) {
-      const statusCode = errorBasicInfo && 'status' in errorBasicInfo ? errorBasicInfo.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isErrorBasicInfo && errorBasicInfo) {
+      if ('status' in errorBasicInfo) {
+        const errorMessage = handleServerError(errorBasicInfo.status, AVATAR_UPDATE_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isErrorBasicInfo, errorBasicInfo]);
 
@@ -117,11 +93,11 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
   }, [isSuccessUploadFile]);
 
   useEffect(() => {
-    if (isErrorUploadFile) {
-      const statusCode =
-        errorUploadFile && 'status' in errorUploadFile ? errorUploadFile.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isErrorUploadFile && errorUploadFile) {
+      if ('status' in errorUploadFile) {
+        const errorMessage = handleServerError(errorUploadFile.status, AVATAR_UPLOAD_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isErrorUploadFile, errorUploadFile]);
 
@@ -135,52 +111,26 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
   }, [isSuccessDeleteFile]);
 
   useEffect(() => {
-    if (isErrorDeleteFile) {
-      const statusCode =
-        errorDeleteFile && 'status' in errorDeleteFile ? errorDeleteFile.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isErrorDeleteFile && errorDeleteFile) {
+      if ('status' in errorDeleteFile) {
+        const errorMessage = handleServerError(errorDeleteFile.status, AVATAR_DELETE_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isErrorDeleteFile, errorDeleteFile]);
   return (
     <form>
       <div className="mb-2 col-span-full flex items-center gap-x-8">
-        <Avatar
-          height="h-24"
-          width="w-24"
-          rounded="rounded-lg"
-          src={base64File || fileUrl || undefined}
-          alt={user?.lastName ?? ''}
-        />
+        <Avatar height="h-24" width="w-24" rounded="rounded-lg" src={base64File || fileUrl || undefined} alt={user?.lastName ?? ''} />
         <div>
           {!uploadedFile ? (
             <>
               <div className="flex items-center gap-4">
-                <Button
-                  type="secondary"
-                  label="Select"
-                  prefixIcon={<CameraIcon className="w-6" />}
-                  handleClick={() => fileInputRef.current?.click()}
-                />
-                <Button
-                  type="danger"
-                  label="Remove"
-                  prefixIcon={<TrashIcon className="w-6" />}
-                  handleClick={() => setDeleteFilePromptOpen(true)}
-                  disabled={!fileUrl}
-                />
+                <Button type="secondary" label="Select" prefixIcon={<CameraIcon className="w-6" />} handleClick={() => fileInputRef.current?.click()} />
+                <Button type="danger" label="Remove" prefixIcon={<TrashIcon className="w-6" />} handleClick={() => setDeleteFilePromptOpen(true)} disabled={!fileUrl} />
               </div>
-              <input
-                type="file"
-                name="avatar"
-                ref={fileInputRef}
-                className="hidden"
-                multiple={false}
-                onChange={(e) => handleOnFileSelect(e, setUploadedFile, setBase64File)}
-              />
-              <p className="mt-2 text-xs leading-5 text-secondary-500">
-                JPG, GIF or PNG. 10MB max.
-              </p>
+              <input type="file" name="avatar" ref={fileInputRef} className="hidden" multiple={false} onChange={(e) => handleOnFileSelect(e, setUploadedFile, setBase64File)} />
+              <p className="mt-2 text-xs leading-5 text-secondary-500">JPG, GIF or PNG. 10MB max.</p>
             </>
           ) : (
             <div className="flex items-center gap-4">
@@ -192,13 +142,7 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
                 loading={isLoadingUploadFile || isLoadingBasicInfo}
                 disabled={!uploadedFile}
               />
-              <Button
-                type="danger"
-                label="Cancel"
-                prefixIcon={<XMarkIcon className="w-6" />}
-                handleClick={handleCancelFileSelect}
-                disabled={!uploadedFile}
-              />
+              <Button type="danger" label="Cancel" prefixIcon={<XMarkIcon className="w-6" />} handleClick={handleCancelFileSelect} disabled={!uploadedFile} />
             </div>
           )}
         </div>

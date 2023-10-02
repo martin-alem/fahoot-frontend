@@ -6,9 +6,10 @@ import { useUpdatePasswordMutation } from '../../../api/security.api';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../../../utils/constant';
 import { validatePassword } from '../../../utils/input_validation';
 import { toast } from 'react-toastify';
-import { serverErrors } from '../../../utils/util';
+import { handleServerError } from '../../../utils/util';
 import Button from '../../../components/button/Button';
 import { useNavigate } from 'react-router-dom';
+import { PASSWORD_UPDATE_ERROR } from '../../../utils/error_messages';
 
 const PasswordUpdate: React.FC = () => {
   const [updatePassword, { isLoading, isSuccess, isError, error }] = useUpdatePasswordMutation();
@@ -28,25 +29,19 @@ const PasswordUpdate: React.FC = () => {
 
   useEffect(() => {
     const result = validatePassword(oldPassword);
-    !result && oldPassword
-      ? setOldPasswordError(ERROR_MESSAGES.INVALID_PASSWORD)
-      : setOldPasswordError(undefined);
+    !result && oldPassword ? setOldPasswordError(ERROR_MESSAGES.INVALID_PASSWORD) : setOldPasswordError(undefined);
     setValidOldPassword(result);
   }, [oldPassword]);
 
   useEffect(() => {
     const result = validatePassword(password);
-    !result && password
-      ? setPasswordError(ERROR_MESSAGES.INVALID_PASSWORD)
-      : setPasswordError(undefined);
+    !result && password ? setPasswordError(ERROR_MESSAGES.INVALID_PASSWORD) : setPasswordError(undefined);
     setValidPassword(result);
   }, [password]);
 
   useEffect(() => {
     const result = validatePassword(confirmPassword) && password === confirmPassword;
-    !result && password
-      ? setConfirmPasswordError(ERROR_MESSAGES.PASSWORD_MISMATCH)
-      : setConfirmPasswordError(undefined);
+    !result && password ? setConfirmPasswordError(ERROR_MESSAGES.PASSWORD_MISMATCH) : setConfirmPasswordError(undefined);
     setValidConfirmPassword(result);
   }, [password, confirmPassword]);
 
@@ -82,10 +77,11 @@ const PasswordUpdate: React.FC = () => {
   }, [isSuccess, isError, navigate]);
 
   useEffect(() => {
-    if (isError) {
-      const statusCode = error && 'status' in error ? error.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isError && error) {
+      if ('status' in error) {
+        const errorMessage = handleServerError(error.status, PASSWORD_UPDATE_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isError, error]);
   return (
@@ -127,9 +123,7 @@ const PasswordUpdate: React.FC = () => {
             type="password"
             value={confirmPassword}
             handleOnChange={(e) => setConfirmPassword(e.target.value)}
-            handleOnBlur={() =>
-              toast.error(confirmPasswordError, { position: toast.POSITION.TOP_CENTER })
-            }
+            handleOnBlur={() => toast.error(confirmPasswordError, { position: toast.POSITION.TOP_CENTER })}
             error={confirmPasswordError}
             name="confirm_password"
             placeholder="Enter your password"

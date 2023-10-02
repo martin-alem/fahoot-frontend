@@ -4,7 +4,8 @@ import { useClearRememberMeMutation } from '../../../api/auth.api';
 import { SUCCESS_MESSAGES } from '../../../utils/constant';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
-import { serverErrors } from '../../../utils/util';
+import { handleServerError } from '../../../utils/util';
+import { CLEAR_REMEMBER_ME_ERROR } from '../../../utils/error_messages';
 
 const ClearRememberMe: React.FC = () => {
   const [clearRememberMe, { isLoading, isSuccess, isError, error }] = useClearRememberMeMutation();
@@ -22,22 +23,17 @@ const ClearRememberMe: React.FC = () => {
   }, [isSuccess, isError]);
 
   useEffect(() => {
-    if (isError) {
-      const statusCode = error && 'status' in error ? error.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isError && error) {
+      if ('status' in error) {
+        const errorMessage = handleServerError(error.status, CLEAR_REMEMBER_ME_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isError, error]);
   return (
     <>
       <div className="mt-8 sm:max-w-xl">
-        <Button
-          label="Clear Remember Me"
-          type="primary"
-          loading={isLoading}
-          handleClick={handleClearRememberMeSubmit}
-          suffixIcon={<TrashIcon className="w-6" />}
-        />
+        <Button label="Clear Remember Me" type="primary" loading={isLoading} handleClick={handleClearRememberMeSubmit} suffixIcon={<TrashIcon className="w-6" />} />
       </div>
     </>
   );

@@ -8,18 +8,18 @@ import { ERROR_MESSAGES } from '../../utils/constant';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { IResetPasswordRequestPayload } from '../../utils/types';
-import { serverErrors } from '../../utils/util';
+import { handleServerError } from '../../utils/util';
 import Input from '../../components/input/input';
 import { ArrowSmallRightIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import Button from '../../components/button/Button';
 import { Link } from 'react-router-dom';
 import useKeyboardEvent from '../../hooks/useKeyboardEvent';
+import { RESET_PASSWORD_REQUEST_ERROR } from '../../utils/error_messages';
 
 const ResetPasswordRequest: React.FC = () => {
   useTitle('Password Reset Request');
 
-  const [resetPasswordRequest, { isLoading, isSuccess, isError, error }] =
-    useResetPasswordRequestMutation();
+  const [resetPasswordRequest, { isLoading, isSuccess, isError, error }] = useResetPasswordRequestMutation();
 
   const [resetSuccessfull, setResetSuccessfull] = useState(false);
 
@@ -29,9 +29,7 @@ const ResetPasswordRequest: React.FC = () => {
 
   useEffect(() => {
     const result = validateEmail(emailAddress);
-    !result && emailAddress
-      ? setEmailAddressError(ERROR_MESSAGES.INVALID_EMAIL)
-      : setEmailAddressError(undefined);
+    !result && emailAddress ? setEmailAddressError(ERROR_MESSAGES.INVALID_EMAIL) : setEmailAddressError(undefined);
     setValidEmailAddress(result);
   }, [emailAddress]);
 
@@ -56,14 +54,15 @@ const ResetPasswordRequest: React.FC = () => {
       setResetSuccessfull(true);
       setEmailAddress('');
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess]);
 
   useEffect(() => {
-    if (isError) {
-      setResetSuccessfull(false);
-      const statusCode = error && 'status' in error ? error.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isError && error) {
+      if ('status' in error) {
+        setResetSuccessfull(false);
+        const errorMessage = handleServerError(error.status, RESET_PASSWORD_REQUEST_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isError, error]);
   return (
@@ -71,9 +70,7 @@ const ResetPasswordRequest: React.FC = () => {
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <img className="mx-auto h-20 w-auto" src={Logo} alt="Fahoot" />
-          <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-secondary-500">
-            Password Reset Request
-          </h2>
+          <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-secondary-500">Password Reset Request</h2>
         </div>
         <div className="sm:mx-auto sm:w-full sm:max-w-lg">
           {resetSuccessfull && (
@@ -96,9 +93,7 @@ const ResetPasswordRequest: React.FC = () => {
                   type="email"
                   value={emailAddress}
                   handleOnChange={(e) => setEmailAddress(e.target.value)}
-                  handleOnBlur={() =>
-                    toast.error(emailAddressError, { position: toast.POSITION.TOP_CENTER })
-                  }
+                  handleOnBlur={() => toast.error(emailAddressError, { position: toast.POSITION.TOP_CENTER })}
                   error={emailAddressError}
                   name="email"
                   placeholder="john.smith@domain.com"
@@ -121,10 +116,7 @@ const ResetPasswordRequest: React.FC = () => {
 
           <p className="mt-10 text-center text-sm text-gray-500">
             Remembered your password?{' '}
-            <Link
-              to="/"
-              className="font-semibold leading-6 text-primary-600 hover:text-primary-500"
-            >
+            <Link to="/" className="font-semibold leading-6 text-primary-600 hover:text-primary-500">
               Sign in here
             </Link>
           </p>

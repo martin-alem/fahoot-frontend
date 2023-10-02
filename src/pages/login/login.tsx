@@ -7,7 +7,7 @@ import { useAutoLoginMutation, useGoogleSignInMutation, useManualSignInMutation 
 import { IGoogleOAuthPayload, IGoogleOAuthResponse, IManualSignInPayload } from '../../utils/types';
 import { saveAuth } from '../../slices/auth.slice';
 import { useEffect, useState } from 'react';
-import { serverErrors } from '../../utils/util';
+import { handleServerError } from '../../utils/util';
 import { toast } from 'react-toastify';
 import { validateEmail, validatePassword } from '../../utils/input_validation';
 import { ERROR_MESSAGES } from '../../utils/constant';
@@ -16,13 +16,14 @@ import { ArrowLeftOnRectangleIcon, EnvelopeIcon, KeyIcon } from '@heroicons/reac
 import Button from '../../components/button/Button';
 import useKeyboardEvent from '../../hooks/useKeyboardEvent';
 import GoogleOAuth from '../../components/google_oauth/GoogleOAuth';
+import { LOGIN_GOOGLE_ERROR, LOGIN_MANUAL_ERROR } from '../../utils/error_messages';
 
 const Login: React.FC = () => {
   useTitle('Login');
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [manualSignin, { isLoading, isSuccess, isError, error, data }] = useManualSignInMutation();
-  const [autoLogin, { isLoading: autoIsLoading, isSuccess: autoIsSuccess, isError: autoIsError, data: autoData }] = useAutoLoginMutation();
+  const [autoLogin, { isLoading: autoIsLoading, isSuccess: autoIsSuccess, data: autoData }] = useAutoLoginMutation();
   const [googleLogin, { isLoading: googleIsLoading, isSuccess: googleIsSuccess, isError: googleIsError, error: googleError, data: googleData }] = useGoogleSignInMutation();
 
   const [emailAddress, setEmailAddress] = useState<string>('');
@@ -82,10 +83,11 @@ const Login: React.FC = () => {
   }, [isSuccess, isError]);
 
   useEffect(() => {
-    if (isError) {
-      const statusCode = error && 'status' in error ? error.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isError && error) {
+      if ('status' in error) {
+        const errorMessage = handleServerError(error.status, LOGIN_MANUAL_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isError, error]);
 
@@ -98,12 +100,13 @@ const Login: React.FC = () => {
   }, [googleIsSuccess]);
 
   useEffect(() => {
-    if (googleIsError) {
-      const statusCode = googleError && 'status' in googleError ? googleError.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (googleIsError && googleError) {
+      if ('status' in googleError) {
+        const errorMessage = handleServerError(googleError.status, LOGIN_GOOGLE_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
-  }, [googleIsError, error]);
+  }, [googleIsError, googleError]);
 
   //Handle auto sign in
   useEffect(() => {
@@ -116,7 +119,7 @@ const Login: React.FC = () => {
         setEmailAddress(autoData.emailAddress);
       }
     }
-  }, [autoIsSuccess, autoIsError]);
+  }, [autoIsSuccess]);
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">

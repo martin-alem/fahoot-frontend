@@ -38,6 +38,27 @@ export function serverErrors(statusCode: number | 'FETCH_ERROR' | 'PARSING_ERROR
   }
 }
 
+export function handleServerError(statusCode: number | 'FETCH_ERROR' | 'TIMEOUT_ERROR' | 'PARSING_ERROR' | 'CUSTOM_ERROR', errorReference: { [key: number]: string }): string {
+  if (typeof statusCode === 'string') {
+    switch (statusCode) {
+      case 'FETCH_ERROR':
+        return ERROR_MESSAGES.FETCH_ERROR;
+      case 'TIMEOUT_ERROR':
+        return ERROR_MESSAGES.TIMEOUT_ERROR;
+      case 'PARSING_ERROR':
+        return ERROR_MESSAGES.PARSING_ERROR;
+      case 'CUSTOM_ERROR':
+        return ERROR_MESSAGES.GENERIC;
+      default:
+        return ERROR_MESSAGES.GENERIC;
+    }
+  } else if (typeof statusCode === 'number') {
+    if (!(statusCode in errorReference)) return ERROR_MESSAGES.SERVER_ERROR;
+    return errorReference[statusCode];
+  }
+  return ERROR_MESSAGES.GENERIC;
+}
+
 export function handleOnFileSelect(event: React.ChangeEvent<HTMLInputElement>, setFile: setFunction<File | null>, setFileUrl: setFunction<string | null>): void {
   const files = event.target.files;
 

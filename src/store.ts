@@ -7,6 +7,7 @@ import { userApi } from './api/user.api';
 import { securityApi } from './api/security.api';
 import { uploadApi } from './api/upload.api';
 import { quizApi } from './api/quiz.api';
+import { logApi } from './api/log.api';
 
 export const store = configureStore({
   reducer: {
@@ -17,16 +18,10 @@ export const store = configureStore({
     [securityApi.reducerPath]: securityApi.reducer,
     [uploadApi.reducerPath]: uploadApi.reducer,
     [quizApi.reducerPath]: quizApi.reducer,
+    [logApi.reducerPath]: logApi.reducer,
   },
 
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
-      authApi.middleware,
-      userApi.middleware,
-      securityApi.middleware,
-      uploadApi.middleware,
-      quizApi.middleware,
-    ),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(authApi.middleware, userApi.middleware, securityApi.middleware, uploadApi.middleware, quizApi.middleware, logApi.middleware),
 });
 
 setupListeners(store.dispatch);

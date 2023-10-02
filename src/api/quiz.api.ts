@@ -7,7 +7,6 @@ const API_KEY = import.meta.env.VITE_APP_API_KEY;
 export const quizApi = createApi({
   reducerPath: 'quizApi',
   refetchOnMountOrArgChange: true,
-  refetchOnFocus: true,
   refetchOnReconnect: true,
   baseQuery: fetchBaseQuery({
     baseUrl: `${BACKEND_API_URL}/quiz`,

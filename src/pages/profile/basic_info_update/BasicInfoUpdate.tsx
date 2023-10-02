@@ -5,26 +5,18 @@ import { IProfileProps, IUpdateBasicInfoPayload } from '../../../utils/types';
 import { InboxArrowDownIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import Button from '../../../components/button/Button';
 import { capitalize, isEqual, lowerCase } from 'lodash';
-import { serverErrors } from '../../../utils/util';
+import { handleServerError } from '../../../utils/util';
 import { useEffect, useState } from 'react';
 import { saveAuth } from '../../../slices/auth.slice';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../../../utils/constant';
 import { validateName } from '../../../utils/input_validation';
 import { useUpdateBasicInfoMutation } from '../../../api/user.api';
 import { useDispatch } from 'react-redux';
+import { BASIC_INFO_UPDATE_ERROR } from '../../../utils/error_messages';
 
 const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
   const dispatch = useDispatch();
-  const [
-    updateBasicInfo,
-    {
-      isLoading: isLoadingBasicInfo,
-      isSuccess: isSuccessBasicInfo,
-      isError: isErrorBasicInfo,
-      error: errorBasicInfo,
-      data: dataBasicInfo,
-    },
-  ] = useUpdateBasicInfoMutation();
+  const [updateBasicInfo, { isLoading: isLoadingBasicInfo, isSuccess: isSuccessBasicInfo, isError: isErrorBasicInfo, error: errorBasicInfo, data: dataBasicInfo }] = useUpdateBasicInfoMutation();
 
   const [firstName, setFirstName] = useState<string>('');
   const [validFirstName, setValidFirstName] = useState<boolean>(false);
@@ -36,17 +28,13 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
 
   useEffect(() => {
     const result = validateName(firstName);
-    !result && firstName
-      ? setFirstNameError(ERROR_MESSAGES.INVALID_NAME)
-      : setFirstNameError(undefined);
+    !result && firstName ? setFirstNameError(ERROR_MESSAGES.INVALID_NAME) : setFirstNameError(undefined);
     setValidFirstName(result);
   }, [firstName]);
 
   useEffect(() => {
     const result = validateName(lastName);
-    !result && lastName
-      ? setLastNameError(ERROR_MESSAGES.INVALID_NAME)
-      : setLastNameError(undefined);
+    !result && lastName ? setLastNameError(ERROR_MESSAGES.INVALID_NAME) : setLastNameError(undefined);
     setValidLastName(result);
   }, [lastName]);
 
@@ -55,23 +43,6 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
     setFirstName(capitalize(user?.firstName) ?? '');
     setLastName(capitalize(user?.lastName) ?? '');
   }, [user?.firstName, user?.lastName]);
-
-  useEffect(() => {
-    if (isSuccessBasicInfo) {
-      dispatch(saveAuth(dataBasicInfo));
-      toast.success(SUCCESS_MESSAGES.BASIC_INFO_UPDATE_SUCCESS, {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    }
-  }, [isSuccessBasicInfo]);
-
-  useEffect(() => {
-    if (isErrorBasicInfo) {
-      const statusCode = errorBasicInfo && 'status' in errorBasicInfo ? errorBasicInfo.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-    }
-  }, [isErrorBasicInfo, errorBasicInfo]);
 
   const handleInfoUpdate = async () => {
     if (!firstName && !lastName) return;
@@ -82,10 +53,7 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
 
     /**Prevent redundant updates if user's data has not changed */
     if (user) {
-      const anyChange = isEqual(
-        { firstName: lowerCase(firstName), lastName: lowerCase(lastName) },
-        { firstName: lowerCase(user.firstName), lastName: lowerCase(user.lastName) },
-      );
+      const anyChange = isEqual({ firstName: lowerCase(firstName), lastName: lowerCase(lastName) }, { firstName: lowerCase(user.firstName), lastName: lowerCase(user.lastName) });
       if (anyChange) {
         toast.info('No changes where detected.', {
           position: toast.POSITION.TOP_RIGHT,
@@ -105,6 +73,24 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
     }
     await handleInfoUpdate();
   };
+
+  useEffect(() => {
+    if (isSuccessBasicInfo) {
+      dispatch(saveAuth(dataBasicInfo));
+      toast.success(SUCCESS_MESSAGES.BASIC_INFO_UPDATE_SUCCESS, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  }, [isSuccessBasicInfo]);
+
+  useEffect(() => {
+    if (isErrorBasicInfo && errorBasicInfo) {
+      if ('status' in errorBasicInfo) {
+        const errorMessage = handleServerError(errorBasicInfo.status, BASIC_INFO_UPDATE_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
+    }
+  }, [isErrorBasicInfo, errorBasicInfo]);
   return (
     <form>
       <div className="">

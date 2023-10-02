@@ -1,31 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Link, useNavigate } from "react-router-dom";
-import useTitle from "../../hooks/useTitle";
-import Logo from "./../../assets/Fahoot Logo.svg";
-import { useResetPasswordMutation } from "../../api/security.api";
-import { useEffect, useState } from "react";
-import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../../utils/constant";
-import { validatePassword } from "../../utils/input_validation";
-import { toast } from "react-toastify";
-import { IResetPasswordPayload } from "../../utils/types";
-import { serverErrors } from "../../utils/util";
-import Input from "../../components/input/input";
-import { ArrowSmallRightIcon, KeyIcon } from "@heroicons/react/24/outline";
-import Button from "../../components/button/Button";
-import useQuery from "../../hooks/useQuery";
+import { Link, useNavigate } from 'react-router-dom';
+import useTitle from '../../hooks/useTitle';
+import Logo from './../../assets/Fahoot Logo.svg';
+import { useResetPasswordMutation } from '../../api/security.api';
+import { useEffect, useState } from 'react';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../../utils/constant';
+import { validatePassword } from '../../utils/input_validation';
+import { toast } from 'react-toastify';
+import { IResetPasswordPayload } from '../../utils/types';
+import { handleServerError } from '../../utils/util';
+import Input from '../../components/input/input';
+import { ArrowSmallRightIcon, KeyIcon } from '@heroicons/react/24/outline';
+import Button from '../../components/button/Button';
+import useQuery from '../../hooks/useQuery';
+import { RESET_PASSWORD_ERROR } from '../../utils/error_messages';
 
 const ResetPassword: React.FC = () => {
-  useTitle("Password Reset");
+  useTitle('Password Reset');
   const navigate = useNavigate();
   const query = useQuery();
 
   const [resetPassword, { isLoading, isSuccess, isError, error }] = useResetPasswordMutation();
 
-  const [password, setPassword] = useState<string>("");
+  const [password, setPassword] = useState<string>('');
   const [validPassword, setValidPassword] = useState<boolean>(false);
   const [passwordError, setPasswordError] = useState<string | undefined>(undefined);
 
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [validConfirmPassword, setValidConfirmPassword] = useState<boolean>(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState<string | undefined>(undefined);
 
@@ -43,13 +44,13 @@ const ResetPassword: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!validPassword || !validConfirmPassword) {
-      toast.error("Some input fields are invalid. Please check again", { position: toast.POSITION.TOP_CENTER });
+      toast.error('Some input fields are invalid. Please check again', { position: toast.POSITION.TOP_CENTER });
       return;
     }
 
     const payload: IResetPasswordPayload = {
       password,
-      token: query.get("token") || "",
+      token: query.get('token') || '',
     };
     resetPassword(payload);
   };
@@ -58,10 +59,10 @@ const ResetPassword: React.FC = () => {
     let timerId: number;
 
     if (isSuccess) {
-      setPassword("");
-      setConfirmPassword("");
+      setPassword('');
+      setConfirmPassword('');
       toast.info(SUCCESS_MESSAGES.PASSWORD_RESET_SUCCESS, { position: toast.POSITION.TOP_CENTER });
-      timerId = setTimeout(() => navigate("/"), 5000);
+      timerId = setTimeout(() => navigate('/'), 5000);
     }
 
     return () => {
@@ -70,10 +71,11 @@ const ResetPassword: React.FC = () => {
   }, [isSuccess, isError]);
 
   useEffect(() => {
-    if (isError) {
-      const statusCode = error && "status" in error ? error.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isError && error) {
+      if ('status' in error) {
+        const errorMessage = handleServerError(error.status, RESET_PASSWORD_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isError, error]);
   return (
@@ -129,7 +131,7 @@ const ResetPassword: React.FC = () => {
           </div>
 
           <p className="mt-10 text-center text-sm text-gray-500">
-            Remembered your password?{" "}
+            Remembered your password?{' '}
             <Link to="/" className="font-semibold leading-6 text-primary-600 hover:text-primary-500">
               Sign in here
             </Link>

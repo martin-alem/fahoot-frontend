@@ -12,10 +12,11 @@ import { validateEmail, validateName, validatePassword } from '../../utils/input
 import { ERROR_MESSAGES } from '../../utils/constant';
 import Input from '../../components/input/input';
 import { IGoogleOAuthPayload, IGoogleOAuthResponse, IManualSignupPayload } from '../../utils/types';
-import { serverErrors } from '../../utils/util';
+import { handleServerError } from '../../utils/util';
 import { saveAuth } from '../../slices/auth.slice';
 import useKeyboardEvent from '../../hooks/useKeyboardEvent';
 import GoogleOAuth from '../../components/google_oauth/GoogleOAuth';
+import { GOOGLE_SIGNUP_ERROR, MANUAL_SIGNUP_ERROR } from '../../utils/error_messages';
 
 const SignUp: React.FC = () => {
   useTitle('Create Account');
@@ -100,10 +101,11 @@ const SignUp: React.FC = () => {
   }, [isSuccess]);
 
   useEffect(() => {
-    if (isError) {
-      const statusCode = error && 'status' in error ? error.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isError && error) {
+      if ('status' in error) {
+        const errorMessage = handleServerError(error.status, MANUAL_SIGNUP_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isError, error]);
 
@@ -115,10 +117,11 @@ const SignUp: React.FC = () => {
   }, [googleIsSuccess]);
 
   useEffect(() => {
-    if (googleIsError) {
-      const statusCode = googleError && 'status' in googleError ? googleError.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (googleIsError && googleError) {
+      if ('status' in googleError) {
+        const errorMessage = handleServerError(googleError.status, GOOGLE_SIGNUP_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [googleIsError, googleError]);
   return (
