@@ -19,12 +19,12 @@ export const quizSlice = createSlice({
       state.currentQuestion = action.payload;
     },
 
-    deleteQuiz: (state) => {
+    clearQuiz: (state) => {
       state.quiz = null;
       state.currentQuestion = null;
     },
   },
 });
 
-export const { saveQuiz, deleteQuiz, updateCurrentQuestion } = quizSlice.actions;
+export const { saveQuiz, clearQuiz, updateCurrentQuestion } = quizSlice.actions;
 export default quizSlice.reducer;

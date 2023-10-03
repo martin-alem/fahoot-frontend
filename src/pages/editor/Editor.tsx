@@ -4,24 +4,27 @@ import Logo from './../../assets/Fahoot Logo.svg';
 import Button from '../../components/button/Button';
 import useTitle from '../../hooks/useTitle';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import Modal from '../../components/modal/Modal';
-import QuizSetting from '../../components/quiz_setting/QuizSetting';
 import { useGetQuizQuery, useUpdateQuizMutation } from '../../api/quiz.api';
-import { serverErrors, updateQuizAndDispatch } from '../../utils/util';
+import { getValueFromObject, handleServerError, updateQuestionOptions, updateQuizAndDispatch } from '../../utils/util';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/spinner/Spinner';
 import Input from '../../components/input/input';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteQuiz, saveQuiz, updateCurrentQuestion } from '../../slices/quiz.slice';
+import { clearQuiz, saveQuiz, updateCurrentQuestion } from '../../slices/quiz.slice';
 import { RootState } from '../../store';
 import QuestionManager from './questions_manager/QuestionManager';
 import QuestionSettings from './question_settings/QuestionSettings';
-import { IQuestion } from '../../utils/types';
+import { IOption, IPair, IQuestion, IQuiz, ModalHandle } from '../../utils/types';
 import QuestionOptions from './question_options/QuestionOptions';
 import QuestionMediaUpload from './question_media_upload/QuestionMediaUpload';
 import { hasCorrectQuestionTypeBaseOnOptionCount, mustHaveExactlyOneTrueOption, validateQuestion, validateQuestionOption, validateQuiz, validateQuizSettings } from '../../utils/input_validation';
-import { QuizStatus } from '../../utils/constant';
+import { ColorList, PointsList, QuestionType, QuestionTypeList, QuizStatus, TimeLimitList } from '../../utils/constant';
+import QuizSetting from './quiz_settings/QuizSettings';
+import ObjectID from 'bson-objectid';
+import QuestionInput from './question_input/QuestionInput';
+import { GET_QUIZ_ERROR, UPDATE_QUIZ_ERROR } from '../../utils/error_messages';
 
 const Editor: React.FC = () => {
   useTitle('Editor');
@@ -33,9 +36,15 @@ const Editor: React.FC = () => {
   const quiz = useSelector((state: RootState) => state.quizState.quiz);
   const currentQuestion = useSelector((state: RootState) => state.quizState.currentQuestion);
 
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const modalRef = useRef<ModalHandle>(null);
 
-  const [quizTitle, setQuizTitle] = useState<string>('');
+  const openModal = () => {
+    modalRef.current?.open();
+  };
+
+  const closeModal = () => {
+    modalRef.current?.close();
+  };
 
   const [updateQuiz, { isLoading: isLoadingUpdateQuiz, isSuccess: isSuccessUpdateQuiz, isError: isErrorUpdateQuiz, error: errorUpdateQuiz }] = useUpdateQuizMutation();
 
@@ -64,9 +73,203 @@ const Editor: React.FC = () => {
     updateQuizAndDispatch(updatedQuestion, questionIndex, quiz, dispatch, updateCurrentQuestion, saveQuiz);
   };
 
-  useEffect(() => {
-    setQuizTitle(currentQuestion?.title ?? 'Untitled');
-  }, [currentQuestion]);
+  const handleSaveQuizSettings = useCallback(
+    (title: string, lobbyMusic: string, gameMusic: string, podiumMusic: string, colorLabel: string) => {
+      if (!quiz) return;
+      const { settings } = quiz;
+      const updatedSettings = {
+        ...settings,
+        lobbyMusic,
+        podiumMusic,
+        gameMusic,
+        colorLabel,
+      };
+      const updateQuiz: IQuiz = {
+        ...quiz,
+        title,
+        settings: updatedSettings,
+      };
+      dispatch(saveQuiz(updateQuiz));
+    },
+    [quiz, dispatch],
+  );
+
+  const handleUpdateQuizQuestion = useCallback(() => {
+    if (quiz) {
+      const { questions } = quiz;
+
+      const newQuestion: IQuestion = {
+        _id: new ObjectID().toHexString(),
+        title: 'What is Fahoot?',
+        questionType: QuestionType.BOOLEAN,
+        points: 100,
+        duration: 30,
+        mediaUrl: null,
+        options: [
+          {
+            isCorrect: false,
+            option: 'Kahoot Clone',
+            _id: new ObjectID().toHexString(),
+            colorLabel: ColorList[0].value,
+          },
+          {
+            isCorrect: false,
+            option: 'Next Online Game Quiz',
+            _id: new ObjectID().toHexString(),
+            colorLabel: ColorList[1].value,
+          },
+        ],
+      };
+
+      const updatedQuestions = [...questions, newQuestion];
+      const updatedQuiz = { ...quiz, questions: updatedQuestions };
+      dispatch(saveQuiz(updatedQuiz));
+    }
+  }, [quiz, dispatch]);
+
+  const handleRemoveQuizQuestion = useCallback(
+    (questionId: string) => {
+      if (!quiz) return;
+      if (quiz.questions.length <= 1) {
+        toast.info('You must have at least one question in a quiz', {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        return;
+      }
+      const { questions } = quiz;
+      const updateQuestions = questions.filter((question) => question._id !== questionId);
+      const updatedQuiz = { ...quiz, questions: updateQuestions };
+      dispatch(saveQuiz(updatedQuiz));
+      dispatch(updateCurrentQuestion(updateQuestions[0]));
+    },
+    [quiz, currentQuestion, dispatch],
+  );
+
+  const handleDuplicateQuizQuestion = useCallback(
+    (questionId: string) => {
+      if (!quiz) return;
+      const { questions } = quiz;
+      const foundQuestion = questions.find((question) => question._id === questionId);
+
+      if (!foundQuestion) return;
+
+      const clonedQuestion = {
+        ...foundQuestion,
+        _id: new ObjectID().toHexString(),
+        options: foundQuestion.options.map((option) => ({
+          ...option,
+          _id: new ObjectID().toHexString(),
+          isCorrect: false,
+        })),
+      };
+      const updatedQuestions = [...questions, clonedQuestion];
+
+      const updatedQuiz = { ...quiz, questions: updatedQuestions };
+
+      dispatch(saveQuiz(updatedQuiz));
+    },
+    [quiz, currentQuestion, dispatch],
+  );
+
+  const handleChangeCurrentQuestion = useCallback(
+    (question: IQuestion) => {
+      dispatch(updateCurrentQuestion(question));
+    },
+    [quiz, currentQuestion, dispatch],
+  );
+
+  const handleUpdateQuestionMediaUrl = useCallback(
+    (mediaUrl: string | null) => {
+      if (!currentQuestion || !quiz) return;
+      const questionIndex = quiz.questions.findIndex((question) => question._id === currentQuestion._id);
+
+      if (questionIndex === -1) return;
+
+      const updatedQuestion: IQuestion = {
+        ...quiz.questions[questionIndex],
+        mediaUrl: mediaUrl,
+      };
+
+      updateQuizAndDispatch(updatedQuestion, questionIndex, quiz, dispatch, updateCurrentQuestion, saveQuiz);
+    },
+    [quiz, currentQuestion, dispatch],
+  );
+
+  const handleUpdateQuestionSettings = useCallback(
+    (questionType: IPair | null, points: IPair | null, duration: IPair | null) => {
+      if (!currentQuestion || !quiz) return;
+
+      const questionIndex = quiz.questions.findIndex((question) => question._id === currentQuestion._id);
+
+      if (questionIndex === -1) return;
+
+      let updatedQuestion: IQuestion = quiz.questions[questionIndex];
+
+      if (questionType) {
+        updatedQuestion = {
+          ...quiz.questions[questionIndex],
+          questionType: (questionType.value as QuestionType) ?? quiz.questions[questionIndex].questionType,
+          options: updateQuestionOptions(questionType.value as QuestionType, quiz.questions[questionIndex].questionType, quiz.questions[questionIndex].options),
+        };
+      }
+
+      if (points) {
+        updatedQuestion = {
+          ...quiz.questions[questionIndex],
+          points: parseInt(points.value) ?? quiz.questions[questionIndex].points,
+        };
+      }
+
+      if (duration) {
+        updatedQuestion = {
+          ...quiz.questions[questionIndex],
+          duration: parseInt(duration.value) ?? quiz.questions[questionIndex].duration,
+        };
+      }
+
+      updateQuizAndDispatch(updatedQuestion, questionIndex, quiz, dispatch, updateCurrentQuestion, saveQuiz);
+    },
+    [quiz, currentQuestion, dispatch],
+  );
+
+  const handleEditCurrentQuestionOption = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, optionId: string, isTextChange: boolean) => {
+      if (!currentQuestion || !quiz) return;
+
+      const questionIndex = quiz.questions.findIndex((question) => question._id === currentQuestion._id);
+
+      if (questionIndex === -1) return;
+
+      const optionIndex = currentQuestion.options.findIndex((option) => option._id === optionId);
+
+      if (optionIndex === -1) return;
+
+      const updatedOption: IOption = {
+        ...currentQuestion.options[optionIndex],
+        option: isTextChange ? (e.target as HTMLTextAreaElement).value : currentQuestion.options[optionIndex].option,
+        isCorrect: isTextChange ? currentQuestion.options[optionIndex].isCorrect : (e.target as HTMLInputElement).checked,
+      };
+
+      let currentOptions: IOption[] = [...currentQuestion.options];
+
+      if (!isTextChange) {
+        currentOptions = currentOptions.map((option) => ({
+          ...option,
+          isCorrect: false,
+        }));
+      }
+
+      currentOptions[optionIndex] = updatedOption;
+
+      const updatedQuestion: IQuestion = {
+        ...quiz.questions[questionIndex],
+        options: currentOptions,
+      };
+
+      updateQuizAndDispatch(updatedQuestion, questionIndex, quiz, dispatch, updateCurrentQuestion, saveQuiz);
+    },
+    [quiz, currentQuestion, dispatch],
+  );
 
   useEffect(() => {
     if (isSuccessGetQuiz) {
@@ -76,26 +279,30 @@ const Editor: React.FC = () => {
   }, [isSuccessGetQuiz]);
 
   useEffect(() => {
-    if (isErrorGetQuiz) {
-      const statusCode = errorGetQuiz && 'status' in errorGetQuiz ? errorGetQuiz.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      navigate('/dashboard');
+    if (isErrorGetQuiz && errorGetQuiz) {
+      if ('status' in errorGetQuiz) {
+        const errorMessage = handleServerError(errorGetQuiz.status, GET_QUIZ_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+        if (errorGetQuiz.status === 400) {
+          navigate('/dashboard');
+        }
+      }
     }
   }, [isErrorGetQuiz, errorGetQuiz]);
 
   useEffect(() => {
     if (isSuccessUpdateQuiz) {
-      dispatch(deleteQuiz());
+      dispatch(clearQuiz());
       navigate('/dashboard');
     }
   }, [isSuccessUpdateQuiz]);
 
   useEffect(() => {
-    if (isErrorUpdateQuiz) {
-      const statusCode = errorUpdateQuiz && 'status' in errorUpdateQuiz ? errorUpdateQuiz.status : 500;
-      const errorMessage = serverErrors(statusCode);
-      toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+    if (isErrorUpdateQuiz && errorUpdateQuiz) {
+      if ('status' in errorUpdateQuiz) {
+        const errorMessage = handleServerError(errorUpdateQuiz.status, UPDATE_QUIZ_ERROR);
+        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      }
     }
   }, [isErrorUpdateQuiz, errorUpdateQuiz]);
 
@@ -133,18 +340,18 @@ const Editor: React.FC = () => {
   };
 
   const handleChangeQuizStatus = async (status: QuizStatus) => {
-    if (!isValidQuiz || !quiz) return;
+    if (!isValidQuiz() || !quiz) return;
     await updateQuiz({ _id: quiz._id, status: status });
   };
 
   const handleSaveQuizAndExit = async () => {
-    if (!isValidQuiz || !quiz) return;
+    if (!isValidQuiz() || !quiz) return;
     await updateQuiz(quiz);
   };
 
   return (
     <>
-      {isLoadingGetQuiz ? (
+      {isLoadingGetQuiz || !quiz || !currentQuestion ? (
         <LoadingSpinner />
       ) : (
         <>
@@ -176,7 +383,7 @@ const Editor: React.FC = () => {
                   prefixIcon={<PencilIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
                 />
               </div>
-              <Cog6ToothIcon className="w-12 cursor-pointer" onClick={() => setIsSettingsOpen(true)} />
+              <Cog6ToothIcon className="w-12 cursor-pointer" onClick={openModal} />
             </div>
 
             <div className="mt-4 flex sm:mt-0 items-center gap-4">
@@ -214,38 +421,45 @@ const Editor: React.FC = () => {
             </div>
           </div>
           <div className="w-full flex flex-col md:flex md:flex-row">
-            <QuestionManager />
+            <QuestionManager
+              questions={quiz.questions}
+              currentQuestion={currentQuestion}
+              handleUpdateQuizQuestion={handleUpdateQuizQuestion}
+              handleRemoveQuizQuestion={handleRemoveQuizQuestion}
+              handleDuplicateQuizQuestion={handleDuplicateQuizQuestion}
+              handleChangeCurrentQuestion={handleChangeCurrentQuestion}
+            />
             <div className="w-full h-screen bg-gray-200 p-8 flex flex-col gap-4 overflow-y-auto">
-              <div>
-                <div className="mt-2">
-                  <textarea
-                    rows={2}
-                    name="comment"
-                    id="comment"
-                    value={quizTitle}
-                    onChange={handleEditCurrentQuestionTitle}
-                    className="block w-full rounded-md border-0 py-4 text-gray-900 text-center shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-white sm:text-4xl"
-                    placeholder="Type your question here"
-                    style={{ resize: 'none' }}
-                  />
-                </div>
-              </div>
+              <QuestionInput questionTitle={currentQuestion.title} handleEditCurrentQuestionTitle={handleEditCurrentQuestionTitle} />
               <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                <QuestionMediaUpload />
+                <QuestionMediaUpload questionMediaUrl={currentQuestion.mediaUrl} handleUploadQuestionMediaUrl={handleUpdateQuestionMediaUrl} />
               </div>
 
               <form className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <QuestionOptions />
+                <QuestionOptions options={currentQuestion.options} handleCurrentQuestionOptionUpdate={handleEditCurrentQuestionOption} />
               </form>
             </div>
             <div className="w-full md:w-1/4 md:h-screen p-4 space-y-10">
-              <QuestionSettings />
+              <QuestionSettings
+                questionType={getValueFromObject(QuestionTypeList, currentQuestion.questionType)}
+                points={getValueFromObject(PointsList, currentQuestion.points.toString())}
+                duration={getValueFromObject(TimeLimitList, currentQuestion.duration.toString())}
+                handleQuestionSettingUpdate={handleUpdateQuestionSettings}
+              />
             </div>
           </div>
 
           {/* Modal */}
-          <Modal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)}>
-            <QuizSetting cancelSetting={() => setIsSettingsOpen(false)} />
+          <Modal ref={modalRef}>
+            <QuizSetting
+              cancelSetting={closeModal}
+              quizTitle={quiz.title}
+              colorLabel={quiz.settings.colorLabel}
+              gameMusic={quiz.settings.gameMusic}
+              lobbyMusic={quiz.settings.lobbyMusic}
+              podiumMusic={quiz.settings.podiumMusic}
+              updateSettings={handleSaveQuizSettings}
+            />
           </Modal>
         </>
       )}

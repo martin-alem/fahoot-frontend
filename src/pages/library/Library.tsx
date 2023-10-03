@@ -13,7 +13,7 @@ import { useCreateQuizMutation, useGetQuizzesQuery } from '../../api/quiz.api';
 import EmptyState from '../../components/empty_state/EmptyState';
 import Shimmer from '../../components/shimmer/Shimmer';
 import { debounce } from 'lodash';
-import { PAGE_SIZE, QuestionType, QuizStatus, colors, gameMusic, lobbyMusic, podiumMusic } from '../../utils/constant';
+import { PAGE_SIZE, QuestionType, QuizStatus, ColorList, GameMusicList, LobbyMusicList, PodiumMusicList } from '../../utils/constant';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveQuiz } from '../../slices/quiz.slice';
@@ -68,13 +68,13 @@ const Library: React.FC = () => {
               isCorrect: false,
               option: 'Kahoot Clone',
               _id: new ObjectID().toHexString(),
-              colorLabel: colors[0].value,
+              colorLabel: ColorList[0].value,
             },
             {
               isCorrect: false,
               option: 'Next Online Game Quiz',
               _id: new ObjectID().toHexString(),
-              colorLabel: colors[1].value,
+              colorLabel: ColorList[1].value,
             },
           ],
         },
@@ -82,9 +82,9 @@ const Library: React.FC = () => {
       settings: {
         _id: new ObjectID().toHexString(),
         colorLabel: 'bg-rose-500',
-        gameMusic: gameMusic[0].value,
-        lobbyMusic: lobbyMusic[0].value,
-        podiumMusic: podiumMusic[0].value,
+        gameMusic: GameMusicList[0].value,
+        lobbyMusic: LobbyMusicList[0].value,
+        podiumMusic: PodiumMusicList[0].value,
       },
     };
 

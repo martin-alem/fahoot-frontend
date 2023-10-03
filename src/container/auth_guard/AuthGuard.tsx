@@ -35,6 +35,10 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
       if ('status' in error) {
         const message = handleServerError(error.status, AUTH_GUARD_GET_USER_ERROR);
         toast.error(message, { position: toast.POSITION.TOP_CENTER });
+        if (error.status === 401) {
+          //If trying to get an authenticated user returns a 401 they should be logged out
+          navigate('/');
+        }
       }
     }
   }, [isError, error]);

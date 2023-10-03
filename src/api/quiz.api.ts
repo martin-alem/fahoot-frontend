@@ -32,6 +32,7 @@ export const quizApi = createApi({
         url: `/${quizId}`,
         method: 'GET',
       }),
+      keepUnusedDataFor: 0,
     }),
 
     createQuiz: builder.mutation<IQuiz, ICreateQuizPayload>({

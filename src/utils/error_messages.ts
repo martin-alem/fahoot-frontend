@@ -7,7 +7,7 @@ export const APP_COMPONENT_LOG_ERROR = {
 
 export const AUTH_GUARD_GET_USER_ERROR = {
   403: 'This application is currently unauthorized to access the server at the moment. Please try again later.',
-  401: 'You are not logged in. Please login again to continue.',
+  401: 'Your Session has expired. Please login again',
   404: 'The resource could not be found. Please contact support or try again later.',
   429: "You're doing that too often. Please wait a few minutes and try again",
   400: 'Invalid data sent to the server. Please contact support and try again later',
@@ -155,4 +155,36 @@ export const VERIFY_EMAIL_ERROR = {
   404: 'The resource could not be found. Please contact support or try again later.',
   429: "You're doing that too often. Please wait a few minutes and try again",
   400: 'Invalid data was sent to the server. Please check to make sure you have not already verified your email address.',
+};
+
+export const QUESTION_MEDIA_UPLOAD_ERROR = {
+  403: 'This application is currently unauthorized to access the server at the moment. Please try again later.',
+  401: 'You must be logged in to update your email address.',
+  404: 'The resource could not be found. Please contact support or try again later.',
+  429: "You're doing that too often. Please wait a few minutes and try again",
+  400: 'Invalid data was sent to the server. You must upload an image of not more than 10M',
+};
+
+export const QUESTION_MEDIA_DELETE_ERROR = {
+  403: 'This application is currently unauthorized to access the server at the moment. Please try again later.',
+  401: 'You must be logged in to update your email address.',
+  404: 'The resource could not be found. Please contact support or try again later.',
+  429: "You're doing that too often. Please wait a few minutes and try again",
+  400: 'Invalid data was sent to the server. Please contact support if this error persist',
+};
+
+export const GET_QUIZ_ERROR = {
+  403: 'This application is currently unauthorized to access the server at the moment. Please try again later.',
+  401: 'You must be logged in to update your email address.',
+  404: 'The resource could not be found. Please contact support or try again later.',
+  429: "You're doing that too often. Please wait a few minutes and try again",
+  400: 'We could not find the quiz you tried to edit. Please try again later. If this error persist, contact support.',
+};
+
+export const UPDATE_QUIZ_ERROR = {
+  403: 'This application is currently unauthorized to access the server at the moment. Please try again later.',
+  401: 'You must be logged in to update your email address.',
+  404: 'The resource could not be found. Please contact support or try again later.',
+  429: "You're doing that too often. Please wait a few minutes and try again",
+  400: 'Invalid data was sent to the server. Please make sure you are submitting a valid quiz.',
 };

@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { ERROR_MESSAGES, MAX_FILE_SIZE, QuestionType, colors } from './constant';
+import { ERROR_MESSAGES, MAX_FILE_SIZE, QuestionType, ColorList } from './constant';
 import { ActionCreator, IOption, IPair, IQuestion, IQuiz, setFunction } from './types';
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
 import ObjectID from 'bson-objectid';
@@ -13,29 +13,6 @@ export function mapScoreToBarHeight(score: number): number {
   if (score <= 0) return 10;
   if (score >= 250) return 250;
   return score;
-}
-
-export function serverErrors(statusCode: number | 'FETCH_ERROR' | 'PARSING_ERROR' | 'TIMEOUT_ERROR' | 'CUSTOM_ERROR'): string {
-  switch (statusCode) {
-    case 400:
-      return ERROR_MESSAGES.BAD_REQUEST_ERROR;
-    case 429:
-      return ERROR_MESSAGES.RATE_LIMIT_ERROR;
-    case 404:
-      return ERROR_MESSAGES.NOT_FOUND_ERROR;
-    case 403:
-      return ERROR_MESSAGES.FORBIDDEN;
-    case 401:
-      return ERROR_MESSAGES.AUTH_ERROR;
-    case 500:
-      return ERROR_MESSAGES.SERVER_ERROR;
-    case 'TIMEOUT_ERROR':
-      return ERROR_MESSAGES.TIMEOUT_ERROR;
-    case 'FETCH_ERROR':
-      return ERROR_MESSAGES.NETWORK_ERROR;
-    default:
-      return ERROR_MESSAGES.GENERIC;
-  }
 }
 
 export function handleServerError(statusCode: number | 'FETCH_ERROR' | 'TIMEOUT_ERROR' | 'PARSING_ERROR' | 'CUSTOM_ERROR', errorReference: { [key: number]: string }): string {
@@ -140,13 +117,13 @@ export function updateQuestionOptions(selectedQuestionType: QuestionType, questi
       {
         ...options[0],
         _id: new ObjectID().toHexString(),
-        colorLabel: colors[2].value,
+        colorLabel: ColorList[2].value,
         isCorrect: false,
       },
       {
         ...options[1],
         _id: new ObjectID().toHexString(),
-        colorLabel: colors[3].value,
+        colorLabel: ColorList[3].value,
         isCorrect: false,
       },
     ];
@@ -157,8 +134,8 @@ export function updateQuestionOptions(selectedQuestionType: QuestionType, questi
   return newOptions;
 }
 
-export function getBorderColor(question: IQuestion, currentQuestion: IQuestion | null) {
-  if (question._id === currentQuestion?._id) {
+export function getBorderColor(question: IQuestion, currentQuestion: IQuestion) {
+  if (question._id === currentQuestion._id) {
     return question.title !== '' ? 'border-4 border-primary-500' : 'border-4 border-red-500';
   }
   return question.title === '' ? 'border-4 border-red-500' : 'border-none';

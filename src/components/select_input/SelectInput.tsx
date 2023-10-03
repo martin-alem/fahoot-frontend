@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, memo } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { ISelectInputProps } from '../../utils/types';
@@ -7,7 +7,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-const SelectInput: React.FC<ISelectInputProps> = ({ options, selected, setSelected }) => {
+const SelectInput: React.FC<ISelectInputProps> = memo(({ options, selected, setSelected }) => {
   return (
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (
@@ -20,43 +20,20 @@ const SelectInput: React.FC<ISelectInputProps> = ({ options, selected, setSelect
               </span>
             </Listbox.Button>
 
-            <Transition
-              show={open}
-              as={Fragment}
-              leave="transition ease-in duration-100"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
+            <Transition show={open} as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
               <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {options.map((option) => (
                   <Listbox.Option
                     key={option.value}
-                    className={({ active }) =>
-                      classNames(
-                        active ? 'bg-primary-500 text-white' : 'text-gray-900',
-                        'relative cursor-default select-none py-2 pl-8 pr-4',
-                      )
-                    }
+                    className={({ active }) => classNames(active ? 'bg-primary-500 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-8 pr-4')}
                     value={option}
                   >
                     {({ selected, active }) => (
                       <>
-                        <span
-                          className={classNames(
-                            selected ? 'font-semibold' : 'font-normal',
-                            'block truncate',
-                          )}
-                        >
-                          {option.label}
-                        </span>
+                        <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>{option.label}</span>
 
                         {selected ? (
-                          <span
-                            className={classNames(
-                              active ? 'text-white' : 'text-primary-500',
-                              'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                            )}
-                          >
+                          <span className={classNames(active ? 'text-white' : 'text-primary-500', 'absolute inset-y-0 left-0 flex items-center pl-1.5')}>
                             <CheckIcon className="h-5 w-5" aria-hidden="true" />
                           </span>
                         ) : null}
@@ -71,6 +48,6 @@ const SelectInput: React.FC<ISelectInputProps> = ({ options, selected, setSelect
       )}
     </Listbox>
   );
-};
+});
 
 export default SelectInput;

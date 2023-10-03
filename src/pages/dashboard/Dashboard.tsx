@@ -191,7 +191,7 @@ const Dashboard: React.FC = () => {
             </>
           )}
         </Disclosure>
-        {!user?.verified && (
+        {user && !user?.verified && (
           <Alert
             bgColor="bg-yellow-50"
             iconColor="text-yellow-500"

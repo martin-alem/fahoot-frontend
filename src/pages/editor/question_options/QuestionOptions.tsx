@@ -1,14 +1,11 @@
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
 import QuestionOption from '../../../components/question_option/QuestionOption';
-import { IOption } from '../../../utils/types';
+import { IOption, IQuestionOptionsProps } from '../../../utils/types';
 
-const QuestionOptions: React.FC = () => {
-  const currentQuestion = useSelector((state: RootState) => state.quizState.currentQuestion);
+const QuestionOptions: React.FC<IQuestionOptionsProps> = ({ options, handleCurrentQuestionOptionUpdate}) => {
   return (
     <>
-      {currentQuestion?.options.map((option: IOption) => (
-        <QuestionOption option={option} key={option._id} />
+      {options.map((option: IOption) => (
+        <QuestionOption option={option} key={option._id} handleCurrentQuestionOptionUpdate={handleCurrentQuestionOptionUpdate} />
       ))}
     </>
   );

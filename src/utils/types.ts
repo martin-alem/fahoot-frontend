@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, Ref } from 'react';
 import { QuestionType, QuizStatus } from './constant';
 
 export interface IButtonProps {
@@ -24,6 +24,37 @@ export interface IQuizProps {
   quiz: IQuiz;
 }
 
+export interface IQuestionManagerProps {
+  currentQuestion: IQuestion;
+  questions: IQuestion[];
+  handleUpdateQuizQuestion: () => void;
+  handleRemoveQuizQuestion: (questionId: string) => void;
+  handleDuplicateQuizQuestion: (questionId: string) => void;
+  handleChangeCurrentQuestion: (question: IQuestion) => void;
+}
+
+export interface IQuestionMediaUploadProps {
+  questionMediaUrl: string | null;
+  handleUploadQuestionMediaUrl: (mediaUrl: string | null) => void;
+}
+
+export interface IQuestionInputProps {
+  questionTitle: string;
+  handleEditCurrentQuestionTitle: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}
+
+export interface IQuestionSettingsProps {
+  questionType: IPair;
+  points: IPair;
+  duration: IPair;
+  handleQuestionSettingUpdate: (questionType: IPair | null, points: IPair | null, duration: IPair | null) => void;
+}
+
+export interface IQuestionOptionsProps {
+  options: IOption[];
+  handleCurrentQuestionOptionUpdate: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, optionId: string, isTextChange: boolean) => void;
+}
+
 export interface IPaginationProps {
   total: number;
   totalPages: number;
@@ -31,15 +62,24 @@ export interface IPaginationProps {
   page: number;
   setPage: (page: number) => void;
 }
+export interface ModalHandle {
+  open: () => void;
+  close: () => void;
+}
 
 export interface IModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   children: ReactNode;
+  ref: Ref<ModalHandle>;
 }
 
 export interface IQuizSettingProps {
   cancelSetting: () => void;
+  colorLabel: string;
+  quizTitle: string;
+  lobbyMusic: string;
+  gameMusic: string;
+  podiumMusic: string;
+  updateSettings: (title: string, gameMusic: string, lobbyMusic: string, podiumMusic: string, colorLabel: string) => void;
 }
 
 export interface AuthUser {
@@ -68,7 +108,8 @@ export interface IAuth {
 }
 
 export interface IQuestionOptionProps {
-  option: IOption | null;
+  option: IOption;
+  handleCurrentQuestionOptionUpdate: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, optionId: string, isTextChange: boolean) => void;
 }
 
 export interface IPromptProps {
@@ -222,7 +263,7 @@ export interface IColorChooseProps {
 export interface ISelectInputProps {
   options: IPair[];
   selected: IPair;
-  setSelected: setFunction<IPair>;
+  setSelected: setFunction<IPair> | ((...args: IPair[]) => void);
 }
 
 export interface IQuizSetting {
@@ -245,7 +286,11 @@ export interface IQuestion {
 
 export interface IQuestionDraftProps {
   question: IQuestion;
+  currentQuestion: IQuestion;
   index: number;
+  handleRemoveQuizQuestion: (questionId: string) => void;
+  handleDuplicateQuizQuestion: (questionId: string) => void;
+  handleChangeCurrentQuestion: (question: IQuestion) => void;
 }
 
 export interface IQuiz {

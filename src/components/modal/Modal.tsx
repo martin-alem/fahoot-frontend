@@ -1,14 +1,19 @@
-import React, { useRef, FC, Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { IModalProps } from "../../utils/types";
+import React, { useRef, FC, Fragment, forwardRef, useState, useImperativeHandle } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { IModalProps } from '../../utils/types';
 
-const Modal: FC<IModalProps> = ({ isOpen, onClose, children }) => {
+const Modal: FC<IModalProps> = forwardRef(({ children }, ref) => {
   const cancelButtonRef = useRef(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  useImperativeHandle(ref, () => ({
+    open: () => setIsOpen(true),
+    close: () => setIsOpen(false),
+  }));
 
   return (
     <Transition.Root show={isOpen} as={React.Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={onClose}>
-        {/* Your backdrop and transition code here... */}
+      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={() => null}>
         <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
@@ -24,6 +29,6 @@ const Modal: FC<IModalProps> = ({ isOpen, onClose, children }) => {
       </Dialog>
     </Transition.Root>
   );
-};
+});
 
 export default Modal;

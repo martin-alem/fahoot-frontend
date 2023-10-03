@@ -47,7 +47,7 @@ export enum QuizStatus {
   DRAFT = 'draft',
 }
 
-export const lobbyMusic = [
+export const LobbyMusicList = [
   {
     label: 'Royal Coupling',
     value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Royal%20Coupling.mp3',
@@ -79,26 +79,26 @@ export const lobbyMusic = [
   },
 ];
 
-export const gameMusic = [
+export const GameMusicList = [
   {
     label: 'Rainbows',
     value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/game_music/Rainbows.mp3',
   },
 ];
 
-export const podiumMusic = [
+export const PodiumMusicList = [
   {
     label: 'Beachfront Celebration',
     value: 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/podium_music/Beachfront%20Celebration.mp3',
   },
 ];
 
-export const questionType = [
+export const QuestionTypeList = [
   { value: 'boolean', label: 'True or False' },
   { value: 'mcq', label: 'Quiz' },
 ];
 
-export const timeLimit = [
+export const TimeLimitList = [
   { value: '10', label: '10 seconds' },
   { value: '20', label: '20 seconds' },
   { value: '30', label: '30 seconds' },
@@ -109,7 +109,7 @@ export const timeLimit = [
   { value: '240', label: '240 seconds' },
 ];
 
-export const points = [
+export const PointsList = [
   { value: '100', label: '100 points' },
   { value: '200', label: '200 points' },
   { value: '300', label: '300 points' },
@@ -121,7 +121,7 @@ export const points = [
   { value: '900', label: '900 points' },
   { value: '1000', label: '1000 points' },
 ];
-export const colors = [
+export const ColorList = [
   { label: 'Pink', value: 'bg-pink-500', ring: 'ring-pink-500' },
   { label: 'Purple', value: 'bg-purple-500', ring: 'ring-purple-500' },
   { label: 'Blue', value: 'bg-blue-500', ring: 'ring-blue-500' },
