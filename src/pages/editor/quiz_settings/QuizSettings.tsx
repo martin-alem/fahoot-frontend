@@ -16,9 +16,12 @@ const QuizSetting: React.FC<IQuizSettingProps> = memo(({ cancelSetting, quizTitl
   const [title, setTitle] = useState<string>(quizTitle);
   const [validTitle, setValidTitle] = useState<boolean>(false);
   const [titleError, setTitleError] = useState<string | undefined>(undefined);
-  const handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-  }, []);
+  const handleOnChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setTitle(e.target.value);
+    },
+    [title],
+  );
 
   const handleOnBlur = useCallback(() => {
     toast.error(titleError, { position: toast.POSITION.TOP_CENTER });
@@ -59,12 +62,12 @@ const QuizSetting: React.FC<IQuizSettingProps> = memo(({ cancelSetting, quizTitl
   const handleGameMusicClick = useCallback(() => handlePlay(gameMusicToggle, gameMusicAudioRef), [gameMusicToggle, gameMusicAudioRef, handlePlay]);
   const handlePodiumMusicClick = useCallback(() => handlePlay(podiumMusicToggle, podiumMusicAudioRef), [podiumMusicToggle, podiumMusicAudioRef, handlePlay]);
 
-  const handleSaveSettings = useCallback(() => {
+  const handleSaveSettings = () => {
     if (validTitle) {
       updateSettings(title, lMusic.value, gMusic.value, pMusic.value, quizColorLabel.value);
       cancelSetting();
     }
-  }, [validTitle]);
+  };
 
   //stop current playing audio when a song is selected from any select input fields
   useEffect(() => {

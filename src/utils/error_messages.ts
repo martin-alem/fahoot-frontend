@@ -111,7 +111,7 @@ export const EMAIL_UPDATE_ERROR = {
   401: 'You must be logged in to update your email address.',
   404: 'The resource could not be found. Please contact support or try again later.',
   429: "You're doing that too often. Please wait a few minutes and try again",
-  400: 'Invalid data was sent to the server. Please check to make sure your information is correct.',
+  400: 'The email address already exists. Please use a different email address.',
 };
 
 export const PASSWORD_UPDATE_ERROR = {

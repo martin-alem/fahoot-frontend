@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/spinner/Spinner';
 import Input from '../../components/input/input';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearQuiz, saveQuiz, updateCurrentQuestion } from '../../slices/quiz.slice';
+import { clearQuiz, loadQuiz, saveQuiz, updateCurrentQuestion } from '../../slices/quiz.slice';
 import { RootState } from '../../store';
 import QuestionManager from './questions_manager/QuestionManager';
 import QuestionSettings from './question_settings/QuestionSettings';
@@ -25,6 +25,7 @@ import QuizSetting from './quiz_settings/QuizSettings';
 import ObjectID from 'bson-objectid';
 import QuestionInput from './question_input/QuestionInput';
 import { GET_QUIZ_ERROR, UPDATE_QUIZ_ERROR } from '../../utils/error_messages';
+import { isEqual } from 'lodash';
 
 const Editor: React.FC = () => {
   useTitle('Editor');
@@ -33,7 +34,8 @@ const Editor: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const quiz = useSelector((state: RootState) => state.quizState.quiz);
+  const quiz = useSelector((state: RootState) => state.quizState.modifiedQuiz);
+  const baseQuiz = useSelector((state: RootState) => state.quizState.baseQuiz);
   const currentQuestion = useSelector((state: RootState) => state.quizState.currentQuestion);
 
   const modalRef = useRef<ModalHandle>(null);
@@ -73,26 +75,23 @@ const Editor: React.FC = () => {
     updateQuizAndDispatch(updatedQuestion, questionIndex, quiz, dispatch, updateCurrentQuestion, saveQuiz);
   };
 
-  const handleSaveQuizSettings = useCallback(
-    (title: string, lobbyMusic: string, gameMusic: string, podiumMusic: string, colorLabel: string) => {
-      if (!quiz) return;
-      const { settings } = quiz;
-      const updatedSettings = {
-        ...settings,
-        lobbyMusic,
-        podiumMusic,
-        gameMusic,
-        colorLabel,
-      };
-      const updateQuiz: IQuiz = {
-        ...quiz,
-        title,
-        settings: updatedSettings,
-      };
-      dispatch(saveQuiz(updateQuiz));
-    },
-    [quiz, dispatch],
-  );
+  const handleSaveQuizSettings = (title: string, lobbyMusic: string, gameMusic: string, podiumMusic: string, colorLabel: string) => {
+    if (!quiz) return;
+    const { settings } = quiz;
+    const updatedSettings = {
+      ...settings,
+      lobbyMusic,
+      podiumMusic,
+      gameMusic,
+      colorLabel,
+    };
+    const updateQuiz: IQuiz = {
+      ...quiz,
+      title,
+      settings: updatedSettings,
+    };
+    dispatch(saveQuiz(updateQuiz));
+  };
 
   const handleUpdateQuizQuestion = useCallback(() => {
     if (quiz) {
@@ -273,7 +272,7 @@ const Editor: React.FC = () => {
 
   useEffect(() => {
     if (isSuccessGetQuiz) {
-      dispatch(saveQuiz(dataGetQuiz));
+      dispatch(loadQuiz(dataGetQuiz));
       dispatch(updateCurrentQuestion(dataGetQuiz.questions[0]));
     }
   }, [isSuccessGetQuiz]);
@@ -346,7 +345,9 @@ const Editor: React.FC = () => {
 
   const handleSaveQuizAndExit = async () => {
     if (!isValidQuiz() || !quiz) return;
-    await updateQuiz(quiz);
+    if (!isEqual(baseQuiz, quiz)) return await updateQuiz(quiz);
+    dispatch(clearQuiz());
+    navigate('/dashboard');
   };
 
   return (

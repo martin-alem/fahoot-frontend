@@ -97,7 +97,8 @@ export interface IProfileProps {
 }
 
 export interface IQuizState {
-  quiz: IQuiz | null;
+  baseQuiz: IQuiz | null;
+  modifiedQuiz: IQuiz | null;
   currentQuestion: IQuestion | null;
 }
 
