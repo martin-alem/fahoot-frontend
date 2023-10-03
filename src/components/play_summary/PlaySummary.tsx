@@ -1,25 +1,25 @@
-import Bar from "../bar/Bar";
+import Bar from '../bar/Bar';
 
 const options = [
   {
-    color: "bg-blue-600",
+    color: 'bg-blue-600',
     total: 150,
     correct: true,
   },
 
   {
-    color: "bg-red-600",
+    color: 'bg-red-600',
     total: 120,
-    correct: false, 
+    correct: false,
   },
 
   {
-    color: "bg-green-600",
+    color: 'bg-green-600',
     total: 86,
     correct: false,
   },
   {
-    color: "bg-yellow-600",
+    color: 'bg-yellow-600',
     total: 250,
     correct: false,
   },
@@ -29,8 +29,8 @@ const PlaySummary: React.FC = () => {
   return (
     <>
       <div className="w-full flex gap-4 justify-center items-end">
-        {options.map((option) => (
-          <Bar bgColor={option.color} score={option.total} status={option.correct} />
+        {options.map((option, index) => (
+          <Bar key={index} bgColor={option.color} score={option.total} status={option.correct} />
         ))}
       </div>
     </>

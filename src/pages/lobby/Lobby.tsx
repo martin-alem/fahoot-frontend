@@ -1,44 +1,16 @@
-import { LockOpenIcon } from "@heroicons/react/20/solid";
-import Button from "../../components/button/Button";
-import Player from "../../components/player/Player";
-import useTitle from "../../hooks/useTitle";
-import PlayerCount from "../../components/player_count/PlayerCount";
-import LobbyMusic from "./../../assets/audio/lobby/Verano Sensual.mp3";
-import { ChevronDoubleRightIcon, PauseCircleIcon, PlayCircleIcon } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
+import { LockOpenIcon } from '@heroicons/react/20/solid';
+import Button from '../../components/button/Button';
+import Player from '../../components/player/Player';
+import useTitle from '../../hooks/useTitle';
+import PlayerCount from '../../components/player_count/PlayerCount';
+import LobbyMusic from './../../assets/audio/lobby/Verano Sensual.mp3';
+import { ChevronDoubleRightIcon, PauseCircleIcon, PlayCircleIcon } from '@heroicons/react/24/outline';
+import usePlayAudio from '../../hooks/usePlayAudio';
 
 const Lobby: React.FC = () => {
-  useTitle("Lobby");
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  useTitle('Lobby');
 
-  const togglePlayPause = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  useEffect(() => {
-    const currentAudioRef = audioRef.current;
-    // Initialize audio events if needed
-    if (currentAudioRef) {
-      currentAudioRef.addEventListener("play", () => setIsPlaying(true));
-      currentAudioRef.addEventListener("pause", () => setIsPlaying(false));
-    }
-
-    // Cleanup
-    return () => {
-      if (currentAudioRef) {
-        currentAudioRef.removeEventListener("play", () => {});
-        currentAudioRef.removeEventListener("pause", () => {});
-      }
-    };
-  }, []);
+  const { audioRef, togglePlayPause, isPlaying } = usePlayAudio();
 
   return (
     <div className="relative">

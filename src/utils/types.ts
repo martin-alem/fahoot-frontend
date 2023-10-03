@@ -1,5 +1,5 @@
 import { ReactNode, Ref } from 'react';
-import { QuestionType, QuizStatus } from './constant';
+import { QuestionType, QuizMode, QuizStatus } from './constant';
 
 export interface IButtonProps {
   label: string;
@@ -110,7 +110,30 @@ export interface IAuth {
 
 export interface IQuestionOptionProps {
   option: IOption;
+  mode: QuizMode;
   handleCurrentQuestionOptionUpdate: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, optionId: string, isTextChange: boolean) => void;
+}
+
+export interface IPlayProps {
+  handleOptionSelection: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, optionId: string, isTextChange: boolean) => void;
+  handleTimeOut: () => void;
+  question: IQuestion;
+  mode: QuizMode;
+}
+
+export interface IQuestionCountProps {
+  currentQuestion: number;
+  totalQuestions: number;
+}
+
+export interface IQuestionProps {
+  questionText: string;
+}
+
+
+export interface ITimerProps {
+  duration: number;
+  onTimeout: () => void;
 }
 
 export interface IPromptProps {

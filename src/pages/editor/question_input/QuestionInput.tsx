@@ -18,7 +18,7 @@ const QuestionInput: React.FC<IQuestionInputProps> = ({ questionTitle, handleEdi
             id="comment"
             value={questionTitle}
             onChange={editCurrentQuestionTitle}
-            className="block w-full rounded-md border-0 py-4 text-gray-900 text-center shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-white sm:text-4xl"
+            className="block capitalize w-full rounded-md border-0 py-4 text-gray-900 text-center shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-white sm:text-4xl"
             placeholder="Type your question here"
             style={{ resize: 'none' }}
           />

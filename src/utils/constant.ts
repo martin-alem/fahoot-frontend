@@ -29,6 +29,18 @@ export enum SUCCESS_MESSAGES {
   EMAIL_VERIFICATION_SUCCESS = 'Your account was successfully verified.',
 }
 
+export enum QuizMode {
+  EDIT = 'edit',
+  PREVIEW = 'preview',
+  LIVE = 'live',
+}
+
+export enum QuizState {
+  PLAY = 'play',
+  RESULT = 'result',
+  DONE = 'done',
+}
+
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 export const PAGE_SIZE = 5;
 

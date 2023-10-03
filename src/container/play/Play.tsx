@@ -1,26 +1,35 @@
-import AnswerCount from "../../components/answer_count/AnswerCount";
-// import QuestionOption from "../../components/question_option/QuestionOption";
-import Question from "../../components/question/Question";
-import Timer from "../../components/timer/Timer";
+import AnswerCount from './answer_count/AnswerCount';
+import QuestionOption from '../../components/question_option/QuestionOption';
+import Question from './question/Question';
+import Logo from './../../assets/Fahoot Logo.svg';
+import Timer from './timer/Timer';
+import { IPlayProps } from '../../utils/types';
 
-const Play: React.FC = () => {
+const Play: React.FC<IPlayProps> = ({ handleOptionSelection, handleTimeOut, mode, question }) => {
   return (
     <>
-      <div className="w-full flex justify-between items-center">
-        <Timer />
-        <AnswerCount />
-      </div>
-      <div className="mx-auto mt-4 max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          <Question />
-          <div className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* <QuestionOption bgColor="bg-red-600" />
-            <QuestionOption bgColor="bg-blue-600" />
-            <QuestionOption bgColor="bg-green-600" />
-            <QuestionOption bgColor="bg-yellow-600" /> */}
+      {question && (
+        <>
+          <div className="w-full flex justify-between items-center">
+            <Timer duration={question.duration} onTimeout={handleTimeOut} />
+            <img className="mx-auto hidden md:block h-20 w-auto animate-bounce" src={Logo} alt="Fahoot" />
+            <AnswerCount />
           </div>
-        </div>
-      </div>
+          <div className="mx-auto mt-4 w-full px-4 sm:px-6 lg:px-8">
+            <div className="w-full flex flex-col gap-4">
+              <Question questionText={question.title} />
+              <div className="w-full flex justify-center items-center">
+                {question.mediaUrl && <img src={question.mediaUrl} alt="" className="pointer-events-none max-h-36 object-cover group-hover:opacity-75" />}
+              </div>
+              <div className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {question.options.map((option) => (
+                  <QuestionOption key={option._id} mode={mode} handleCurrentQuestionOptionUpdate={handleOptionSelection} option={option} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 };

@@ -1,7 +1,7 @@
-import { DocumentDuplicateIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { DocumentDuplicateIcon, PhotoIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { IQuestionDraftProps } from '../../utils/types';
 import { getBorderColor, getValueFromObject } from '../../utils/util';
-import { QuestionType, QuestionTypeList } from '../../utils/constant';
+import { QuestionTypeList } from '../../utils/constant';
 import { memo, useCallback } from 'react';
 
 const QuestionDraft: React.FC<IQuestionDraftProps> = memo(({ question, currentQuestion, index, handleRemoveQuizQuestion, handleDuplicateQuizQuestion, handleChangeCurrentQuestion }) => {
@@ -28,26 +28,21 @@ const QuestionDraft: React.FC<IQuestionDraftProps> = memo(({ question, currentQu
             <TrashIcon className="w-4 cursor-pointer" onClick={removeQuestion} />
           </div>
         </div>
-        <div onClick={changeCurrentQuestion} className={`w-full h-40 bg-white shadow-md flex flex-col justify-center items-center cursor-pointer gap-2 ${getBorderColor(question, currentQuestion)}`}>
+        <div onClick={changeCurrentQuestion} className={`w-full h-44 bg-white shadow-md flex flex-col justify-center items-center cursor-pointer gap-2 ${getBorderColor(question, currentQuestion)}`}>
           <div className="w-full flex gap-4 justify-center items-center">
-            <div className="w-16 h-16 shadow-md text-slate-400 rounded-full flex justify-center items-center">{question.duration}s</div>
-            <div className="w-16 h-16 shadow-md text-slate-400 rounded-full flex justify-center items-center">{question.points}p</div>
+            <div className="w-10 h-10 shadow-md text-slate-400 text-xs rounded-full flex justify-center items-center">{question.duration}s</div>
+            <div className="w-10 h-10 shadow-md text-slate-400 text-xs rounded-full flex justify-center items-center">{question.points}p</div>
           </div>
+          <>{question.mediaUrl && <PhotoIcon className="mx-auto h-10 w-10 text-gray-300" aria-hidden="true" />}</>
           <p className="w-44 text-slate-400 text-xl truncate">{question.title}</p>
           <>
-            {question.questionType === QuestionType.BOOLEAN ? (
-              <div className="flex gap-2 items-center justify-center">
-                <div className="w-24 h-2 bg-slate-200"></div>
-                <div className="w-24 h-2 bg-slate-200"></div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-2 items-center justify-center">
-                <div className="w-24 h-2 bg-slate-200"></div>
-                <div className="w-24 h-2 bg-slate-200"></div>
-                <div className="w-24 h-2 bg-slate-200"></div>
-                <div className="w-24 h-2 bg-slate-200"></div>
-              </div>
-            )}
+            <div className="grid grid-cols-2 gap-2 items-center justify-center">
+              {question.options.map((option) => (
+                <div key={option._id} className="w-24 h-2 bg-slate-200 flex justify-end">
+                  {option.isCorrect && <div className="w-2 h-2 bg-green-500"></div>}
+                </div>
+              ))}
+            </div>
           </>
         </div>
       </div>

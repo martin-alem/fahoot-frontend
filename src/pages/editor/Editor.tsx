@@ -99,7 +99,7 @@ const Editor: React.FC = () => {
 
       const newQuestion: IQuestion = {
         _id: new ObjectID().toHexString(),
-        title: 'What is Fahoot?',
+        title: 'Fahoot Is The Best Online Quiz Game',
         questionType: QuestionType.BOOLEAN,
         points: 100,
         duration: 30,
@@ -107,13 +107,13 @@ const Editor: React.FC = () => {
         options: [
           {
             isCorrect: false,
-            option: 'Kahoot Clone',
+            option: 'True',
             _id: new ObjectID().toHexString(),
             colorLabel: ColorList[0].value,
           },
           {
             isCorrect: false,
-            option: 'Next Online Game Quiz',
+            option: 'False',
             _id: new ObjectID().toHexString(),
             colorLabel: ColorList[1].value,
           },
@@ -420,7 +420,7 @@ const Editor: React.FC = () => {
                 )}
               </div>
               <div>
-                <Button label="Preview" type="primary" suffixIcon={<EyeIcon className="w-6" />} />
+                <Button label="Preview" type="primary" handleClick={() => navigate('/preview')} suffixIcon={<EyeIcon className="w-6" />} />
               </div>
             </div>
           </div>

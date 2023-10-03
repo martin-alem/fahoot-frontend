@@ -24,6 +24,7 @@ import { useEffect } from 'react';
 import { handleServerError } from '../../utils/util';
 import { toast } from 'react-toastify';
 import { APP_COMPONENT_LOG_ERROR } from '../../utils/error_messages';
+import Preview from '../../pages/preview/Preview';
 
 const App: React.FC = () => {
   const [log, { isError, error }] = useLogMutation();
@@ -77,6 +78,16 @@ const App: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        <Route
+          path="/preview"
+          element={
+            <AuthGuard>
+              <Preview />
+            </AuthGuard>
+          }
+        />
+
         <Route path="dashboard" element={<Dashboard />}>
           <Route
             index
