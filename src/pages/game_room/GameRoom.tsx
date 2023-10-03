@@ -20,7 +20,7 @@ const GameRoom: React.FC = () => {
   return (
     <div className="relative">
       <div className="fixed h-24 top-0 left-0 w-full p-4 flex items-center justify-between bg-secondary-500">
-        <QuestionCount />
+        <QuestionCount currentQuestion={0} totalQuestions={0} />
         <PlayerCount textColor="text-white" />
       </div>
       <div className="pt-28 pb-12 px-4">
