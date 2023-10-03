@@ -1,56 +1,57 @@
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import useTitle from "../../hooks/useTitle";
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import useTitle from '../../hooks/useTitle';
 // import Pagination from "../../components/pagination/Pagination";
-import Modal from "../../components/modal/Modal";
-import PlayerQuestionList from "../../components/player_question_list/PlayerQuestionList";
-import { useState } from "react";
+import Modal from '../../components/modal/Modal';
+import PlayerQuestionList from '../../components/player_question_list/PlayerQuestionList';
+import { useRef } from 'react';
+import { ModalHandle } from '../../utils/types';
 const stats = [
-  { name: "Mean", value: "56" },
-  { name: "Median", value: "57" },
-  { name: "Mode", value: "55" },
-  { name: "Standard Deviation", value: "58" },
+  { name: 'Mean', value: '56' },
+  { name: 'Median', value: '57' },
+  { name: 'Mode', value: '55' },
+  { name: 'Standard Deviation', value: '58' },
 ];
 
 const people = [
   {
-    name: "Leslie Alexander",
-    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    name: 'Leslie Alexander',
+    imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
     points: 4567,
   },
   {
-    name: "Michael Foster",
-    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    name: 'Michael Foster',
+    imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
     points: 4567,
   },
   {
-    name: "Dries Vincent",
-    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    name: 'Dries Vincent',
+    imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
     points: 4567,
   },
   {
-    name: "Lindsay Walton",
-    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    name: 'Lindsay Walton',
+    imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
     points: 4567,
   },
   {
-    name: "Courtney Henry",
-    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    name: 'Courtney Henry',
+    imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
     points: 4567,
   },
   {
-    name: "Tom Cook",
-    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    name: 'Tom Cook',
+    imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
     points: 4567,
   },
 ];
 
 const people2 = [
-  { question: "What is JavaScript", NoPassed: 4, NoFailed: 3, Performance: 45, Difficulty: "Medium" },
+  { question: 'What is JavaScript', NoPassed: 4, NoFailed: 3, Performance: 45, Difficulty: 'Medium' },
   // More people...
 ];
 const ReportDetail: React.FC = () => {
-  useTitle("Javascript Report Details");
-  const [isOpen, setIsOpen] = useState(false);
+  useTitle('Javascript Report Details');
+  const modalRef = useRef<ModalHandle>(null);
   return (
     <>
       <header className="bg-white shadow-sm h-[82px]">
@@ -74,7 +75,7 @@ const ReportDetail: React.FC = () => {
         <ul role="list" className="w-full divide-y divide-gray-100 bg-white shadow-md mx-auto max-w-7xl py-6 px-6 lg:px-8 cursor-pointer">
           <h3 className="mb-4 text-xl font-bold leading-6 text-secondary-500">Players</h3>
           {people.map((person, index) => (
-            <li key={index} className="relative flex justify-between gap-x-6 py-5" onClick={() => setIsOpen(true)}>
+            <li key={index} className="relative flex justify-between gap-x-6 py-5" onClick={() => modalRef.current?.open}>
               <div className="flex items-center justify-center min-w-0 gap-x-4">
                 <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={person.imageUrl} alt="" />
                 <div className="min-w-0 flex-auto">
@@ -142,7 +143,7 @@ const ReportDetail: React.FC = () => {
       </main>
 
       {/* Modal */}
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <Modal ref={modalRef}>
         <PlayerQuestionList />
       </Modal>
     </>

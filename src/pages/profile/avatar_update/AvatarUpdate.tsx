@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from 'react';
-import { IProfileProps, IUpdateBasicInfoPayload } from '../../../utils/types';
+import { IProfileProps, IUpdateBasicInfoPayload, ModalHandle } from '../../../utils/types';
 import { useDeleteFileMutation, useUploadFileMutation } from '../../../api/upload.api';
 import Avatar from '../../../components/avatar/Avatar';
 import Button from '../../../components/button/Button';
@@ -22,7 +22,7 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [base64File, setBase64File] = useState<string | null>(null);
 
-  const [deleteFilePromptOpen, setDeleteFilePromptOpen] = useState(false);
+  const modalRef = useRef<ModalHandle>(null);
 
   const [updateBasicInfo, { isLoading: isLoadingBasicInfo, isSuccess: isSuccessBasicInfo, isError: isErrorBasicInfo, error: errorBasicInfo, data: dataBasicInfo }] = useUpdateBasicInfoMutation();
 
@@ -48,7 +48,7 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
     }
     const key = extractKeyFromFileUrl(fileUrl);
     await deleteFile(key);
-    setDeleteFilePromptOpen(false);
+    modalRef.current?.close();
   };
 
   const handleCancelFileSelect = () => {
@@ -127,7 +127,7 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
             <>
               <div className="flex items-center gap-4">
                 <Button type="secondary" label="Select" prefixIcon={<CameraIcon className="w-6" />} handleClick={() => fileInputRef.current?.click()} />
-                <Button type="danger" label="Remove" prefixIcon={<TrashIcon className="w-6" />} handleClick={() => setDeleteFilePromptOpen(true)} disabled={!fileUrl} />
+                <Button type="danger" label="Remove" prefixIcon={<TrashIcon className="w-6" />} handleClick={() => modalRef.current?.open()} disabled={!fileUrl} />
               </div>
               <input type="file" name="avatar" ref={fileInputRef} className="hidden" multiple={false} onChange={(e) => handleOnFileSelect(e, setUploadedFile, setBase64File)} />
               <p className="mt-2 text-xs leading-5 text-secondary-500">JPG, GIF or PNG. 10MB max.</p>
@@ -148,12 +148,12 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
         </div>
       </div>
 
-      <Modal isOpen={deleteFilePromptOpen} onClose={() => setDeleteFilePromptOpen(false)}>
+      <Modal ref={modalRef}>
         <Prompt
           title="Delete your avatar?"
           description="This operation can not be undone"
           okFunction={handleDeleteFileSubmit}
-          cancelFunction={() => setDeleteFilePromptOpen(false)}
+          cancelFunction={() => modalRef.current?.close()}
           isLoading={isLoadingDeleteFile}
         />
       </Modal>

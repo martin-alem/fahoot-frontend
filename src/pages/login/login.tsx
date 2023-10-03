@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { useAutoLoginMutation, useGoogleSignInMutation, useManualSignInMutation } from '../../api/auth.api';
 import { IGoogleOAuthPayload, IGoogleOAuthResponse, IManualSignInPayload } from '../../utils/types';
 import { saveAuth } from '../../slices/auth.slice';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { handleServerError } from '../../utils/util';
 import { toast } from 'react-toastify';
 import { validateEmail, validatePassword } from '../../utils/input_validation';
@@ -65,12 +65,12 @@ const Login: React.FC = () => {
     manualSignin(payload);
   };
 
-  const handleGoogleLogin = async (response: IGoogleOAuthResponse) => {
+  const handleGoogleLogin = useCallback(async (response: IGoogleOAuthResponse) => {
     const payload: IGoogleOAuthPayload = {
       credential: response.credential,
     };
     googleLogin(payload);
-  };
+  }, []);
 
   useKeyboardEvent(handleSubmit);
 

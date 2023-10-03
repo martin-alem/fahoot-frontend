@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { IGoogleOAuthProps } from '../../utils/types';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
 
-const GoogleOAuth: React.FC<IGoogleOAuthProps> = ({ callback, text }) => {
+const GoogleOAuth: React.FC<IGoogleOAuthProps> = memo(({ callback, text }) => {
   useEffect(() => {
     if (window.google) {
       window.google.accounts.id.initialize({
@@ -20,6 +20,6 @@ const GoogleOAuth: React.FC<IGoogleOAuthProps> = ({ callback, text }) => {
   }, [callback, text]);
 
   return <div id="buttonDiv"></div>;
-};
+});
 
 export default GoogleOAuth;

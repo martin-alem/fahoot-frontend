@@ -5,7 +5,7 @@ import Logo from './../../assets/Fahoot Logo.svg';
 import Button from '../../components/button/Button';
 import { ArrowRightIcon, EnvelopeIcon, KeyIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useGoogleSignUpMutation, useManualSignUpMutation } from '../../api/auth.api';
 import { validateEmail, validateName, validatePassword } from '../../utils/input_validation';
@@ -84,12 +84,12 @@ const SignUp: React.FC = () => {
     manualSignUp(payload);
   };
 
-  const handleGoogleSignup = async (response: IGoogleOAuthResponse) => {
+  const handleGoogleSignup = useCallback(async (response: IGoogleOAuthResponse) => {
     const payload: IGoogleOAuthPayload = {
       credential: response.credential,
     };
     googleSignUp(payload);
-  };
+  }, []);
 
   useKeyboardEvent(handleSubmit);
 
