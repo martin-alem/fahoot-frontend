@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ArrowLeftOnRectangleIcon, Cog6ToothIcon, ExclamationTriangleIcon, LightBulbIcon, PencilIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftOnRectangleIcon, Cog6ToothIcon, ExclamationTriangleIcon, EyeIcon, LightBulbIcon, PencilIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
 import Logo from './../../assets/Fahoot Logo.svg';
 import Button from '../../components/button/Button';
 import useTitle from '../../hooks/useTitle';
@@ -417,6 +417,9 @@ const Editor: React.FC = () => {
                     suffixIcon={<LightBulbIcon className="w-6" />}
                   />
                 )}
+              </div>
+              <div>
+                <Button label="Preview" type="primary" suffixIcon={<EyeIcon className="w-6" />} />
               </div>
             </div>
           </div>
