@@ -14,7 +14,8 @@ const Input: FC<InputProps> = memo(
     handleOnBlur,
     value = '',
     prefixIcon,
-    className = 'block w-full rounded-md border-0 py-3 capitalize pl-10 text-gray-900 font-semibold ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6',
+    capitalize = false,
+    className = 'block w-full rounded-md border-0 py-3 pl-10 text-gray-900 font-semibold ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6',
     error,
   }) => {
     const inputRef = useRef<HTMLInputElement>(null);
@@ -49,7 +50,7 @@ const Input: FC<InputProps> = memo(
             name={name || id}
             id={id}
             disabled={disabled}
-            className={`${className} ${error ? 'ring-red-500 focus:ring-red-500' : 'focus:ring-primary-600'}`}
+            className={`${className} ${capitalize ? 'capitalize' : ''} ${error ? 'ring-red-500 focus:ring-red-500' : 'focus:ring-primary-600'}`}
             placeholder={placeholder}
             aria-invalid={!!error}
           />

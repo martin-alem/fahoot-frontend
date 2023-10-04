@@ -31,7 +31,7 @@ const Timer: React.FC<ITimerProps> = ({ duration, onTimeout }) => {
       <div className="w-32 h-32 bg-secondary-500 rounded-full flex items-center justify-center">
         <span className="text-white text-5xl font-bold">{timeLeft}</span>
       </div>
-      <div className="hidden md:block absolute top-0 left-72 -rotate-12  w-fit p-4 bg-white shadow-lg text-secondary-500">Timer</div>
+      <div className="hidden md:block absolute -top-10 left-auto -rotate-12  w-fit p-4 bg-white">Timer</div>
     </div>
   );
 };

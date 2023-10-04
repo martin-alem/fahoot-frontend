@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ArrowPathIcon, CloudArrowUpIcon, PhotoIcon, PlusCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ArrowPathIcon, PhotoIcon, PlusCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useRef, useState } from 'react';
 import { extractKeyFromFileUrl, handleOnFileSelect, handleServerError } from '../../../utils/util';
 import { useDeleteFileMutation, useUploadFileMutation } from '../../../api/upload.api';
@@ -11,7 +11,6 @@ import { QUESTION_MEDIA_DELETE_ERROR, QUESTION_MEDIA_UPLOAD_ERROR } from '../../
 
 const QuestionMediaUpload: React.FC<IQuestionMediaUploadProps> = ({ questionMediaUrl, handleUploadQuestionMediaUrl }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [base64File, setBase64File] = useState<string | null>(null);
 
   const modalRef = useRef<ModalHandle>(null);
 
@@ -40,11 +39,14 @@ const QuestionMediaUpload: React.FC<IQuestionMediaUploadProps> = ({ questionMedi
   };
 
   const resetSelectFile = () => {
-    setBase64File(null);
     setSelectedFile(null);
   };
 
-  const memoizedHandleOnFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => handleOnFileSelect(e, setSelectedFile, setBase64File);
+  useEffect(() => {
+    handleFileUpload();
+  }, [selectedFile]);
+
+  const memoizedHandleOnFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => handleOnFileSelect(e, setSelectedFile);
 
   useEffect(() => {
     if (isSuccessUploadFile && dataUploadFile) {
@@ -81,15 +83,15 @@ const QuestionMediaUpload: React.FC<IQuestionMediaUploadProps> = ({ questionMedi
     <>
       <div className="text-center h-48 flex flex-col justify-center items-center">
         <>
-          {questionMediaUrl || base64File ? (
-            <img src={questionMediaUrl || base64File || undefined} alt="" className="pointer-events-none max-h-36 object-cover group-hover:opacity-75" />
+          {questionMediaUrl ? (
+            <img src={questionMediaUrl || undefined} alt="" className="pointer-events-none max-h-36 object-cover group-hover:opacity-75" />
           ) : (
-            <PhotoIcon className="mx-auto h-48 w-48 text-gray-300" aria-hidden="true" />
+            <>{isLoadingUploadFile ? <ArrowPathIcon className="w-6 animate-spin" /> : <PhotoIcon className="mx-auto h-48 w-48 text-gray-300" aria-hidden="true" />}</>
           )}
         </>
         <div className="mt-4 flex text-sm leading-6 text-gray-600 gap-2">
           <>
-            {(!selectedFile || base64File) && !questionMediaUrl && (
+            {!selectedFile && !questionMediaUrl && (
               <label
                 htmlFor="select_file"
                 className="cursor-pointer p-2 mx-auto rounded-md bg-primary-500 font-semibold text-white focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-600 focus-within:ring-offset-2 hover:text-white"
@@ -99,20 +101,8 @@ const QuestionMediaUpload: React.FC<IQuestionMediaUploadProps> = ({ questionMedi
               </label>
             )}
           </>
-
           <>
-            {selectedFile && !questionMediaUrl && (
-              <button
-                disabled={isLoadingUploadFile}
-                onClick={handleFileUpload}
-                className="cursor-pointer p-2 mx-auto rounded-md bg-secondary-500 font-semibold text-white focus-within:outline-none focus-within:ring-2 focus-within:ring-secondary-600 focus-within:ring-offset-2 hover:text-white"
-              >
-                {isLoadingUploadFile ? <ArrowPathIcon className="w-6 text-white animate-spin" /> : <CloudArrowUpIcon className="w-6 text-white" />}
-              </button>
-            )}
-          </>
-          <>
-            {!selectedFile && !base64File && questionMediaUrl && (
+            {!selectedFile && questionMediaUrl && (
               <button
                 onClick={() => modalRef.current?.open()}
                 className="cursor-pointer p-2 mx-auto rounded-md bg-red-500 font-semibold text-white focus-within:outline-none focus-within:ring-2 focus-within:ring-red-600 focus-within:ring-offset-2 hover:text-white"

@@ -252,6 +252,7 @@ export interface InputProps {
   label?: string;
   prefixIcon?: ReactNode;
   value?: string;
+  capitalize?: boolean;
   handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleOnBlur: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;

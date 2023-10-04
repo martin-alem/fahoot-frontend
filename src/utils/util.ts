@@ -36,7 +36,7 @@ export function handleServerError(statusCode: number | 'FETCH_ERROR' | 'TIMEOUT_
   return ERROR_MESSAGES.GENERIC;
 }
 
-export function handleOnFileSelect(event: React.ChangeEvent<HTMLInputElement>, setFile: setFunction<File | null>, setFileUrl: setFunction<string | null>): void {
+export function handleOnFileSelect(event: React.ChangeEvent<HTMLInputElement>, setFile: setFunction<File | null>, setFileUrl?: setFunction<string | null>): void {
   const files = event.target.files;
 
   if (files && files[0]) {
@@ -66,7 +66,7 @@ export function handleOnFileSelect(event: React.ChangeEvent<HTMLInputElement>, s
       });
     });
     reader.addEventListener('load', () => {
-      if (reader.result) {
+      if (reader.result && setFileUrl) {
         setFileUrl(reader.result as string);
       }
     });

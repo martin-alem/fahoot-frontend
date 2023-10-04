@@ -10,7 +10,7 @@ const Play: React.FC<IPlayProps> = ({ handleOptionSelection, handleTimeOut, mode
     <>
       {question && (
         <>
-          <div className="w-full flex justify-between items-center">
+          <div className="mt-6 w-full flex justify-between items-center">
             <Timer duration={question.duration} onTimeout={handleTimeOut} />
             <img className="mx-auto hidden md:block h-20 w-auto animate-bounce" src={Logo} alt="Fahoot" />
             <AnswerCount />

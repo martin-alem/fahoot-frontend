@@ -46,7 +46,7 @@ const QuestionOption: React.FC<IQuestionOptionProps> = ({ option, handleCurrentQ
           id={`option_${option._id}`}
           onChange={editOptionText}
           value={optionText}
-          className="block w-full capitalize rounded-md border-0 py-4 text-gray-900 text-center shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-white sm:text-2xl"
+          className="block w-full capitalize border-0 py-4 text-gray-900 text-center ring-1 ring-inset ring-white placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-white sm:text-2xl"
           placeholder="Type answer here"
           style={{ resize: 'none' }}
         />

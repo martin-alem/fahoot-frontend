@@ -108,6 +108,7 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
           name="first_name"
           placeholder="John"
           label="First name"
+          capitalize
           prefixIcon={<UserCircleIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
         />
       </div>
@@ -127,6 +128,7 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
           name="last_name"
           placeholder="Smith"
           label="Last name"
+          capitalize
           prefixIcon={<UserCircleIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
         />
       </div>

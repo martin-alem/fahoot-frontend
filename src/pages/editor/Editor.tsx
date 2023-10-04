@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ArrowLeftOnRectangleIcon, Cog6ToothIcon, ExclamationTriangleIcon, EyeIcon, LightBulbIcon, PencilIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftOnRectangleIcon, BookmarkSlashIcon, Cog6ToothIcon, ExclamationTriangleIcon, EyeIcon, LightBulbIcon, PencilIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
 import Logo from './../../assets/Fahoot Logo.svg';
 import Button from '../../components/button/Button';
 import useTitle from '../../hooks/useTitle';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Modal from '../../components/modal/Modal';
 import { useGetQuizQuery, useUpdateQuizMutation } from '../../api/quiz.api';
 import { getValueFromObject, handleServerError, updateQuestionOptions, updateQuizAndDispatch } from '../../utils/util';
@@ -38,6 +38,8 @@ const Editor: React.FC = () => {
   const baseQuiz = useSelector((state: RootState) => state.quizState.baseQuiz);
   const currentQuestion = useSelector((state: RootState) => state.quizState.currentQuestion);
 
+  const [unSavedChanges, setUnSavedChanges] = useState<boolean>(false);
+
   const modalRef = useRef<ModalHandle>(null);
 
   const openModal = () => {
@@ -47,6 +49,10 @@ const Editor: React.FC = () => {
   const closeModal = () => {
     modalRef.current?.close();
   };
+
+  useEffect(() => {
+    setUnSavedChanges(!isEqual(baseQuiz, quiz));
+  }, [quiz]);
 
   const [updateQuiz, { isLoading: isLoadingUpdateQuiz, isSuccess: isSuccessUpdateQuiz, isError: isErrorUpdateQuiz, error: errorUpdateQuiz }] = useUpdateQuizMutation();
 
@@ -345,7 +351,7 @@ const Editor: React.FC = () => {
 
   const handleSaveQuizAndExit = async () => {
     if (!isValidQuiz() || !quiz) return;
-    if (!isEqual(baseQuiz, quiz)) return await updateQuiz(quiz);
+    if (unSavedChanges) return await updateQuiz(quiz);
     dispatch(clearQuiz());
     navigate('/dashboard');
   };
@@ -381,11 +387,18 @@ const Editor: React.FC = () => {
                   handleOnChange={() => null}
                   name="quiz_title"
                   placeholder="Title"
+                  capitalize={true}
                   prefixIcon={<PencilIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
                 />
               </div>
               <Cog6ToothIcon className="w-12 cursor-pointer" onClick={openModal} />
             </div>
+            {unSavedChanges && (
+              <div className="flex w-full justify-center items-center gap-2 text-red-500 text-sm">
+                <BookmarkSlashIcon className="w-4" />
+                You have unsaved changes
+              </div>
+            )}
 
             <div className="mt-4 flex sm:mt-0 items-center gap-4">
               <div>
