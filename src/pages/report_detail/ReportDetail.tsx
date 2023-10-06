@@ -75,7 +75,7 @@ const ReportDetail: React.FC = () => {
         <ul role="list" className="w-full divide-y divide-gray-100 bg-white shadow-md mx-auto max-w-7xl py-6 px-6 lg:px-8 cursor-pointer">
           <h3 className="mb-4 text-xl font-bold leading-6 text-secondary-500">Players</h3>
           {people.map((person, index) => (
-            <li key={index} className="relative flex justify-between gap-x-6 py-5" onClick={() => modalRef.current?.open}>
+            <li key={index} className="relative flex justify-between gap-x-6 py-5" onClick={() => modalRef.current?.open()}>
               <div className="flex items-center justify-center min-w-0 gap-x-4">
                 <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={person.imageUrl} alt="" />
                 <div className="min-w-0 flex-auto">

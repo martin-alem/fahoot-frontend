@@ -188,3 +188,11 @@ export const UPDATE_QUIZ_ERROR = {
   429: "You're doing that too often. Please wait a few minutes and try again",
   400: 'Invalid data was sent to the server. Please make sure you are submitting a valid quiz.',
 };
+
+export const CREATE_PLAY_ERROR = {
+  403: 'This application is currently unauthorized to access the server at the moment. Please try again later.',
+  401: 'You must be logged in to create a play',
+  404: 'The resource could not be found. Please contact support or try again later.',
+  429: "You're doing that too often. Please wait a few minutes and try again",
+  400: 'We are unable to create a play at the moment. Please try again later.',
+};

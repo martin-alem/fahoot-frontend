@@ -396,7 +396,7 @@ const Editor: React.FC = () => {
             {unSavedChanges && (
               <div className="flex w-full justify-center items-center gap-2 text-red-500 text-sm">
                 <BookmarkSlashIcon className="w-4" />
-                You have unsaved changes
+                You have unsaved changes. Click done to save and exit.
               </div>
             )}
 

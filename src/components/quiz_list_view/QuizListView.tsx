@@ -15,29 +15,18 @@ const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
     <>
       <div className="w-full flex shadow-lg rounded-md">
         <div className={`relative w-1/5 ${quiz.settings.colorLabel}`}>
-          {quiz.status === QuizStatus.PUBLISHED ? (
-            <GlobeAltIcon className="absolute  w-6 text-white top-2 left-2" />
-          ) : (
-            <LightBulbIcon className="absolute  w-6 text-white top-2 left-2" />
-          )}
+          {quiz.status === QuizStatus.PUBLISHED ? <GlobeAltIcon className="absolute  w-6 text-white top-2 left-2" /> : <LightBulbIcon className="absolute  w-6 text-white top-2 left-2" />}
         </div>
         <div className="flex-grow space-y-16 bg-white p-4">
           <div className="flex justify-between items-center">
-            <h1 className="w-80 truncate text-secondary-500 text-xl md:text-3xl font-bold capitalize">
-              {quiz.title}
-            </h1>
+            <h1 className="w-80 truncate text-secondary-500 text-xl md:text-3xl font-bold capitalize">{quiz.title}</h1>
             <Link to={`/editor/${quiz._id}`}>
               <PencilIcon className="w-6 cursor-pointer" />
             </Link>
           </div>
           <div className="flex justify-between items-center">
             <div className="flex justify-center gap-2 items-center">
-              <Avatar
-                height="h-10"
-                width="w-10"
-                src={user?.avatarUrl ?? undefined}
-                alt={user?.lastName ?? ''}
-              />
+              <Avatar height="h-10" width="w-10" src={user?.avatarUrl ?? undefined} alt={user?.lastName ?? ''} />
               <h3 className="w-48 font-bold capitalize truncate">
                 {user?.firstName} {user?.lastName}
               </h3>
@@ -51,13 +40,7 @@ const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
               {`${quiz.questions.length}`}
             </h2>
             <div>
-              <Button
-                label="Start"
-                type="primary"
-                disabled={quiz.status === QuizStatus.DRAFT}
-                suffixIcon={<PlayIcon className="w-8" />}
-                handleClick={() => navigate('/lobby')}
-              />
+              <Button label="Start" type="primary" disabled={quiz.status === QuizStatus.DRAFT} suffixIcon={<PlayIcon className="w-8" />} handleClick={() => navigate(`/create_play/${quiz._id}`)} />
             </div>
           </div>
         </div>

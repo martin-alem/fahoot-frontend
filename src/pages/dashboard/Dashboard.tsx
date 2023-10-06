@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Fragment, useEffect } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Logo from './../../assets/Fahoot Logo.svg';
 import { Link, NavLink, Outlet } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import Avatar from '../../components/avatar/Avatar';
 import Alert from '../../components/alert/Alert';
@@ -13,6 +14,7 @@ import { EmailPurpose, SUCCESS_MESSAGES } from '../../utils/constant';
 import { toast } from 'react-toastify';
 import { DASHBOARD_SEND_VERIFICATION_ERROR } from '../../utils/error_messages';
 import { handleServerError } from '../../utils/util';
+import { clearPlay } from '../../slices/play.slice';
 
 const navigation = [
   { name: 'Library', href: '', current: true },
@@ -29,6 +31,7 @@ function classNames(...classes: string[]) {
 }
 
 const Dashboard: React.FC = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.authUser.user);
 
   const [requestVerificationEmail, { isLoading, isSuccess, isError, error }] = useRequestVerificationEmailMutation();
@@ -48,6 +51,10 @@ const Dashboard: React.FC = () => {
     };
     requestVerificationEmail(payload);
   };
+
+  useEffect(() => {
+    dispatch(clearPlay());
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {

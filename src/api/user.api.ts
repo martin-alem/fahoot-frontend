@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IUpdateBasicInfoPayload } from '../utils/types';
+import { AuthUser, IUpdateBasicInfoPayload } from '../utils/types';
 
 const BACKEND_API_URL = import.meta.env.VITE_APP_BACKEND_API_URL;
 const API_KEY = import.meta.env.VITE_APP_API_KEY;
@@ -21,14 +21,14 @@ export const userApi = createApi({
   }),
 
   endpoints: (builder) => ({
-    getUser: builder.query({
+    getUser: builder.query<AuthUser, void>({
       query: () => ({
         url: '',
         method: 'GET',
       }),
     }),
 
-    updateBasicInfo: builder.mutation({
+    updateBasicInfo: builder.mutation<AuthUser, IUpdateBasicInfoPayload>({
       query: (payload: IUpdateBasicInfoPayload) => ({
         url: '',
         method: 'PATCH',

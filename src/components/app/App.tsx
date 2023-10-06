@@ -25,6 +25,8 @@ import { handleServerError } from '../../utils/util';
 import { toast } from 'react-toastify';
 import { APP_COMPONENT_LOG_ERROR } from '../../utils/error_messages';
 import Preview from '../../pages/preview/Preview';
+import { USER_ROLE } from '../../utils/constant';
+import CreatePlay from '../../pages/create_play/CreatePlay';
 
 const App: React.FC = () => {
   const [log, { isError, error }] = useLogMutation();
@@ -57,7 +59,7 @@ const App: React.FC = () => {
         <Route
           path="/podium"
           element={
-            <AuthGuard>
+            <AuthGuard roles={[USER_ROLE.CREATOR, USER_ROLE.PLAYER]}>
               <Podium />
             </AuthGuard>
           }
@@ -65,16 +67,25 @@ const App: React.FC = () => {
         <Route
           path="/game_room"
           element={
-            <AuthGuard>
+            <AuthGuard roles={[USER_ROLE.CREATOR, USER_ROLE.PLAYER]}>
               <GameRoom />
             </AuthGuard>
           }
         />
         <Route
-          path="/lobby"
+          path="/lobby/:playId"
           element={
-            <AuthGuard>
+            <AuthGuard roles={[USER_ROLE.CREATOR, USER_ROLE.PLAYER]}>
               <Lobby />
+            </AuthGuard>
+          }
+        />
+
+        <Route
+          path="/create_play/:quizId"
+          element={
+            <AuthGuard roles={[USER_ROLE.CREATOR]}>
+              <CreatePlay />
             </AuthGuard>
           }
         />
@@ -82,7 +93,7 @@ const App: React.FC = () => {
         <Route
           path="/preview"
           element={
-            <AuthGuard>
+            <AuthGuard roles={[USER_ROLE.CREATOR]}>
               <Preview />
             </AuthGuard>
           }
@@ -92,7 +103,7 @@ const App: React.FC = () => {
           <Route
             index
             element={
-              <AuthGuard>
+              <AuthGuard roles={[USER_ROLE.CREATOR]}>
                 <Library />
               </AuthGuard>
             }
@@ -100,7 +111,7 @@ const App: React.FC = () => {
           <Route
             path="report"
             element={
-              <AuthGuard>
+              <AuthGuard roles={[USER_ROLE.CREATOR]}>
                 <Report />
               </AuthGuard>
             }
@@ -108,7 +119,7 @@ const App: React.FC = () => {
           <Route
             path="profile"
             element={
-              <AuthGuard>
+              <AuthGuard roles={[USER_ROLE.CREATOR]}>
                 <Profile />
               </AuthGuard>
             }
@@ -116,7 +127,7 @@ const App: React.FC = () => {
           <Route
             path="report/:id"
             element={
-              <AuthGuard>
+              <AuthGuard roles={[USER_ROLE.CREATOR]}>
                 <ReportDetail />
               </AuthGuard>
             }
@@ -124,7 +135,7 @@ const App: React.FC = () => {
           <Route
             path="logout"
             element={
-              <AuthGuard>
+              <AuthGuard roles={[USER_ROLE.CREATOR]}>
                 <Logout />
               </AuthGuard>
             }
@@ -133,7 +144,7 @@ const App: React.FC = () => {
         <Route
           path="/editor/:quizId"
           element={
-            <AuthGuard>
+            <AuthGuard roles={[USER_ROLE.CREATOR]}>
               <Editor />
             </AuthGuard>
           }

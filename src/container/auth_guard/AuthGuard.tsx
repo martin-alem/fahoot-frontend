@@ -9,26 +9,34 @@ import { handleServerError } from '../../utils/util';
 import LoadingSpinner from '../../components/spinner/Spinner';
 import { useGetUserQuery } from '../../api/user.api';
 import { AUTH_GUARD_GET_USER_ERROR } from '../../utils/error_messages';
+import { USER_ROLE } from '../../utils/constant';
 
 type AuthGuardProps = {
   children: React.ReactNode;
+  roles: USER_ROLE[];
 };
 
-export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
+export const AuthGuard: React.FC<AuthGuardProps> = ({ children, roles }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { data, error, isLoading, isSuccess, isError } = useGetUserQuery({});
+  const { data, error, isLoading, isSuccess, isError } = useGetUserQuery();
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data) {
       dispatch(saveAuth(data));
-      if (location.state && location.state.from) {
-        navigate(location.state.from);
+      if (roles.includes(data.role)) {
+        dispatch(saveAuth(data));
+        if (location.state && location.state.from) {
+          navigate(location.state.from);
+        }
+      } else {
+        toast.error('You are not authorized to access this route.', { position: toast.POSITION.TOP_CENTER });
+        navigate('/');
       }
     }
-  }, [isSuccess]);
+  }, [isSuccess, roles]);
 
   useEffect(() => {
     if (isError && error) {

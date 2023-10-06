@@ -41,6 +41,18 @@ export enum QuizState {
   DONE = 'done',
 }
 
+export enum PlayStatus {
+  PENDING = 'pending',
+  PLAYING = 'playing',
+  COMPLETED = 'completed',
+}
+
+export enum USER_ROLE {
+  CREATOR = 'creator',
+  PLAYER = 'player',
+  ADMIN = 'admin',
+}
+
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 export const PAGE_SIZE = 5;
 

@@ -1,5 +1,5 @@
 import { ReactNode, Ref } from 'react';
-import { QuestionType, QuizMode, QuizStatus } from './constant';
+import { PlayStatus, QuestionType, QuizMode, QuizStatus, USER_ROLE } from './constant';
 
 export interface IButtonProps {
   label: string;
@@ -90,6 +90,7 @@ export interface AuthUser {
   avatarUrl: string | null;
   verified: boolean;
   status: string;
+  role: USER_ROLE;
 }
 
 export interface IProfileProps {
@@ -129,7 +130,6 @@ export interface IQuestionCountProps {
 export interface IQuestionProps {
   questionText: string;
 }
-
 
 export interface ITimerProps {
   duration: number;
@@ -217,6 +217,28 @@ export interface ICreateQuizPayload {
   title: string;
   questions: IQuestion[];
   settings: IQuizSetting;
+}
+
+export interface IPlay {
+  _id: string;
+  quizId: string;
+  userId: string;
+  status: PlayStatus;
+  isOpen: boolean;
+  name: string;
+  code: string;
+}
+
+export interface IPlayState {
+  play: IPlay | null;
+}
+
+export interface ICreatePlayPayload {
+  quizId: string;
+}
+
+export interface IGetPlayPayload {
+  playId: string;
 }
 
 export interface IGoogleOAuthResponse {
