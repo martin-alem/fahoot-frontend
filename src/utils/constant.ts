@@ -29,6 +29,15 @@ export enum SUCCESS_MESSAGES {
   EMAIL_VERIFICATION_SUCCESS = 'Your account was successfully verified.',
 }
 
+export enum Events {
+  ERROR = 'fahoot:error', // emitted when an error is encountered
+  CONNECTED = 'fahoot:connected', // emitted when a user successfully connects
+  DISCONNECTED = 'disconnect', // emitted when a user disconnects
+  PLAYER_JOINED = 'fahoot:player_join', // emitted when a player joins
+  LOCK_GAME = 'fahoot:lock_game', // emitted when the organizer locks the game
+  REMOVE_PLAYER = 'fahoot:remove_player', // emitted when the organizer removes a player
+}
+
 export enum QuizMode {
   EDIT = 'edit',
   PREVIEW = 'preview',
@@ -53,8 +62,15 @@ export enum USER_ROLE {
   ADMIN = 'admin',
 }
 
+export enum GameExitType {
+  PLAYER_EXIT = 'player_exit',
+  ORGANIZER_EXIT = 'organizer_exit',
+}
+
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 export const PAGE_SIZE = 5;
+export const PLAY_NAMESPACE = 'fahoot_play';
+export const LOGO = 'https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/images/Fahoot%20Logo.svg';
 
 export enum EmailPurpose {
   EMAIL_VERIFICATION = 'email verification',

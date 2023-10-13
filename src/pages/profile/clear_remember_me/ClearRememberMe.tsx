@@ -5,7 +5,6 @@ import { SUCCESS_MESSAGES } from '../../../utils/constant';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import { handleServerError } from '../../../utils/util';
-import { CLEAR_REMEMBER_ME_ERROR } from '../../../utils/error_messages';
 
 const ClearRememberMe: React.FC = () => {
   const [clearRememberMe, { isLoading, isSuccess, isError, error }] = useClearRememberMeMutation();
@@ -24,10 +23,8 @@ const ClearRememberMe: React.FC = () => {
 
   useEffect(() => {
     if (isError && error) {
-      if ('status' in error) {
-        const errorMessage = handleServerError(error.status, CLEAR_REMEMBER_ME_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(error);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isError, error]);
   return (

@@ -13,7 +13,6 @@ import { saveAuth } from '../../../slices/auth.slice';
 import { useDispatch } from 'react-redux';
 import Prompt from '../../../components/prompt/Prompt';
 import Modal from '../../../components/modal/Modal';
-import { AVATAR_UPDATE_ERROR, AVATAR_DELETE_ERROR, AVATAR_UPLOAD_ERROR } from '../../../utils/error_messages';
 
 const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -65,7 +64,7 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
   }, [user?.avatarUrl]);
 
   useEffect(() => {
-    if (isSuccessBasicInfo) {
+    if (isSuccessBasicInfo && dataBasicInfo) {
       dispatch(saveAuth(dataBasicInfo));
       toast.success(SUCCESS_MESSAGES.AVATAR_UPLOAD_SUCCESS, {
         position: toast.POSITION.TOP_CENTER,
@@ -75,10 +74,8 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
 
   useEffect(() => {
     if (isErrorBasicInfo && errorBasicInfo) {
-      if ('status' in errorBasicInfo) {
-        const errorMessage = handleServerError(errorBasicInfo.status, AVATAR_UPDATE_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(errorBasicInfo);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isErrorBasicInfo, errorBasicInfo]);
 
@@ -94,10 +91,8 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
 
   useEffect(() => {
     if (isErrorUploadFile && errorUploadFile) {
-      if ('status' in errorUploadFile) {
-        const errorMessage = handleServerError(errorUploadFile.status, AVATAR_UPLOAD_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(errorUploadFile);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isErrorUploadFile, errorUploadFile]);
 
@@ -112,10 +107,8 @@ const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
 
   useEffect(() => {
     if (isErrorDeleteFile && errorDeleteFile) {
-      if ('status' in errorDeleteFile) {
-        const errorMessage = handleServerError(errorDeleteFile.status, AVATAR_DELETE_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(errorDeleteFile);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isErrorDeleteFile, errorDeleteFile]);
   return (

@@ -5,15 +5,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { saveAuth } from '../../slices/auth.slice';
-import { handleServerError } from '../../utils/util';
 import LoadingSpinner from '../../components/spinner/Spinner';
 import { useGetUserQuery } from '../../api/user.api';
-import { AUTH_GUARD_GET_USER_ERROR } from '../../utils/error_messages';
-import { USER_ROLE } from '../../utils/constant';
+import {USER_ROLE } from '../../utils/constant';
+import { handleServerError } from '../../utils/util';
 
 type AuthGuardProps = {
   children: React.ReactNode;
-  roles: USER_ROLE[];
+  roles?: USER_ROLE[];
 };
 
 export const AuthGuard: React.FC<AuthGuardProps> = ({ children, roles }) => {
@@ -26,27 +25,24 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children, roles }) => {
   useEffect(() => {
     if (isSuccess && data) {
       dispatch(saveAuth(data));
-      if (roles.includes(data.role)) {
-        dispatch(saveAuth(data));
-        if (location.state && location.state.from) {
-          navigate(location.state.from);
-        }
+
+      const shouldNavigate = roles ? roles.includes(data.role) : true;
+
+      if (shouldNavigate) {
+        if (location.state && location.state.from) navigate(location.state.from);
       } else {
         toast.error('You are not authorized to access this route.', { position: toast.POSITION.TOP_CENTER });
         navigate('/');
       }
     }
-  }, [isSuccess, roles]);
+  }, [isSuccess, roles, dispatch, location.state]);
 
   useEffect(() => {
     if (isError && error) {
-      if ('status' in error) {
-        const message = handleServerError(error.status, AUTH_GUARD_GET_USER_ERROR);
-        toast.error(message, { position: toast.POSITION.TOP_CENTER });
-        if (error.status === 401) {
-          //If trying to get an authenticated user returns a 401 they should be logged out
-          navigate('/');
-        }
+      const { statusCode, message } = handleServerError(error);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
+      if (statusCode === 401) {
+        navigate('/');
       }
     }
   }, [isError, error]);

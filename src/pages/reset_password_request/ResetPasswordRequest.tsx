@@ -1,20 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import useTitle from '../../hooks/useTitle';
-import Logo from './../../assets/Fahoot Logo.svg';
 import Alert from '../../components/alert/Alert';
 import { useResetPasswordRequestMutation } from '../../api/security.api';
 import { validateEmail } from '../../utils/input_validation';
-import { ERROR_MESSAGES } from '../../utils/constant';
+import { ERROR_MESSAGES, LOGO } from '../../utils/constant';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { IResetPasswordRequestPayload } from '../../utils/types';
-import { handleServerError } from '../../utils/util';
 import Input from '../../components/input/input';
 import { ArrowSmallRightIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import Button from '../../components/button/Button';
 import { Link } from 'react-router-dom';
 import useKeyboardEvent from '../../hooks/useKeyboardEvent';
-import { RESET_PASSWORD_REQUEST_ERROR } from '../../utils/error_messages';
+import { handleServerError } from '../../utils/util';
 
 const ResetPasswordRequest: React.FC = () => {
   useTitle('Password Reset Request');
@@ -58,18 +56,15 @@ const ResetPasswordRequest: React.FC = () => {
 
   useEffect(() => {
     if (isError && error) {
-      if ('status' in error) {
-        setResetSuccessfull(false);
-        const errorMessage = handleServerError(error.status, RESET_PASSWORD_REQUEST_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(error);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isError, error]);
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <img className="mx-auto h-20 w-auto" src={Logo} alt="Fahoot" />
+          <img className="mx-auto h-20 w-auto" src={LOGO} alt="Fahoot" />
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-secondary-500">Password Reset Request</h2>
         </div>
         <div className="sm:mx-auto sm:w-full sm:max-w-lg">
@@ -86,7 +81,7 @@ const ResetPasswordRequest: React.FC = () => {
         </div>
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-            <form className="space-y-6" action="#" method="POST">
+            <div className="space-y-6">
               <div>
                 <Input
                   id="email"
@@ -111,7 +106,7 @@ const ResetPasswordRequest: React.FC = () => {
                   suffixIcon={<ArrowSmallRightIcon className="w-6" />}
                 />
               </div>
-            </form>
+            </div>
           </div>
 
           <p className="mt-10 text-center text-sm text-gray-500">

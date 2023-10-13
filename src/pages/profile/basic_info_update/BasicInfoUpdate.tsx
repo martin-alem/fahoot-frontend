@@ -5,14 +5,13 @@ import { IProfileProps, IUpdateBasicInfoPayload } from '../../../utils/types';
 import { InboxArrowDownIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import Button from '../../../components/button/Button';
 import { capitalize, isEqual, lowerCase } from 'lodash';
-import { handleServerError } from '../../../utils/util';
 import { useEffect, useState } from 'react';
 import { saveAuth } from '../../../slices/auth.slice';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../../../utils/constant';
 import { validateName } from '../../../utils/input_validation';
 import { useUpdateBasicInfoMutation } from '../../../api/user.api';
 import { useDispatch } from 'react-redux';
-import { BASIC_INFO_UPDATE_ERROR } from '../../../utils/error_messages';
+import { handleServerError } from '../../../utils/util';
 
 const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
   const dispatch = useDispatch();
@@ -75,7 +74,7 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
   };
 
   useEffect(() => {
-    if (isSuccessBasicInfo) {
+    if (isSuccessBasicInfo && dataBasicInfo) {
       dispatch(saveAuth(dataBasicInfo));
       toast.success(SUCCESS_MESSAGES.BASIC_INFO_UPDATE_SUCCESS, {
         position: toast.POSITION.TOP_CENTER,
@@ -85,10 +84,8 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
 
   useEffect(() => {
     if (isErrorBasicInfo && errorBasicInfo) {
-      if ('status' in errorBasicInfo) {
-        const errorMessage = handleServerError(errorBasicInfo.status, BASIC_INFO_UPDATE_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(errorBasicInfo);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isErrorBasicInfo, errorBasicInfo]);
   return (

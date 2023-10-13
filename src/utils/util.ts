@@ -1,8 +1,9 @@
 import { toast } from 'react-toastify';
-import { ERROR_MESSAGES, MAX_FILE_SIZE, QuestionType, ColorList } from './constant';
-import { ActionCreator, IOption, IPair, IQuestion, IQuiz, setFunction } from './types';
-import { AnyAction, Dispatch } from '@reduxjs/toolkit';
+import { MAX_FILE_SIZE, QuestionType, ColorList, ERROR_MESSAGES } from './constant';
+import { ActionCreator, IOption, IPair, IQuestion, IQuiz, IServerError, setFunction } from './types';
+import { AnyAction, Dispatch, SerializedError } from '@reduxjs/toolkit';
 import ObjectID from 'bson-objectid';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 
 /**
  * Maps a score to a number in a sequence representing the bar's height
@@ -13,27 +14,6 @@ export function mapScoreToBarHeight(score: number): number {
   if (score <= 0) return 10;
   if (score >= 250) return 250;
   return score;
-}
-
-export function handleServerError(statusCode: number | 'FETCH_ERROR' | 'TIMEOUT_ERROR' | 'PARSING_ERROR' | 'CUSTOM_ERROR', errorReference: { [key: number]: string }): string {
-  if (typeof statusCode === 'string') {
-    switch (statusCode) {
-      case 'FETCH_ERROR':
-        return ERROR_MESSAGES.FETCH_ERROR;
-      case 'TIMEOUT_ERROR':
-        return ERROR_MESSAGES.TIMEOUT_ERROR;
-      case 'PARSING_ERROR':
-        return ERROR_MESSAGES.PARSING_ERROR;
-      case 'CUSTOM_ERROR':
-        return ERROR_MESSAGES.GENERIC;
-      default:
-        return ERROR_MESSAGES.GENERIC;
-    }
-  } else if (typeof statusCode === 'number') {
-    if (!(statusCode in errorReference)) return ERROR_MESSAGES.SERVER_ERROR;
-    return errorReference[statusCode];
-  }
-  return ERROR_MESSAGES.GENERIC;
 }
 
 export function handleOnFileSelect(event: React.ChangeEvent<HTMLInputElement>, setFile: setFunction<File | null>, setFileUrl?: setFunction<string | null>): void {
@@ -139,4 +119,12 @@ export function getBorderColor(question: IQuestion, currentQuestion: IQuestion) 
     return question.title !== '' ? 'border-4 border-primary-500' : 'border-4 border-red-500';
   }
   return question.title === '' ? 'border-4 border-red-500' : 'border-none';
+}
+
+export function handleServerError(error: FetchBaseQueryError | SerializedError | undefined) {
+  if (error && 'data' in error) {
+    const serverError = error['data'] as IServerError;
+    if (serverError.statusCode !== 500) return { statusCode: serverError.statusCode, message: serverError.message };
+  }
+  return { statusCode: 500, message: ERROR_MESSAGES.GENERIC };
 }

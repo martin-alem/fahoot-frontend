@@ -5,7 +5,6 @@ import useTitle from '../../hooks/useTitle';
 import { useEffect, useState } from 'react';
 import QuizGridContainer from '../../components/quiz_grid_container/QuizGridContainer';
 import QuizListContainer from '../../components/quiz_list_container/QuizListContainer';
-import { handleServerError } from '../../utils/util';
 import Pagination from '../../components/pagination/Pagination';
 import { ICreateQuizPayload, IQuizResult } from '../../utils/types';
 import { toast } from 'react-toastify';
@@ -18,8 +17,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveQuiz } from '../../slices/quiz.slice';
 import ObjectID from 'bson-objectid';
-import { LIBRARY_CREATE_QUIZ_ERROR, LIBRARY_GET_QUIZZES_ERROR } from '../../utils/error_messages';
 import { RootState } from '../../store';
+import { handleServerError } from '../../utils/util';
 
 const Library: React.FC = () => {
   useTitle('Library');
@@ -99,10 +98,8 @@ const Library: React.FC = () => {
 
   useEffect(() => {
     if (isErrorGetQuizzes && errorGetQuizzes) {
-      if ('status' in errorGetQuizzes) {
-        const message = handleServerError(errorGetQuizzes.status, LIBRARY_GET_QUIZZES_ERROR);
-        toast.error(message, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(errorGetQuizzes);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isErrorGetQuizzes, errorGetQuizzes]);
 
@@ -117,10 +114,8 @@ const Library: React.FC = () => {
 
   useEffect(() => {
     if (isErrorCreateQuiz && errorCreateQuiz) {
-      if ('status' in errorCreateQuiz) {
-        const errorMessage = handleServerError(errorCreateQuiz.status, LIBRARY_CREATE_QUIZ_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(errorCreateQuiz);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isErrorCreateQuiz, errorCreateQuiz]);
   return (

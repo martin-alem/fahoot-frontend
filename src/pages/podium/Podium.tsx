@@ -1,13 +1,13 @@
-import useTitle from "../../hooks/useTitle";
-import Logo from "./../../assets/Fahoot Logo.svg";
+import useTitle from '../../hooks/useTitle';
+import { LOGO } from './../../utils/constant';
 
 const Podium: React.FC = () => {
-  useTitle("Podium");
+  useTitle('Podium');
   return (
     <div className="h-screen flex flex-col justify-center bg-secondary-500 overflow-x-auto">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
-          <img className="mb-4 mx-auto h-20 w-auto" src={Logo} alt="Fahoot" />
+          <img className="mb-4 mx-auto h-20 w-auto" src={LOGO} alt="Fahoot" />
           <div className="bg-neutral-500 p-8 rounded-sm shadow-md text-center">
             <h1 className="text-3xl text-secondary-500 font-bold capitalize">javaScript quiz</h1>
           </div>

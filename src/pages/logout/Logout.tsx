@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { useLogoutMutation } from '../../api/auth.api';
 import { useEffect } from 'react';
 import { deleteAuth } from '../../slices/auth.slice';
-import { handleServerError } from '../../utils/util';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/spinner/Spinner';
 import { RootState } from '../../store';
-import { LOGOUT_ERROR } from '../../utils/error_messages';
+import { handleServerError } from '../../utils/util';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
 
@@ -38,10 +37,8 @@ const Logout: React.FC = () => {
 
   useEffect(() => {
     if (isError && error) {
-      if ('status' in error) {
-        const errorMessage = handleServerError(error.status, LOGOUT_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(error);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isError, error]);
 

@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ArrowPathIcon, PhotoIcon, PlusCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useRef, useState } from 'react';
-import { extractKeyFromFileUrl, handleOnFileSelect, handleServerError } from '../../../utils/util';
+import { extractKeyFromFileUrl, handleOnFileSelect } from '../../../utils/util';
 import { useDeleteFileMutation, useUploadFileMutation } from '../../../api/upload.api';
 import Modal from '../../../components/modal/Modal';
 import Prompt from '../../../components/prompt/Prompt';
 import { toast } from 'react-toastify';
-import { IQuestionMediaUploadProps, ModalHandle } from '../../../utils/types';
-import { QUESTION_MEDIA_DELETE_ERROR, QUESTION_MEDIA_UPLOAD_ERROR } from '../../../utils/error_messages';
+import { IQuestionMediaUploadProps, IServerError, ModalHandle } from '../../../utils/types';
+import { ERROR_MESSAGES } from '../../../utils/constant';
 
 const QuestionMediaUpload: React.FC<IQuestionMediaUploadProps> = ({ questionMediaUrl, handleUploadQuestionMediaUrl }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -57,9 +57,10 @@ const QuestionMediaUpload: React.FC<IQuestionMediaUploadProps> = ({ questionMedi
 
   useEffect(() => {
     if (isErrorUploadFile && errorUploadFile) {
-      if ('status' in errorUploadFile) {
-        const errorMessage = handleServerError(errorUploadFile.status, QUESTION_MEDIA_UPLOAD_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      if ('data' in errorUploadFile) {
+        toast.error((errorUploadFile.data as IServerError).message, { position: toast.POSITION.TOP_CENTER });
+      } else {
+        toast.error(ERROR_MESSAGES.SERVER_ERROR, { position: toast.POSITION.TOP_CENTER });
       }
     }
   }, [isErrorUploadFile, errorUploadFile]);
@@ -73,9 +74,10 @@ const QuestionMediaUpload: React.FC<IQuestionMediaUploadProps> = ({ questionMedi
 
   useEffect(() => {
     if (isErrorDeleteFile && errorDeleteFile) {
-      if ('status' in errorDeleteFile) {
-        const errorMessage = handleServerError(errorDeleteFile.status, QUESTION_MEDIA_DELETE_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
+      if ('data' in errorDeleteFile) {
+        toast.error((errorDeleteFile.data as IServerError).message, { position: toast.POSITION.TOP_CENTER });
+      } else {
+        toast.error(ERROR_MESSAGES.SERVER_ERROR, { position: toast.POSITION.TOP_CENTER });
       }
     }
   }, [isErrorDeleteFile, errorDeleteFile]);

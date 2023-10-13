@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ICreatePlayPayload, IGetPlayPayload, IPlay } from '../utils/types';
+import { ICreatePlayPayload, IGetPlayByPinPayload, IPlay } from '../utils/types';
 
 const BACKEND_API_URL = import.meta.env.VITE_APP_BACKEND_API_URL;
 const API_KEY = import.meta.env.VITE_APP_API_KEY;
@@ -28,13 +28,27 @@ export const playApi = createApi({
       }),
     }),
 
-    getPlay: builder.query<IPlay, IGetPlayPayload>({
-      query: (payload: IGetPlayPayload) => ({
-        url: `/?playId=${payload.playId}`,
+    getPlay: builder.query<IPlay, void>({
+      query: () => ({
+        url: '',
         method: 'GET',
+      }),
+    }),
+
+    getPlayByPin: builder.query<IPlay, IGetPlayByPinPayload>({
+      query: (payload: IGetPlayByPinPayload) => ({
+        url: `/pin/${payload.pin}`,
+        method: 'GET',
+      }),
+    }),
+
+    exitGame: builder.mutation<void, void>({
+      query: () => ({
+        url: '/exit_game',
+        method: 'DELETE',
       }),
     }),
   }),
 });
 
-export const { useCreatePlayMutation, useGetPlayQuery } = playApi;
+export const { useCreatePlayMutation, useGetPlayQuery, useGetPlayByPinQuery, useExitGameMutation } = playApi;

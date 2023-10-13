@@ -1,5 +1,5 @@
 import { ReactNode, Ref } from 'react';
-import { PlayStatus, QuestionType, QuizMode, QuizStatus, USER_ROLE } from './constant';
+import { Events, GameExitType, PlayStatus, QuestionType, QuizMode, QuizStatus, USER_ROLE } from './constant';
 
 export interface IButtonProps {
   label: string;
@@ -221,8 +221,8 @@ export interface ICreateQuizPayload {
 
 export interface IPlay {
   _id: string;
-  quizId: string;
-  userId: string;
+  quiz: IQuiz | string;
+  user: AuthUser | string;
   status: PlayStatus;
   isOpen: boolean;
   name: string;
@@ -231,6 +231,8 @@ export interface IPlay {
 
 export interface IPlayState {
   play: IPlay | null;
+  player: IPlayer | null;
+  players: IPlayer[] | null;
 }
 
 export interface ICreatePlayPayload {
@@ -239,6 +241,44 @@ export interface ICreatePlayPayload {
 
 export interface IGetPlayPayload {
   playId: string;
+}
+
+export interface IGetPlayByPinPayload {
+  pin: string;
+}
+
+export interface IGetPlayerPayload {
+  playId: string;
+}
+
+export interface IPlayer {
+  _id: string;
+  play: string;
+  quiz: string;
+  nickName: string;
+  points: number;
+}
+
+export interface IServerError {
+  message: string;
+  path: string;
+  method: string;
+  statusCode: number;
+  timeStamp: number;
+}
+
+export interface IEventData {
+  event: Events;
+  data: unknown;
+  recipient: string | null;
+  room: string | null;
+  timestamp: string;
+  namespace: string;
+}
+
+export interface ICreatePlayerPayload {
+  playId: string;
+  nickName: string;
 }
 
 export interface IGoogleOAuthResponse {
@@ -295,6 +335,12 @@ export interface IOption {
   colorLabel: string;
 }
 
+export interface IPlayerProps {
+  player: IPlayer;
+  removePlayer?: (playerId: string) => void;
+  isRemovable: boolean;
+}
+
 export interface IPair {
   value: string;
   label: string;
@@ -311,6 +357,16 @@ export interface ISelectInputProps {
   options: IPair[];
   selected: IPair;
   setSelected: setFunction<IPair> | ((...args: IPair[]) => void);
+}
+
+export interface IBeaconPayload {
+  id: string;
+  room: string;
+  reason: GameExitType;
+}
+
+export interface IJoinGameProps {
+  setPage: setFunction<string>;
 }
 
 export interface IQuizSetting {
@@ -351,6 +407,12 @@ export interface IQuiz {
 
 export interface IQuizResult {
   results: IQuiz[];
+  total: number;
+  totalPages: number;
+}
+
+export interface IPlayersResult {
+  results: IPlayer[];
   total: number;
   totalPages: number;
 }

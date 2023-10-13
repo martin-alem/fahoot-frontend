@@ -2,7 +2,7 @@
 import { Fragment, useEffect } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import Logo from './../../assets/Fahoot Logo.svg';
+import { LOGO } from './../../utils/constant';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -12,9 +12,8 @@ import { useRequestVerificationEmailMutation } from '../../api/security.api';
 import { IRequestVerificationEmailPayload } from '../../utils/types';
 import { EmailPurpose, SUCCESS_MESSAGES } from '../../utils/constant';
 import { toast } from 'react-toastify';
-import { DASHBOARD_SEND_VERIFICATION_ERROR } from '../../utils/error_messages';
-import { handleServerError } from '../../utils/util';
 import { clearPlay } from '../../slices/play.slice';
+import { handleServerError } from '../../utils/util';
 
 const navigation = [
   { name: 'Library', href: '', current: true },
@@ -66,10 +65,8 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (isError && error) {
-      if ('status' in error) {
-        const message = handleServerError(error.status, DASHBOARD_SEND_VERIFICATION_ERROR);
-        toast.error(message, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(error);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isError, error]);
   return (
@@ -83,7 +80,7 @@ const Dashboard: React.FC = () => {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <Link to="/dashboard">
-                        <img className="h-12 w-12" src={Logo} alt="Fahoot" />
+                        <img className="h-12 w-12" src={LOGO} alt="Fahoot" />
                       </Link>
                     </div>
                     <div className="hidden md:block">

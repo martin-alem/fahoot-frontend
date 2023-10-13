@@ -6,10 +6,9 @@ import { useUpdatePasswordMutation } from '../../../api/security.api';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../../../utils/constant';
 import { validatePassword } from '../../../utils/input_validation';
 import { toast } from 'react-toastify';
-import { handleServerError } from '../../../utils/util';
 import Button from '../../../components/button/Button';
 import { useNavigate } from 'react-router-dom';
-import { PASSWORD_UPDATE_ERROR } from '../../../utils/error_messages';
+import { handleServerError } from '../../../utils/util';
 
 const PasswordUpdate: React.FC = () => {
   const [updatePassword, { isLoading, isSuccess, isError, error }] = useUpdatePasswordMutation();
@@ -78,10 +77,8 @@ const PasswordUpdate: React.FC = () => {
 
   useEffect(() => {
     if (isError && error) {
-      if ('status' in error) {
-        const errorMessage = handleServerError(error.status, PASSWORD_UPDATE_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(error);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isError, error]);
   return (

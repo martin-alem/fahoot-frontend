@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ArrowLeftOnRectangleIcon, BookmarkSlashIcon, Cog6ToothIcon, ExclamationTriangleIcon, EyeIcon, LightBulbIcon, PencilIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
-import Logo from './../../assets/Fahoot Logo.svg';
+import { LOGO } from './../../utils/constant';
 import Button from '../../components/button/Button';
 import useTitle from '../../hooks/useTitle';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -24,7 +24,6 @@ import { ColorList, PointsList, QuestionType, QuestionTypeList, QuizStatus, Time
 import QuizSetting from './quiz_settings/QuizSettings';
 import ObjectID from 'bson-objectid';
 import QuestionInput from './question_input/QuestionInput';
-import { GET_QUIZ_ERROR, UPDATE_QUIZ_ERROR } from '../../utils/error_messages';
 import { isEqual } from 'lodash';
 
 const Editor: React.FC = () => {
@@ -285,13 +284,9 @@ const Editor: React.FC = () => {
 
   useEffect(() => {
     if (isErrorGetQuiz && errorGetQuiz) {
-      if ('status' in errorGetQuiz) {
-        const errorMessage = handleServerError(errorGetQuiz.status, GET_QUIZ_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-        if (errorGetQuiz.status === 400) {
-          navigate('/dashboard');
-        }
-      }
+      const { statusCode, message } = handleServerError(errorGetQuiz);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
+      if (statusCode === 400) navigate('/dashboard');
     }
   }, [isErrorGetQuiz, errorGetQuiz]);
 
@@ -304,10 +299,8 @@ const Editor: React.FC = () => {
 
   useEffect(() => {
     if (isErrorUpdateQuiz && errorUpdateQuiz) {
-      if ('status' in errorUpdateQuiz) {
-        const errorMessage = handleServerError(errorUpdateQuiz.status, UPDATE_QUIZ_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(errorUpdateQuiz);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isErrorUpdateQuiz, errorUpdateQuiz]);
 
@@ -375,7 +368,7 @@ const Editor: React.FC = () => {
           <div className="w-full bg-white shadow-md flex flex-col md:flex md:flex-row items-center justify-between p-2">
             <div className="w-full md:w-1/3 flex items-center gap-2">
               <div>
-                <img className="mx-auto h-12 w-auto" src={Logo} alt="Fahoot" />
+                <img className="mx-auto h-12 w-auto" src={LOGO} alt="Fahoot" />
               </div>
               <div className="w-full">
                 <Input

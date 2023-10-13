@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate } from 'react-router-dom';
 import useTitle from '../../hooks/useTitle';
-import Logo from './../../assets/Fahoot Logo.svg';
 import Button from '../../components/button/Button';
 import { ArrowRightIcon, EnvelopeIcon, KeyIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
@@ -9,14 +8,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useGoogleSignUpMutation, useManualSignUpMutation } from '../../api/auth.api';
 import { validateEmail, validateName, validatePassword } from '../../utils/input_validation';
-import { ERROR_MESSAGES } from '../../utils/constant';
+import { ERROR_MESSAGES, LOGO } from '../../utils/constant';
 import Input from '../../components/input/input';
 import { IGoogleOAuthPayload, IGoogleOAuthResponse, IManualSignupPayload } from '../../utils/types';
-import { handleServerError } from '../../utils/util';
 import { saveAuth } from '../../slices/auth.slice';
 import useKeyboardEvent from '../../hooks/useKeyboardEvent';
 import GoogleOAuth from '../../components/google_oauth/GoogleOAuth';
-import { GOOGLE_SIGNUP_ERROR, MANUAL_SIGNUP_ERROR } from '../../utils/error_messages';
+import { handleServerError } from '../../utils/util';
 
 const SignUp: React.FC = () => {
   useTitle('Create Account');
@@ -102,10 +100,8 @@ const SignUp: React.FC = () => {
 
   useEffect(() => {
     if (isError && error) {
-      if ('status' in error) {
-        const errorMessage = handleServerError(error.status, MANUAL_SIGNUP_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(error);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isError, error]);
 
@@ -118,17 +114,15 @@ const SignUp: React.FC = () => {
 
   useEffect(() => {
     if (googleIsError && googleError) {
-      if ('status' in googleError) {
-        const errorMessage = handleServerError(googleError.status, GOOGLE_SIGNUP_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(googleError);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [googleIsError, googleError]);
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <img className="mx-auto h-20 w-auto" src={Logo} alt="Fahoot" />
+          <img className="mx-auto h-20 w-auto" src={LOGO} alt="Fahoot" />
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-secondary-500">Sign up for a new account</h2>
         </div>
 

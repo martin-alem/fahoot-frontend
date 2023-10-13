@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate } from 'react-router-dom';
 import useTitle from '../../hooks/useTitle';
-import Logo from './../../assets/Fahoot Logo.svg';
+import { LOGO } from './../../utils/constant';
 import { useDispatch } from 'react-redux';
 import { useAutoLoginMutation, useGoogleSignInMutation, useManualSignInMutation } from '../../api/auth.api';
 import { IGoogleOAuthPayload, IGoogleOAuthResponse, IManualSignInPayload } from '../../utils/types';
 import { saveAuth } from '../../slices/auth.slice';
 import { useCallback, useEffect, useState } from 'react';
-import { handleServerError } from '../../utils/util';
 import { toast } from 'react-toastify';
 import { validateEmail, validatePassword } from '../../utils/input_validation';
 import { ERROR_MESSAGES } from '../../utils/constant';
@@ -16,7 +15,7 @@ import { ArrowLeftOnRectangleIcon, EnvelopeIcon, KeyIcon } from '@heroicons/reac
 import Button from '../../components/button/Button';
 import useKeyboardEvent from '../../hooks/useKeyboardEvent';
 import GoogleOAuth from '../../components/google_oauth/GoogleOAuth';
-import { LOGIN_GOOGLE_ERROR, LOGIN_MANUAL_ERROR } from '../../utils/error_messages';
+import { handleServerError } from '../../utils/util';
 
 const Login: React.FC = () => {
   useTitle('Login');
@@ -84,10 +83,8 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     if (isError && error) {
-      if ('status' in error) {
-        const errorMessage = handleServerError(error.status, LOGIN_MANUAL_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(error);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isError, error]);
 
@@ -101,10 +98,8 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     if (googleIsError && googleError) {
-      if ('status' in googleError) {
-        const errorMessage = handleServerError(googleError.status, LOGIN_GOOGLE_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(googleError);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [googleIsError, googleError]);
 
@@ -124,7 +119,7 @@ const Login: React.FC = () => {
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <img className="mx-auto h-20 w-auto" src={Logo} alt="Fahoot" />
+          <img className="mx-auto h-20 w-auto" src={LOGO} alt="Fahoot" />
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-secondary-500">Sign in to your account</h2>
         </div>
 

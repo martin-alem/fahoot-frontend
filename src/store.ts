@@ -8,8 +8,8 @@ import { userApi } from './api/user.api';
 import { securityApi } from './api/security.api';
 import { uploadApi } from './api/upload.api';
 import { quizApi } from './api/quiz.api';
-import { logApi } from './api/log.api';
 import { playApi } from './api/play.api';
+import { playerApi } from './api/player.api';
 
 export const store = configureStore({
   reducer: {
@@ -22,11 +22,11 @@ export const store = configureStore({
     [uploadApi.reducerPath]: uploadApi.reducer,
     [quizApi.reducerPath]: quizApi.reducer,
     [playApi.reducerPath]: playApi.reducer,
-    [logApi.reducerPath]: logApi.reducer,
+    [playerApi.reducerPath]: playerApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware, userApi.middleware, securityApi.middleware, uploadApi.middleware, quizApi.middleware, playApi.middleware, logApi.middleware),
+    getDefaultMiddleware().concat(authApi.middleware, userApi.middleware, securityApi.middleware, uploadApi.middleware, quizApi.middleware, playApi.middleware, playerApi.middleware),
 });
 
 setupListeners(store.dispatch);

@@ -10,7 +10,6 @@ import { toast } from 'react-toastify';
 import { useUpdateEmailMutation } from '../../../api/security.api';
 import { useNavigate } from 'react-router-dom';
 import { handleServerError } from '../../../utils/util';
-import { EMAIL_UPDATE_ERROR } from '../../../utils/error_messages';
 
 const EmailUpdate: React.FC<IProfileProps> = ({ user }) => {
   const [emailAddress, setEmailAddress] = useState<string>('');
@@ -57,10 +56,8 @@ const EmailUpdate: React.FC<IProfileProps> = ({ user }) => {
 
   useEffect(() => {
     if (isError && error) {
-      if ('status' in error) {
-        const errorMessage = handleServerError(error.status, EMAIL_UPDATE_ERROR);
-        toast.error(errorMessage, { position: toast.POSITION.TOP_CENTER });
-      }
+      const { message } = handleServerError(error);
+      toast.error(message, { position: toast.POSITION.TOP_CENTER });
     }
   }, [isError, error]);
   return (

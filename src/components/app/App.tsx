@@ -7,7 +7,6 @@ import Library from '../../pages/library/Library';
 import Report from '../../pages/report/Report';
 import ResetPasswordRequest from '../../pages/reset_password_request/ResetPasswordRequest';
 import ResetPassword from '../../pages/reset_password/ResetPassword';
-import JoinGame from '../../pages/join_game/JoinGame';
 import Lobby from '../../pages/lobby/Lobby';
 import GameRoom from '../../pages/game_room/GameRoom';
 import Podium from '../../pages/podium/Podium';
@@ -19,33 +18,15 @@ import Logout from '../../pages/logout/Logout';
 import VerifyEmail from '../../pages/verify_email/VerifyEmail';
 import { ErrorBoundary } from 'react-error-boundary';
 import FallBackUIOnError from '../fallback_ui_on_error/FallbackUIOnError';
-import { useLogMutation } from '../../api/log.api';
-import { useEffect } from 'react';
-import { handleServerError } from '../../utils/util';
-import { toast } from 'react-toastify';
-import { APP_COMPONENT_LOG_ERROR } from '../../utils/error_messages';
 import Preview from '../../pages/preview/Preview';
 import { USER_ROLE } from '../../utils/constant';
 import CreatePlay from '../../pages/create_play/CreatePlay';
+import PlayerLobby from '../../pages/players_lobby/PlayerLobby';
+import JoinGame from '../../pages/join_game/JoinGame';
 
 const App: React.FC = () => {
-  const [log, { isError, error }] = useLogMutation();
-
-  const handleOnError = (error: Error) => {
-    const payload = { description: error.message, event: 'frontend_error' };
-    log(payload);
-  };
-
-  useEffect(() => {
-    if (isError && error) {
-      if ('status' in error) {
-        const message = handleServerError(error.status, APP_COMPONENT_LOG_ERROR);
-        toast.error(message, { position: toast.POSITION.TOP_CENTER });
-      }
-    }
-  }, [isError, error]);
   return (
-    <ErrorBoundary fallbackRender={FallBackUIOnError} onReset={() => location.reload()} onError={handleOnError}>
+    <ErrorBoundary fallbackRender={FallBackUIOnError} onReset={() => location.reload()}>
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Login />} />
@@ -54,6 +35,7 @@ const App: React.FC = () => {
         <Route path="/password_reset" element={<ResetPassword />} />
         <Route path="/verify_email" element={<VerifyEmail />} />
         <Route path="/join" element={<JoinGame />} />
+        <Route path="/player_lobby/:playId" element={<PlayerLobby />} />
 
         {/* Protected routes */}
         <Route
@@ -75,7 +57,7 @@ const App: React.FC = () => {
         <Route
           path="/lobby/:playId"
           element={
-            <AuthGuard roles={[USER_ROLE.CREATOR, USER_ROLE.PLAYER]}>
+            <AuthGuard roles={[USER_ROLE.CREATOR]}>
               <Lobby />
             </AuthGuard>
           }
