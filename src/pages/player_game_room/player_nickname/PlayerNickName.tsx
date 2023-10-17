@@ -1,16 +1,16 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
-import { LOGO } from '../../utils/constant';
-import { useDispatch, useSelector } from 'react-redux';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { addPlayer } from '../../slices/play.slice';
-import { handleServerError } from '../../utils/util';
-import { useCreatePlayerMutation } from '../../api/player.api';
-import { RootState } from '../../store';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { useCreatePlayerMutation } from '../../../api/player.api';
+import { addPlayer } from '../../../slices/play.slice';
+import { GameStage, LOGO } from '../../../utils/constant';
+import { handleServerError } from '../../../utils/util';
+import { RootState } from '../../../store';
+import { IPlayerNickNameProps } from '../../../utils/types';
 
-const GameNickName: React.FC = () => {
+const PlayerNickName: React.FC<IPlayerNickNameProps> = ({ setGameStage }) => {
   const [name, setName] = useState('');
   const play = useSelector((state: RootState) => state.playState.play);
 
@@ -35,9 +35,9 @@ const GameNickName: React.FC = () => {
   useEffect(() => {
     if (isSuccess && data) {
       dispatch(addPlayer(data));
-      navigate(`/player_lobby/${play?._id}`);
+      setGameStage(GameStage.LOBBY);
     }
-  }, [isSuccess]);
+  }, [data, dispatch, isSuccess, navigate, play?._id, setGameStage]);
 
   useEffect(() => {
     if (isError && error) {
@@ -86,4 +86,4 @@ const GameNickName: React.FC = () => {
   );
 };
 
-export default GameNickName;
+export default PlayerNickName;

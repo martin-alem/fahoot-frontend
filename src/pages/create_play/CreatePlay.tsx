@@ -10,7 +10,7 @@ import { LOGO } from './../../utils/constant';
 import useTitle from '../../hooks/useTitle';
 import { handleServerError } from '../../utils/util';
 import { useGetQuizQuery } from '../../api/quiz.api';
-import { loadQuiz, updateCurrentQuestion } from '../../slices/quiz.slice';
+import { loadQuiz } from '../../slices/quiz.slice';
 import GameMode from '../../components/game_mode/GameMode';
 
 const CreatePlay: React.FC = () => {
@@ -42,7 +42,7 @@ const CreatePlay: React.FC = () => {
   useEffect(() => {
     if (isSuccessGetQuiz) {
       dispatch(loadQuiz(dataGetQuiz));
-      dispatch(updateCurrentQuestion(dataGetQuiz.questions[0]));
+      // dispatch(updateCurrentQuestion(dataGetQuiz.questions[0]));
     }
   }, [isSuccessGetQuiz]);
 
@@ -57,7 +57,7 @@ const CreatePlay: React.FC = () => {
   useEffect(() => {
     if (createPlayIsSuccess) {
       if (createPlayData) {
-        navigate(`/lobby/${createPlayData._id}`);
+        navigate('/game_room');
       }
     }
   }, [createPlayIsSuccess]);

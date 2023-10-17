@@ -1,26 +1,25 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import Button from '../../components/button/Button';
-import Player from '../../components/player/Player';
-import useTitle from '../../hooks/useTitle';
-import PlayerCount from '../../components/player_count/PlayerCount';
 import { PauseCircleIcon, PlayCircleIcon, SignalIcon, SignalSlashIcon } from '@heroicons/react/24/outline';
-import usePlayAudio from '../../hooks/usePlayAudio';
-import { useExitGameMutation, useGetPlayQuery } from '../../api/play.api';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { addPlayer, loadPlay, loadPlayer, loadPlayers, removePlayer } from '../../slices/play.slice';
-import useSocketEvents from '../../hooks/useSocketEvents';
-import { useSocket } from '../../hooks/useSocket';
-import { Events, PLAY_NAMESPACE } from '../../utils/constant';
-import LoadingSpinner from '../../components/spinner/Spinner';
-import { IEventData, IPlay, IPlayer } from '../../utils/types';
-import { handleServerError } from '../../utils/util';
 import { useNavigate } from 'react-router-dom';
-import { useGetPlayerQuery, useGetPlayersQuery } from '../../api/player.api';
+import { toast } from 'react-toastify';
+import { useGetPlayQuery, useExitGameMutation } from '../../../api/play.api';
+import { useGetPlayersQuery, useGetPlayerQuery } from '../../../api/player.api';
+import Button from '../../../components/button/Button';
+import Player from '../../../components/player/Player';
+import PlayerCount from '../../../components/player_count/PlayerCount';
+import LoadingSpinner from '../../../components/spinner/Spinner';
+import usePlayAudio from '../../../hooks/usePlayAudio';
+import useSocketEvents from '../../../hooks/useSocketEvents';
+import { removePlayer, loadPlay, addPlayer, loadPlayers, loadPlayer } from '../../../slices/play.slice';
+import { RootState } from '../../../store';
+import { Events, GameStage, PLAY_NAMESPACE } from '../../../utils/constant';
+import { IPlayer, IEventData, IPlay, IPlayerLobbyProps } from '../../../utils/types';
+import { handleServerError } from '../../../utils/util';
+import useTitle from '../../../hooks/useTitle';
+import { useSocket } from '../../../hooks/useSocket';
 
-const PlayerLobby: React.FC = () => {
+const PlayerLobby: React.FC<IPlayerLobbyProps> = ({ connected, setGameStage, setSocket, setConnected }) => {
   useTitle('Lobby');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,7 +27,6 @@ const PlayerLobby: React.FC = () => {
   const currentPlayer = useSelector((state: RootState) => state.playState.player);
   const players = useSelector((state: RootState) => state.playState.players);
   const { audioRef, togglePlayPause, isPlaying } = usePlayAudio();
-  const [connected, setConnected] = useState(false);
 
   const { isLoading: getPlayIsLoading, isSuccess: getPlayIsSuccess, isError: getPlayIsError, error: getPlayError, data: getPlayData } = useGetPlayQuery();
 
@@ -52,12 +50,13 @@ const PlayerLobby: React.FC = () => {
   useSocketEvents(Events.LOCK_GAME, socket, (payload: IEventData) => dispatch(loadPlay(payload.data as IPlay)));
   useSocketEvents(Events.REMOVE_PLAYER, socket, (payload: IEventData) => handlePlayerRemoved(payload.data as IPlayer));
   useSocketEvents(Events.PLAYER_JOINED, socket, (payload: IEventData) => dispatch(addPlayer(payload.data as IPlayer)));
+  useSocketEvents(Events.START_GAME, socket, () => setGameStage(GameStage.WAIT_PERIOD));
 
   useEffect(() => {
     if (exitGameIsSuccess) {
-      navigate('/join');
+      setGameStage(GameStage.GAME_PIN);
     }
-  }, [exitGameIsSuccess]);
+  }, [exitGameIsSuccess, navigate, setGameStage]);
 
   useEffect(() => {
     if (exitGameIsError && exitGameError) {
@@ -78,8 +77,9 @@ const PlayerLobby: React.FC = () => {
         timestamp: new Date().toUTCString(),
       };
       socket?.emit(Events.PLAYER_JOINED, message);
+      setSocket(socket);
     }
-  }, [getPlayIsSuccess]);
+  }, [currentPlayer, dispatch, getPlayData, getPlayIsSuccess, setSocket, socket]);
 
   useEffect(() => {
     if (getPlayIsError && getPlayError) {
@@ -92,7 +92,7 @@ const PlayerLobby: React.FC = () => {
     if (getPlayersIsSuccess && getPlayersData) {
       dispatch(loadPlayers(getPlayersData));
     }
-  }, [getPlayersIsSuccess, getPlayersData]);
+  }, [getPlayersIsSuccess, getPlayersData, dispatch]);
 
   useEffect(() => {
     if (getPlayersIsError && getPlayersError) {
@@ -105,7 +105,7 @@ const PlayerLobby: React.FC = () => {
     if (getPlayerIsSuccess && getPlayerData) {
       dispatch(loadPlayer(getPlayerData));
     }
-  }, [getPlayerIsSuccess, getPlayerData]);
+  }, [getPlayerIsSuccess, getPlayerData, dispatch]);
 
   useEffect(() => {
     if (getPlayerIsError && getPlayerError) {

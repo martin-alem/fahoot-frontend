@@ -6,6 +6,7 @@ const initialState: IPlayState = {
   play: null,
   player: null,
   players: null,
+  currentQuestion: 0,
 };
 
 export const playSlice = createSlice({
@@ -18,6 +19,10 @@ export const playSlice = createSlice({
 
     loadPlayer: (state, action: PayloadAction<IPlayer>) => {
       state.player = action.payload;
+    },
+
+    loadCurrentQuestion: (state, action: PayloadAction<number>) => {
+      state.currentQuestion = action.payload;
     },
 
     loadPlayers: (state, action: PayloadAction<IPlayer[]>) => {
@@ -40,9 +45,10 @@ export const playSlice = createSlice({
       state.play = null;
       state.player = null;
       state.players = null;
+      state.currentQuestion = 0;
     },
   },
 });
 
-export const { loadPlay, loadPlayers, addPlayer, clearPlay, removePlayer, loadPlayer } = playSlice.actions;
+export const { loadPlay, loadPlayers, addPlayer, clearPlay, removePlayer, loadPlayer, loadCurrentQuestion } = playSlice.actions;
 export default playSlice.reducer;

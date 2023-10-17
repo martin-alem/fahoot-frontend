@@ -7,8 +7,6 @@ import Library from '../../pages/library/Library';
 import Report from '../../pages/report/Report';
 import ResetPasswordRequest from '../../pages/reset_password_request/ResetPasswordRequest';
 import ResetPassword from '../../pages/reset_password/ResetPassword';
-import Lobby from '../../pages/lobby/Lobby';
-import GameRoom from '../../pages/game_room/GameRoom';
 import Podium from '../../pages/podium/Podium';
 import Editor from '../../pages/editor/Editor';
 import ReportDetail from '../../pages/report_detail/ReportDetail';
@@ -21,8 +19,8 @@ import FallBackUIOnError from '../fallback_ui_on_error/FallbackUIOnError';
 import Preview from '../../pages/preview/Preview';
 import { USER_ROLE } from '../../utils/constant';
 import CreatePlay from '../../pages/create_play/CreatePlay';
-import PlayerLobby from '../../pages/players_lobby/PlayerLobby';
-import JoinGame from '../../pages/join_game/JoinGame';
+import Game from '../../pages/game_organizer/Game';
+import PlayerGameRoom from '../../pages/player_game_room/PlayerGame';
 
 const App: React.FC = () => {
   return (
@@ -34,31 +32,15 @@ const App: React.FC = () => {
         <Route path="/password_reset_request" element={<ResetPasswordRequest />} />
         <Route path="/password_reset" element={<ResetPassword />} />
         <Route path="/verify_email" element={<VerifyEmail />} />
-        <Route path="/join" element={<JoinGame />} />
-        <Route path="/player_lobby/:playId" element={<PlayerLobby />} />
+        <Route path="/join" element={<PlayerGameRoom />} />
+        <Route path="/podium" element={<Podium />} />
 
         {/* Protected routes */}
-        <Route
-          path="/podium"
-          element={
-            <AuthGuard roles={[USER_ROLE.CREATOR, USER_ROLE.PLAYER]}>
-              <Podium />
-            </AuthGuard>
-          }
-        />
         <Route
           path="/game_room"
           element={
             <AuthGuard roles={[USER_ROLE.CREATOR, USER_ROLE.PLAYER]}>
-              <GameRoom />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/lobby/:playId"
-          element={
-            <AuthGuard roles={[USER_ROLE.CREATOR]}>
-              <Lobby />
+              <Game />
             </AuthGuard>
           }
         />

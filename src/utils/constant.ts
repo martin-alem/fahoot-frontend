@@ -36,12 +36,28 @@ export enum Events {
   PLAYER_JOINED = 'fahoot:player_join', // emitted when a player joins
   LOCK_GAME = 'fahoot:lock_game', // emitted when the organizer locks the game
   REMOVE_PLAYER = 'fahoot:remove_player', // emitted when the organizer removes a player
+  PLAYER_ANSWER = 'fahoot:player_answer', // emitted when a player submits their answer
+  QUESTION_TIME_OUT = 'fahoot:question_timeout', // emitted when a question timeout is reached
+  NEXT_QUESTION = 'fahoot:next_question', // emitted when the next question is received
+  START_GAME = 'fahoot:start_game', // emitted when the game starts
+  END_GAME = 'fahoot:end_game', // emitted when the
 }
 
 export enum QuizMode {
   EDIT = 'edit',
   PREVIEW = 'preview',
   LIVE = 'live',
+}
+
+export enum GameStage {
+  GAME_SESSION = 'game_play', // parent component housing all component below. Will be responsible for initiating a socket connection to the server.
+  LOBBY = 'lobby', // the default component that will be rendered when the organizer  directed to the GAME_PLAY component.
+  RESULT = 'result', // a page that will show current results after each question has been answered by all players.
+  WAIT_PERIOD = 'wait_period', // a page that will render for 5 seconds before the question page is rendered.
+  QUESTION = 'question', // a page that will be rendered when the next question is to be displayed.
+  RESPONSE_PENDING = 'response_pending', // a page that will be rendered when a player submits an answer but timer is not over yet.
+  GAME_PIN = 'game_pin', // a page that will be rendered for a player to enter a game pin.
+  PLAYER_NICKNAME = 'player_name', // a page that will be rendered for the player to enter their nickname.
 }
 
 export enum QuizState {
@@ -176,3 +192,5 @@ export const ColorList = [
   { label: 'Teal', value: 'bg-teal-500', ring: 'ring-teal-500' },
   { label: 'Emerald', value: 'bg-emerald-500', ring: 'ring-emerald-500' },
 ];
+
+export const AppreciationMessages = ['Well done!', 'You are a genius!', "That's Fantastic!", 'Awesome!', 'Brilliant!', "You're on fire!", 'Exceptional!', 'Keep it up!', 'Outstanding!', 'Superb!'];

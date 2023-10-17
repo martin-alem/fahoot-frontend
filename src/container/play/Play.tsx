@@ -9,8 +9,8 @@ const Play: React.FC<IPlayProps> = ({ handleOptionSelection, handleTimeOut, mode
   return (
     <>
       {question && (
-        <>
-          <div className="mt-6 w-full flex justify-between items-center">
+        <div className="w-full h-full flex-col">
+          <div className="w-full flex justify-between items-center">
             <Timer duration={question.duration} onTimeout={handleTimeOut} />
             <img className="mx-auto hidden md:block h-20 w-auto animate-bounce" src={LOGO} alt="Fahoot" />
             <AnswerCount />
@@ -19,7 +19,7 @@ const Play: React.FC<IPlayProps> = ({ handleOptionSelection, handleTimeOut, mode
             <div className="w-full flex flex-col gap-4">
               <Question questionText={question.title} />
               <div className="w-full flex justify-center items-center">
-                {question.mediaUrl && <img src={question.mediaUrl} alt="" className="pointer-events-none max-h-36 object-cover group-hover:opacity-75" />}
+                {question.mediaUrl && <img src={question.mediaUrl} alt="" className="pointer-events-none max-h-48 object-cover group-hover:opacity-75" />}
               </div>
               <div className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {question.options.map((option) => (
@@ -28,7 +28,7 @@ const Play: React.FC<IPlayProps> = ({ handleOptionSelection, handleTimeOut, mode
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

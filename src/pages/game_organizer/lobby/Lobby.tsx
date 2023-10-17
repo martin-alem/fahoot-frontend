@@ -1,42 +1,32 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { LockOpenIcon } from '@heroicons/react/20/solid';
-import Button from '../../components/button/Button';
-import Player from '../../components/player/Player';
-import useTitle from '../../hooks/useTitle';
-import PlayerCount from '../../components/player_count/PlayerCount';
-import { ChevronDoubleRightIcon, LockClosedIcon, PauseCircleIcon, PlayCircleIcon, SignalIcon, SignalSlashIcon } from '@heroicons/react/24/outline';
-import usePlayAudio from '../../hooks/usePlayAudio';
-import { useGetPlayQuery } from '../../api/play.api';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { useGetPlayQuery } from '../../../api/play.api';
+import { useGetPlayersQuery } from '../../../api/player.api';
+import { addPlayer, loadPlay, loadPlayers, removePlayer } from '../../../slices/play.slice';
+import { handleServerError } from '../../../utils/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { addPlayer, loadPlay, loadPlayers, removePlayer } from '../../slices/play.slice';
-import useSocketEvents from '../../hooks/useSocketEvents';
-import { useSocket } from '../../hooks/useSocket';
-import { Events, PLAY_NAMESPACE } from '../../utils/constant';
-import { IEventData, IPlay, IPlayer } from '../../utils/types';
-import { handleServerError } from '../../utils/util';
-import { useGetPlayersQuery } from '../../api/player.api';
+import { RootState } from '../../../store';
+import useSocketEvents from '../../../hooks/useSocketEvents';
+import { Events, GameStage, PLAY_NAMESPACE } from '../../../utils/constant';
+import { IEventData, IPlayer, IPlay, ILobbyProps } from '../../../utils/types';
+import { ChevronDoubleRightIcon, LockClosedIcon, LockOpenIcon, PauseCircleIcon, PlayCircleIcon, SignalIcon, SignalSlashIcon } from '@heroicons/react/24/outline';
+import usePlayAudio from '../../../hooks/usePlayAudio';
+import Button from '../../../components/button/Button';
+import Player from '../../../components/player/Player';
+import PlayerCount from '../../../components/player_count/PlayerCount';
+import useTitle from '../../../hooks/useTitle';
 
-const Lobby: React.FC = () => {
+const Lobby: React.FC<ILobbyProps> = ({ connected, socket, setGameStage }) => {
   useTitle('Lobby');
-  const { playId } = useParams();
   const dispatch = useDispatch();
   const play = useSelector((state: RootState) => state.playState.play);
   const players = useSelector((state: RootState) => state.playState.players);
   const { audioRef, togglePlayPause, isPlaying } = usePlayAudio();
-  const [connected, setConnected] = useState(false);
 
   const { isLoading: getPlayIsLoading, isSuccess: getPlayIsSuccess, isError: getPlayIsError, error: getPlayError, data: getPlayData } = useGetPlayQuery();
 
   const { isLoading: getPlayersIsLoading, isSuccess: getPlayersIsSuccess, isError: getPlayersIsError, error: getPlayersError, data: getPlayersData } = useGetPlayersQuery();
 
-  const socket = useSocket();
-  useSocketEvents(Events.ERROR, socket);
-  useSocketEvents(Events.CONNECTED, socket, () => setConnected(true));
-  useSocketEvents(Events.DISCONNECTED, socket, () => setConnected(false));
   useSocketEvents(Events.PLAYER_JOINED, socket, (payload: IEventData) => dispatch(addPlayer(payload.data as IPlayer)));
   useSocketEvents(Events.LOCK_GAME, socket, (payload: IEventData) => dispatch(loadPlay(payload.data as IPlay)));
   useSocketEvents(Events.REMOVE_PLAYER, socket, (payload: IEventData) => dispatch(removePlayer(payload.data as IPlayer)));
@@ -45,7 +35,7 @@ const Lobby: React.FC = () => {
     const payload = {
       event: Events.LOCK_GAME,
       data: { isOpen: !play?.isOpen },
-      room: playId,
+      room: play?._id,
       recipient: null,
       timestamp: new Date().toUTCString(),
       namespace: PLAY_NAMESPACE,
@@ -57,7 +47,7 @@ const Lobby: React.FC = () => {
     const payload = {
       event: Events.REMOVE_PLAYER,
       data: playerId,
-      room: playId,
+      room: play?._id,
       recipient: null,
       timestamp: new Date().toUTCString(),
       namespace: PLAY_NAMESPACE,
@@ -65,11 +55,24 @@ const Lobby: React.FC = () => {
     socket?.emit(Events.REMOVE_PLAYER, payload);
   };
 
+  const handleStartGame = () => {
+    const payload = {
+      event: Events.START_GAME,
+      data: null,
+      room: play?._id,
+      recipient: null,
+      timestamp: new Date().toUTCString(),
+      namespace: PLAY_NAMESPACE,
+    };
+    socket?.emit(Events.START_GAME, payload);
+    setGameStage(GameStage.WAIT_PERIOD);
+  };
+
   useEffect(() => {
     if (getPlayIsSuccess && getPlayData) {
       dispatch(loadPlay(getPlayData));
     }
-  }, [getPlayIsSuccess, getPlayData]);
+  }, [getPlayIsSuccess, getPlayData, dispatch]);
 
   useEffect(() => {
     if (getPlayIsError && getPlayError) {
@@ -82,7 +85,7 @@ const Lobby: React.FC = () => {
     if (getPlayersIsSuccess && getPlayersData) {
       dispatch(loadPlayers(getPlayersData));
     }
-  }, [getPlayersIsSuccess, getPlayersData]);
+  }, [getPlayersIsSuccess, getPlayersData, dispatch]);
 
   useEffect(() => {
     if (getPlayersIsError && getPlayersError) {
@@ -111,7 +114,14 @@ const Lobby: React.FC = () => {
               prefixIcon={play && play.isOpen ? <LockOpenIcon className="w-6" /> : <LockClosedIcon className="w-6" />}
               handleClick={handleLockGame}
             />
-            <Button type="primary" disabled={!play || getPlayIsLoading} loading={!play || getPlayIsLoading} label="Start" prefixIcon={<ChevronDoubleRightIcon className="w-6" />} />
+            <Button
+              handleClick={handleStartGame}
+              type="primary"
+              disabled={!play || getPlayIsLoading || players?.length === 0}
+              loading={!play || getPlayIsLoading}
+              label="Start"
+              prefixIcon={<ChevronDoubleRightIcon className="w-6" />}
+            />
           </div>
         </div>
         <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">

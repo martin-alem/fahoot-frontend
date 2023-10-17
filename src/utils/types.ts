@@ -1,5 +1,6 @@
 import { ReactNode, Ref } from 'react';
-import { Events, GameExitType, PlayStatus, QuestionType, QuizMode, QuizStatus, USER_ROLE } from './constant';
+import { Events, GameExitType, GameStage, PlayStatus, QuestionType, QuizMode, QuizStatus, USER_ROLE } from './constant';
+import { Socket } from 'socket.io-client';
 
 export interface IButtonProps {
   label: string;
@@ -221,8 +222,8 @@ export interface ICreateQuizPayload {
 
 export interface IPlay {
   _id: string;
-  quiz: IQuiz | string;
-  user: AuthUser | string;
+  quiz: IQuiz;
+  user: AuthUser;
   status: PlayStatus;
   isOpen: boolean;
   name: string;
@@ -233,6 +234,52 @@ export interface IPlayState {
   play: IPlay | null;
   player: IPlayer | null;
   players: IPlayer[] | null;
+  currentQuestion: number;
+}
+
+export interface ILobbyProps {
+  connected: boolean;
+  socket: Socket | null;
+  setGameStage: setFunction<GameStage>;
+}
+
+export interface IGameQuestionProps {
+  connected: boolean;
+  socket: Socket | null;
+  setGameStage: setFunction<GameStage>;
+}
+
+export interface IWaitPeriodProps {
+  connected: boolean;
+  duration: number;
+  setGameStage: setFunction<GameStage>;
+}
+
+export interface IResponsePendingProps {
+  connected: boolean;
+  duration: number;
+  socket: Socket | null;
+  setGameStage: setFunction<GameStage>;
+}
+
+export interface IGamePinProps {
+  setGameStage: setFunction<GameStage>;
+}
+export interface IPlayerLobbyProps {
+  connected: boolean;
+  setGameStage: setFunction<GameStage>;
+  setSocket: setFunction<Socket | null>;
+  setConnected: setFunction<boolean>;
+}
+
+export interface IPlayerNickNameProps {
+  setGameStage: setFunction<GameStage>;
+}
+
+export interface IResultProps {
+  connected: boolean;
+  socket: Socket | null;
+  setGameStage: setFunction<GameStage>;
 }
 
 export interface ICreatePlayPayload {

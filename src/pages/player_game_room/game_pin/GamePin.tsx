@@ -1,15 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
-import { LOGO } from '../../utils/constant';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { loadPlay } from '../../slices/play.slice';
-import { handleServerError } from '../../utils/util';
-import { useGetPlayByPinQuery } from '../../api/play.api';
-import { IJoinGameProps } from '../../utils/types';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { useGetPlayByPinQuery } from '../../../api/play.api';
+import { loadPlay } from '../../../slices/play.slice';
+import { GameStage, LOGO } from '../../../utils/constant';
+import { handleServerError } from '../../../utils/util';
+import { IGamePinProps } from '../../../utils/types';
 
-const GamePin: React.FC<IJoinGameProps> = ({ setPage }) => {
+const GamePin: React.FC<IGamePinProps> = ({ setGameStage }) => {
   const [pin, setPin] = useState('');
   const [notReady, setNotReady] = useState(true); // Manually issue a get request to find a game play.
 
@@ -29,9 +28,9 @@ const GamePin: React.FC<IJoinGameProps> = ({ setPage }) => {
     if (isSuccess && data) {
       setNotReady(true);
       dispatch(loadPlay(data));
-      setPage('nick_name');
+      setGameStage(GameStage.PLAYER_NICKNAME);
     }
-  }, [isSuccess]);
+  }, [data, dispatch, isSuccess, setGameStage]);
 
   useEffect(() => {
     if (isError && error) {
