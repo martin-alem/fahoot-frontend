@@ -57,7 +57,7 @@ const Result: React.FC<IResultProps> = ({ connected, socket, setGameStage }) => 
 
   useEffect(() => {
     if (isSuccess) {
-      navigate('/podium');
+      navigate('/podium', { replace: true });
     }
   }, [isSuccess, navigate]);
   return (

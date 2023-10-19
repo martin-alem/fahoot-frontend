@@ -35,7 +35,7 @@ const PlayerNickName: React.FC<IPlayerNickNameProps> = ({ setGameStage }) => {
   useEffect(() => {
     if (isSuccess && data) {
       dispatch(addPlayer(data));
-      setGameStage(GameStage.LOBBY);
+      setGameStage(GameStage.PLAYER_ENTRANCE);
     }
   }, [data, dispatch, isSuccess, navigate, play?._id, setGameStage]);
 

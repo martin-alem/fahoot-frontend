@@ -19,7 +19,7 @@ import FallBackUIOnError from '../fallback_ui_on_error/FallbackUIOnError';
 import Preview from '../../pages/preview/Preview';
 import { USER_ROLE } from '../../utils/constant';
 import CreatePlay from '../../pages/create_play/CreatePlay';
-import Game from '../../pages/game_organizer/Game';
+import HostGameRoom from '../../pages/host_game_room/HostGameRoom';
 import PlayerGameRoom from '../../pages/player_game_room/PlayerGame';
 
 const App: React.FC = () => {
@@ -40,7 +40,7 @@ const App: React.FC = () => {
           path="/game_room"
           element={
             <AuthGuard roles={[USER_ROLE.CREATOR, USER_ROLE.PLAYER]}>
-              <Game />
+              <HostGameRoom />
             </AuthGuard>
           }
         />

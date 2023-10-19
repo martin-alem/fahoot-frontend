@@ -58,6 +58,7 @@ export enum GameStage {
   RESPONSE_PENDING = 'response_pending', // a page that will be rendered when a player submits an answer but timer is not over yet.
   GAME_PIN = 'game_pin', // a page that will be rendered for a player to enter a game pin.
   PLAYER_NICKNAME = 'player_name', // a page that will be rendered for the player to enter their nickname.
+  PLAYER_ENTRANCE = 'player_entrance', // a page that will be rendered to immediately after the nickname to hold a single socket connection
 }
 
 export enum QuizState {

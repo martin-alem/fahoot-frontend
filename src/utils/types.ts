@@ -268,8 +268,7 @@ export interface IGamePinProps {
 export interface IPlayerLobbyProps {
   connected: boolean;
   setGameStage: setFunction<GameStage>;
-  setSocket: setFunction<Socket | null>;
-  setConnected: setFunction<boolean>;
+  socket: Socket | null;
 }
 
 export interface IPlayerNickNameProps {

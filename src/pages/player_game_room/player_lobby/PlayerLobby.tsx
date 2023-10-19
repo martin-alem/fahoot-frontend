@@ -17,9 +17,8 @@ import { Events, GameStage, PLAY_NAMESPACE } from '../../../utils/constant';
 import { IPlayer, IEventData, IPlay, IPlayerLobbyProps } from '../../../utils/types';
 import { handleServerError } from '../../../utils/util';
 import useTitle from '../../../hooks/useTitle';
-import { useSocket } from '../../../hooks/useSocket';
 
-const PlayerLobby: React.FC<IPlayerLobbyProps> = ({ connected, setGameStage, setSocket, setConnected }) => {
+const PlayerLobby: React.FC<IPlayerLobbyProps> = ({ connected, setGameStage, socket }) => {
   useTitle('Lobby');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -43,10 +42,6 @@ const PlayerLobby: React.FC<IPlayerLobbyProps> = ({ connected, setGameStage, set
     }
   };
 
-  const socket = useSocket();
-  useSocketEvents(Events.ERROR, socket);
-  useSocketEvents(Events.CONNECTED, socket, () => setConnected(true));
-  useSocketEvents(Events.DISCONNECTED, socket, () => setConnected(false));
   useSocketEvents(Events.LOCK_GAME, socket, (payload: IEventData) => dispatch(loadPlay(payload.data as IPlay)));
   useSocketEvents(Events.REMOVE_PLAYER, socket, (payload: IEventData) => handlePlayerRemoved(payload.data as IPlayer));
   useSocketEvents(Events.PLAYER_JOINED, socket, (payload: IEventData) => dispatch(addPlayer(payload.data as IPlayer)));
@@ -77,9 +72,8 @@ const PlayerLobby: React.FC<IPlayerLobbyProps> = ({ connected, setGameStage, set
         timestamp: new Date().toUTCString(),
       };
       socket?.emit(Events.PLAYER_JOINED, message);
-      setSocket(socket);
     }
-  }, [currentPlayer, dispatch, getPlayData, getPlayIsSuccess, setSocket, socket]);
+  }, [currentPlayer, dispatch, getPlayData, getPlayIsSuccess, socket]);
 
   useEffect(() => {
     if (getPlayIsError && getPlayError) {

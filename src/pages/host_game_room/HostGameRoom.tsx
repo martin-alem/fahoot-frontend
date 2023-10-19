@@ -7,7 +7,7 @@ import Result from './result/Result';
 import { useSocket } from '../../hooks/useSocket';
 import useSocketEvents from '../../hooks/useSocketEvents';
 
-const Game: React.FC = () => {
+const HostGameRoom: React.FC = () => {
   const [gameStage, setGameStage] = useState<GameStage>(GameStage.LOBBY);
   const [connected, setConnected] = useState(false);
 
@@ -26,4 +26,4 @@ const Game: React.FC = () => {
   );
 };
 
-export default Game;
+export default HostGameRoom;
