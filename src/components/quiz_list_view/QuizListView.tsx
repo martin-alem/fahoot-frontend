@@ -4,9 +4,9 @@ import { IQuizProps } from '../../utils/types';
 import { Link, useNavigate } from 'react-router-dom';
 import { RootState } from '../../store';
 import { useSelector } from 'react-redux';
-import Avatar from '../avatar/Avatar';
 import { formatDistanceToNow } from 'date-fns';
 import { QuizStatus } from '../../utils/constant';
+import Avatar from '../avatar/Avatar';
 
 const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
   const navigate = useNavigate();

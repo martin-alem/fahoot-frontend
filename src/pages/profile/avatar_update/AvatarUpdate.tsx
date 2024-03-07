@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { IProfileProps, IUpdateBasicInfoPayload, ModalHandle } from '../../../utils/types';
 import { useDeleteFileMutation, useUploadFileMutation } from '../../../api/upload.api';
-import Avatar from '../../../components/avatar/Avatar';
 import Button from '../../../components/button/Button';
 import { CameraIcon, CloudArrowUpIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
@@ -13,6 +12,7 @@ import { saveAuth } from '../../../slices/auth.slice';
 import { useDispatch } from 'react-redux';
 import Prompt from '../../../components/prompt/Prompt';
 import Modal from '../../../components/modal/Modal';
+import Avatar from '../../../components/avatar/Avatar';
 
 const AvatarUpdate: React.FC<IProfileProps> = ({ user }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);

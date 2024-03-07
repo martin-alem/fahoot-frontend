@@ -6,7 +6,6 @@ import { LOGO } from './../../utils/constant';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import Avatar from '../../components/avatar/Avatar';
 import Alert from '../../components/alert/Alert';
 import { useRequestVerificationEmailMutation } from '../../api/security.api';
 import { IRequestVerificationEmailPayload } from '../../utils/types';
@@ -14,10 +13,11 @@ import { EmailPurpose, SUCCESS_MESSAGES } from '../../utils/constant';
 import { toast } from 'react-toastify';
 import { clearPlay } from '../../slices/play.slice';
 import { handleServerError } from '../../utils/util';
+import Avatar from '../../components/avatar/Avatar';
 
 const navigation = [
   { name: 'Library', href: '', current: true },
-  { name: 'Report', href: 'report', current: false },
+
   { name: 'Profile', href: 'profile' },
 ];
 const userNavigation = [

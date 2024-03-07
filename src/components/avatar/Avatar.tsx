@@ -6,10 +6,10 @@ interface AvatarProps {
   alt: string;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ height, width, src, alt, rounded = 'rounded-full' }) => {
+const Avatar: React.FC<AvatarProps> = ({ height, width, src, alt, rounded = "rounded-full" }) => {
   return (
     <>
-      {src ? (
+      {src !== undefined ? (
         <img className={`${height} ${width} ${rounded}`} src={src} alt={alt} />
       ) : (
         <span className={`inline-block ${height} ${width} overflow-hidden ${rounded} bg-secondary-500`}>

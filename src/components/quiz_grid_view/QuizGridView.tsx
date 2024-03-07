@@ -2,11 +2,11 @@ import { ClockIcon, GlobeAltIcon, LightBulbIcon, PencilIcon, PlayIcon } from '@h
 import Button from '../button/Button';
 import { IQuizProps } from '../../utils/types';
 import { Link, useNavigate } from 'react-router-dom';
-import Avatar from '../avatar/Avatar';
 import { RootState } from '../../store';
 import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
 import { QuizStatus } from '../../utils/constant';
+import Avatar from '../avatar/Avatar';
 
 const QuizGridView: React.FC<IQuizProps> = ({ quiz }) => {
   const navigate = useNavigate();
