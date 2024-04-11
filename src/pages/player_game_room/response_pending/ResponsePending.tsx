@@ -1,5 +1,5 @@
 import { SignalIcon, SignalSlashIcon } from '@heroicons/react/24/outline';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import { AppreciationMessages, Events, GameStage, LOGO } from '../../../utils/constant';
 import { IEventData, IResponsePendingProps } from '../../../utils/types';
 import useSocketEvents from '../../../hooks/useSocketEvents';

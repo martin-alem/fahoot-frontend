@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
 import { QuizStatus } from '../../utils/constant';
 import Avatar from '../avatar/Avatar';
+import React from "react";
 
 const QuizListView: React.FC<IQuizProps> = ({ quiz }) => {
   const navigate = useNavigate();

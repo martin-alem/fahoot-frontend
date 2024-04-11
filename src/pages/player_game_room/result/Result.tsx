@@ -8,7 +8,7 @@ import useSocketEvents from '../../../hooks/useSocketEvents';
 import { loadCurrentQuestion } from '../../../slices/play.slice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useExitGameMutation } from '../../../api/play.api';
 
 const Result: React.FC<IResultProps> = ({ connected, socket, setGameStage }) => {

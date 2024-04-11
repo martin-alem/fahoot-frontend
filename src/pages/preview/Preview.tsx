@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Play from '../../container/play/Play';
 import QuestionCount from '../../components/question_count/QuestionCount';
 import Button from '../../components/button/Button';

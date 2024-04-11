@@ -5,7 +5,7 @@ import { IProfileProps, IUpdateBasicInfoPayload } from '../../../utils/types';
 import { InboxArrowDownIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import Button from '../../../components/button/Button';
 import { capitalize, isEqual, lowerCase } from 'lodash';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { saveAuth } from '../../../slices/auth.slice';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../../../utils/constant';
 import { validateName } from '../../../utils/input_validation';
@@ -75,6 +75,7 @@ const BasicInfoUpdate: React.FC<IProfileProps> = ({ user }) => {
 
   useEffect(() => {
     if (isSuccessBasicInfo && dataBasicInfo) {
+      console.log(dataBasicInfo)
       dispatch(saveAuth(dataBasicInfo));
       toast.success(SUCCESS_MESSAGES.BASIC_INFO_UPDATE_SUCCESS, {
         position: toast.POSITION.TOP_CENTER,

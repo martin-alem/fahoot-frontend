@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { IQuestionOptionProps } from '../../utils/types';
 import { QuizMode } from '../../utils/constant';
 
@@ -31,11 +31,11 @@ const QuestionOption: React.FC<IQuestionOptionProps> = ({ option, handleCurrentQ
           <input
             id={option._id}
             disabled={mode === QuizMode.PREVIEW}
-            name={`question_option`} // make it unique if you have multiple sets of radio buttons
+            name={`question_option_${option._id}`} // make it unique if you have multiple sets of radio buttons
             type="radio"
             value="true"
             onChange={editOptionCorrect}
-            defaultChecked={selectedOption}
+            // defaultChecked={selectedOption}
             className="h-12 w-12 border-gray-300 text-secondary-600 focus:ring-secondary-600 cursor-pointer"
           />
         </div>

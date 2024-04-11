@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { PlusIcon } from '@heroicons/react/20/solid';
 import Button from '../../../components/button/Button';
 import QuestionDraft from '../../../components/question_draft/QuestionDraft';

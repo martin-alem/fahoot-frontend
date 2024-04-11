@@ -106,47 +106,49 @@ export enum QuizStatus {
 
 export const LobbyMusicList = [
   {
-    label: "Royal Coupling",
-    value: "https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Royal%20Coupling.mp3",
+    label: "Shine",
+    value: "https://gemkox-spaces.nyc3.cdn.digitaloceanspaces.com/fahoot/audio/shine.mp3",
   },
 
   {
-    label: "Strength Of The Titans",
-    value: "https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Strength%20of%20the%20Titans.mp3",
+    label: "Sweet Breeze",
+    value: "https://gemkox-spaces.nyc3.cdn.digitaloceanspaces.com/fahoot/audio/sweet-breeze.mp3",
   },
 
   {
-    label: "Super Power Cool Dude",
-    value: "https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Super%20Power%20Cool%20Dude.mp3",
+    label: "Modern Technology",
+    value: "https://gemkox-spaces.nyc3.cdn.digitaloceanspaces.com/fahoot/audio/the-modern-technology.mp3",
   },
 
-  {
-    label: "Verano Sensual",
-    value: "https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Verano%20Sensual.mp3",
-  },
-
-  {
-    label: "Wepa Grain",
-    value: "https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Wepa.mp3",
-  },
-
-  {
-    label: "Who Likes To Party",
-    value: "https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/lobby_music/Who%20Likes%20to%20Party.mp3",
-  },
 ];
 
 export const GameMusicList = [
   {
-    label: "Rainbows",
-    value: "https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/game_music/Rainbows.mp3",
+    label: "Ska Rainbow",
+    value: "https://gemkox-spaces.nyc3.cdn.digitaloceanspaces.com/fahoot/audio/ska.mp3",
+  },
+  {
+    label: "Super Hero",
+    value: "https://gemkox-spaces.nyc3.cdn.digitaloceanspaces.com/fahoot/audio/superhero.mp3",
+  },
+  {
+    label: "The Lord Is My Light",
+    value: "https://gemkox-spaces.nyc3.cdn.digitaloceanspaces.com/fahoot/audio/the-lord-is-my-light.mp3",
   },
 ];
 
 export const PodiumMusicList = [
   {
-    label: "Beachfront Celebration",
-    value: "https://fahoot-spaces.nyc3.cdn.digitaloceanspaces.com/uploads/assets/podium_music/Beachfront%20Celebration.mp3",
+    label: "Latin Jazz",
+    value: "https://gemkox-spaces.nyc3.cdn.digitaloceanspaces.com/fahoot/audio/latin-jazz-two-octaves.mp3",
+  },
+  {
+    label: "Mumbai",
+    value: "https://gemkox-spaces.nyc3.cdn.digitaloceanspaces.com/fahoot/audio/mumbai.mp3",
+  },
+  {
+    label: "Rio At Night",
+    value: "https://gemkox-spaces.nyc3.cdn.digitaloceanspaces.com/fahoot/audio/rio-at-night.mp3",
   },
 ];
 

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react';
 import { Socket } from 'socket.io-client';
 import { IEventData } from '../utils/types';
@@ -17,7 +15,7 @@ const useSocketEvents = (event: string, socket: Socket | null, callback?: (paylo
         socket.off(event);
       };
     }
-  }, [socket, callback]);
+  }, [socket, callback, event]);
 };
 
 export default useSocketEvents;

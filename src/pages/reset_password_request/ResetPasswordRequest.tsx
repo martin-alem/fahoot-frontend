@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import useTitle from '../../hooks/useTitle';
 import Alert from '../../components/alert/Alert';
 import { useResetPasswordRequestMutation } from '../../api/security.api';

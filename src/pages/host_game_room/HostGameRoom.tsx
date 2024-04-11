@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Events, GameStage } from '../../utils/constant';
 import Lobby from './lobby/Lobby';
 import WaitPeriod from './wait_period/WaitPeriod';

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import useTitle from '../../hooks/useTitle';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -9,6 +8,7 @@ import PasswordUpdate from './password_update/PasswordUpdate';
 import EmailUpdate from './email_update/EmailUpdate';
 import ClearRememberMe from './clear_remember_me/ClearRememberMe';
 import DeleteAccount from './delete_account/DeleteAccount';
+import React from "react";
 
 const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.authUser.user);

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { memo, useEffect } from 'react';
 import { IGoogleOAuthProps } from '../../utils/types';
 

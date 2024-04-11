@@ -6,6 +6,7 @@ import Play from '../../../container/play/Play';
 import { QuizMode, GameStage, Events, PLAY_NAMESPACE } from '../../../utils/constant';
 import { IEventData, IGameQuestionProps } from '../../../utils/types';
 import useSocketEvents from '../../../hooks/useSocketEvents';
+import React from "react";
 
 const Question: React.FC<IGameQuestionProps> = ({ socket, connected, setGameStage }) => {
   const play = useSelector((state: RootState) => state.playState.play);

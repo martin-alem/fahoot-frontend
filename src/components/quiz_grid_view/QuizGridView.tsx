@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
 import { QuizStatus } from '../../utils/constant';
 import Avatar from '../avatar/Avatar';
+import React from "react";
 
 const QuizGridView: React.FC<IQuizProps> = ({ quiz }) => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const QuizGridView: React.FC<IQuizProps> = ({ quiz }) => {
         <div className="flex-grow space-y-4 bg-white p-4">
           <div className="flex justify-between items-center">
             <h1 className="w-60 text-secondary-500 text-xl md:text-2xl font-bold capitalize truncate">{quiz.title}</h1>
-            <Link to="/editor">
+            <Link to={`/editor/${quiz._id}`}>
               <PencilIcon className="w-6 cursor-pointer" />
             </Link>
           </div>

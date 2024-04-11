@@ -4,6 +4,7 @@ import Question from './question/Question';
 import { LOGO } from './../../utils/constant';
 import Timer from './timer/Timer';
 import { IPlayProps } from '../../utils/types';
+import React from "react";
 
 const Play: React.FC<IPlayProps> = ({ handleOptionSelection, handleTimeOut, mode, question }) => {
   return (
