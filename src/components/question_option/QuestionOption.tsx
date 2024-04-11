@@ -35,7 +35,7 @@ const QuestionOption: React.FC<IQuestionOptionProps> = ({ option, handleCurrentQ
             type="radio"
             value="true"
             onChange={editOptionCorrect}
-            // defaultChecked={selectedOption}
+            defaultChecked={selectedOption}
             className="h-12 w-12 border-gray-300 text-secondary-600 focus:ring-secondary-600 cursor-pointer"
           />
         </div>
